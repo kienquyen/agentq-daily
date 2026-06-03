@@ -1,0 +1,56 @@
+{
+  "date": "2026-06-02",
+  "generated_at": "2026-06-03T18:09:27Z",
+  "regime": {
+    "ok": false,
+    "adx": 24.59533537977567,
+    "roc5": -3.0628708509802705,
+    "dd20": -5.516499319748999,
+    "detail": "🔴 CHOP/RISK  ADX=24.6  ROC5d=-3.1%  DD20d=-5.5%  →  BUY1=OFF  ⚠️ ROC5d=-3.1%<-3% (panic)"
+  },
+  "signals": [
+    {
+      "symbol": "FPT",
+      "signal_type": "BUY1",
+      "entry_price": 74.8,
+      "strength": 79,
+      "reasons": [
+        "+Trend (15.2)",
+        "+RSI (7.7)"
+      ]
+    },
+    {
+      "symbol": "HDG",
+      "signal_type": "BUY2",
+      "entry_price": 23.0,
+      "strength": 63,
+      "reasons": [
+        "+RSI Div (12.2)",
+        "+RSI2 OS (10.2)",
+        "-Knife (12.0)"
+      ]
+    },
+    {
+      "symbol": "VSC",
+      "signal_type": "BUY3",
+      "entry_price": 19.2,
+      "strength": 45,
+      "reasons": [
+        "+RSI2 Ex (20.0)",
+        "+RSI14 Dep (3.7)",
+        "-Downtrend (14.7)"
+      ]
+    },
+    {
+      "symbol": "ANV",
+      "signal_type": "BUY3",
+      "entry_price": 21.1,
+      "strength": 41,
+      "reasons": [
+        "+RSI2 Ex (21.3)",
+        "+MFI Wash (1.9)",
+        "-Downtrend (18.0)"
+      ]
+    }
+  ]
+}
