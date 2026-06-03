@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentQ.Daily — VN Stock Signals</title>
+  <style>
+    :root {
+      --bg:        #0d1117;
+      --bg2:       #161b22;
+      --bg3:       #21262d;
+      --border:    #30363d;
+      --text:      #e6edf3;
+      --muted:     #7d8590;
+      --green:     #3fb950;
+      --green-dim: #1a3a22;
+      --red:       #f85149;
+      --red-dim:   #3d1a1a;
+      --yellow:    #d29922;
+      --yellow-dim:#3a2f0a;
+      --blue:      #58a6ff;
+      --orange:    #f0883e;
+      --purple:    #bc8cff;
+      --accent:    #1f6feb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo span { color: var(--blue); }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .last-update { display: flex; align-items: center; gap: 6px; }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    .dot.stale { background: var(--yellow); animation: none; }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+
+    /* ── Date nav ── */
+    .date-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .date-nav-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background .15s;
+    }
+    .date-nav-btn:hover { background: var(--accent); border-color: var(--accent); }
+    .date-nav-btn:disabled { opacity: .4; cursor: default; }
+    .current-date {
+      font-size: 20px;
+      font-weight: 700;
+      flex: 1;
+    }
+    .weekday { font-weight: 400; color: var(--muted); font-size: 14px; margin-left: 8px; }
+
+    /* ── Regime banner ── */
+    .regime-banner {
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .regime-banner.green { background: var(--green-dim); border: 1px solid var(--green); }
+    .regime-banner.red   { background: var(--red-dim);   border: 1px solid var(--red);   }
+    .regime-banner.gray  { background: var(--bg3);       border: 1px solid var(--border); }
+    .regime-label { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .regime-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+    .regime-stat  { text-align: center; }
+    .regime-stat-val  { font-size: 18px; font-weight: 700; }
+    .regime-stat-name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+
+    /* ── Signal grid ── */
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      margin-top: 24px;
+    }
+
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .signal-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      transition: border-color .15s, transform .1s;
+    }
+    .signal-card:hover { border-color: var(--blue); transform: translateY(-1px); }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .symbol {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .badge.buy1 { background: rgba(63,185,80,.2);  color: var(--green);  border: 1px solid var(--green); }
+    .badge.buy2 { background: rgba(88,166,255,.2); color: var(--blue);   border: 1px solid var(--blue);  }
+    .badge.buy3 { background: rgba(240,136,62,.2); color: var(--orange); border: 1px solid var(--orange);}
+
+    .price {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .price span { font-size: 13px; color: var(--muted); font-weight: 400; }
+
+    .strength-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .strength-bar-wrap {
+      flex: 1;
+      height: 6px;
+      background: var(--bg3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .strength-bar {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .4s ease;
+    }
+    .str-fire   { background: linear-gradient(90deg, #ff6b35, #f7c59f); }
+    .str-green  { background: linear-gradient(90deg, #3fb950, #6ee7b7); }
+    .str-yellow { background: linear-gradient(90deg, #d29922, #fde68a); }
+    .str-gray   { background: var(--muted); }
+    .strength-val { font-size: 13px; font-weight: 700; min-width: 26px; text-align: right; }
+
+    .reasons {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .reasons strong { color: var(--text); }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+      background: var(--bg2);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+    }
+    .empty-icon { font-size: 36px; margin-bottom: 12px; }
+    .empty-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+
+    /* ── History table ── */
+    .history-wrap {
+      margin-top: 32px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .history-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background .1s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg3); }
+    tbody tr.active-row { background: rgba(88,166,255,.08); }
+    td { padding: 10px 16px; font-size: 13px; }
+    td.date-cell { font-weight: 600; color: var(--blue); white-space: nowrap; }
+    td.regime-cell-green { color: var(--green); font-weight: 600; }
+    td.regime-cell-red   { color: var(--red);   font-weight: 600; }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin: 1px 2px;
+    }
+    .pill.buy1 { background: rgba(63,185,80,.15);  color: var(--green);  }
+    .pill.buy2 { background: rgba(88,166,255,.15); color: var(--blue);   }
+    .pill.buy3 { background: rgba(240,136,62,.15); color: var(--orange); }
+
+    /* ── Loading ── */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--muted);
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 32px 16px 24px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .header { padding: 0 12px; }
+      .regime-stats { gap: 12px; }
+      .history-wrap { font-size: 12px; }
+      td, thead th { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <a class="logo" href="#">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+            stroke="#58a6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Agent<span>Q</span>.Daily
+  </a>
+  <div class="header-right">
+    <div class="last-update">
+      <div class="dot" id="statusDot"></div>
+      <span id="lastUpdateText">Loading...</span>
+    </div>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="container">
+  <div id="app">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>Đang tải dữ liệu...</div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  AgentQ.Daily · Dữ liệu cập nhật lúc 19:00 ICT mỗi ngày giao dịch · Không phải khuyến nghị đầu tư
+</footer>
+
+<script>
+// ── Config ─────────────────────────────────────────────────────────────────────
+const GITHUB_USER = "kienquyen";
+const GITHUB_REPO = "vnstock_xno_prod";
+const SIGNALS_PATH = "web/signals";   // thư mục chứa JSON files trong repo
+const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${SIGNALS_PATH}`;
+const API_BASE = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${SIGNALS_PATH}`;
+
+// ── State ──────────────────────────────────────────────────────────────────────
+let allDates = [];      // ["2026-06-03", "2026-06-02", ...]  sorted desc
+let cache    = {};      // date -> signal data
+let current  = null;   // date string being shown
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const WEEKDAYS = ["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"];
+
+function formatDate(d) {
+  const dt = new Date(d + "T00:00:00");
+  return dt.toLocaleDateString("vi-VN", { day:"2-digit", month:"2-digit", year:"numeric" });
+}
+function getWeekday(d) {
+  return WEEKDAYS[new Date(d + "T00:00:00").getDay()];
+}
+function timeAgo(iso) {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 60000);
+  if (diff < 1)   return "vừa xong";
+  if (diff < 60)  return `${diff} phút trước`;
+  if (diff < 1440) return `${Math.floor(diff/60)} giờ trước`;
+  return `${Math.floor(diff/1440)} ngày trước`;
+}
+
+function strengthClass(s) {
+  if (s >= 85) return "str-fire";
+  if (s >= 75) return "str-green";
+  if (s >= 60) return "str-yellow";
+  return "str-gray";
+}
+function strengthIcon(s) {
+  if (s >= 85) return "🔥";
+  if (s >= 75) return "🟢";
+  if (s >= 60) return "🟡";
+  return "⚪";
+}
+
+// ── Fetch ──────────────────────────────────────────────────────────────────────
+async function fetchSignalList() {
+  try {
+    const r = await fetch(API_BASE);
+    if (!r.ok) throw new Error(r.status);
+    const files = await r.json();
+    return files
+      .filter(f => f.name.match(/^\d{4}-\d{2}-\d{2}\.json$/))
+      .map(f => f.name.replace(".json",""))
+      .sort((a,b) => b.localeCompare(a));
+  } catch(e) {
+    console.error("fetchSignalList error:", e);
+    return [];
+  }
+}
+
+async function fetchSignal(date) {
+  if (cache[date]) return cache[date];
+  try {
+    const r = await fetch(`${RAW_BASE}/${date}.json?t=${Date.now()}`);
+    if (!r.ok) return null;
+    const data = await r.json();
+    cache[date] = data;
+    return data;
+  } catch(e) {
+    return null;
+  }
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────────
+function renderRegimeBanner(regime) {
+  if (!regime) return `<div class="regime-banner gray"><div class="regime-label">📡 Regime: N/A</div></div>`;
+
+  const ok    = regime.ok;
+  const cls   = ok ? "green" : "red";
+  const icon  = ok ? "🟢" : "🔴";
+  const label = ok ? "TREND — BUY1 ON" : "CHOP/RISK — BUY1 threshold tăng";
+  const adx   = regime.adx   != null ? regime.adx.toFixed(1)            : "—";
+  const roc5  = regime.roc5  != null ? (regime.roc5 >= 0 ? "+" : "") + regime.roc5.toFixed(1) + "%" : "—";
+  const dd20  = regime.dd20  != null ? (regime.dd20 >= 0 ? "+" : "") + regime.dd20.toFixed(1) + "%" : "—";
+
+  return `
+    <div class="regime-banner ${cls}">
+      <div class="regime-label">${icon} &nbsp;${label}</div>
+      <div class="regime-stats">
+        <div class="regime-stat">
+          <div class="regime-stat-val">${adx}</div>
+          <div class="regime-stat-name">ADX</div>
+        </div>
+        <div class="regime-stat">
+          <div class="regime-stat-val" style="color:${regime.roc5 < -3 ? 'var(--red)' : 'inherit'}">${roc5}</div>
+          <div class="regime-stat-name">ROC 5d</div>
+        </div>
+        <div class="regime-stat">
+          <div class="regime-stat-val">${dd20}</div>
+          <div class="regime-stat-name">DD 20d</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderSignalCard(s) {
+  const typeClass = s.signal_type.toLowerCase();
+  const strBar    = Math.min(100, s.strength);
+  const strCls    = strengthClass(s.strength);
+  const reasons   = (s.reasons || []).map(r => {
+    const sign = r.startsWith("+") ? `<strong style="color:var(--green)">${r.split(" ")[0]}</strong>` :
+                                      `<strong style="color:var(--red)">${r.split(" ")[0]}</strong>`;
+    return sign + " " + r.split(" ").slice(1).join(" ");
+  }).join(" · ");
+
+  return `
+    <div class="signal-card">
+      <div class="card-top">
+        <div class="symbol">${s.symbol}</div>
+        <div class="badge ${typeClass}">${s.signal_type}</div>
+      </div>
+      <div class="price">${s.entry_price.toFixed(1)} <span>k VND</span></div>
+      <div class="strength-row">
+        <div class="strength-bar-wrap">
+          <div class="strength-bar ${strCls}" style="width:${strBar}%"></div>
+        </div>
+        <div class="strength-val">${strengthIcon(s.strength)} ${s.strength}</div>
+      </div>
+      <div class="reasons">${reasons || "—"}</div>
+    </div>`;
+}
+
+function renderSignals(data) {
+  if (!data || !data.signals || data.signals.length === 0) {
+    return `<div class="empty">
+      <div class="empty-icon">📭</div>
+      <div class="empty-title">Không có signal hôm nay</div>
+      <div>Thị trường chưa có setup phù hợp</div>
+    </div>`;
+  }
+
+  const buy1 = data.signals.filter(s => s.signal_type === "BUY1");
+  const buy2 = data.signals.filter(s => s.signal_type === "BUY2");
+  const buy3 = data.signals.filter(s => s.signal_type === "BUY3");
+
+  let html = "";
+  if (buy1.length) {
+    html += `<div class="section-title">🔼 BUY1 — Trend Following (${buy1.length})</div>
+             <div class="signal-grid">${buy1.map(renderSignalCard).join("")}</div>`;
+  }
+  if (buy2.length) {
+    html += `<div class="section-title">↩️ BUY2 — Mean Reversion (${buy2.length})</div>
+             <div class="signal-grid">${buy2.map(renderSignalCard).join("")}</div>`;
+  }
+  if (buy3.length) {
+    html += `<div class="section-title">⚡ BUY3 — Extreme Oversold (${buy3.length})</div>
+             <div class="signal-grid">${buy3.map(renderSignalCard).join("")}</div>`;
+  }
+  return html;
+}
+
+function renderHistoryTable() {
+  if (allDates.length === 0) return "";
+  const rows = allDates.slice(0,30).map(d => {
+    const data   = cache[d];
+    const sigs   = data?.signals || [];
+    const b1     = sigs.filter(s=>s.signal_type==="BUY1");
+    const b2     = sigs.filter(s=>s.signal_type==="BUY2");
+    const b3     = sigs.filter(s=>s.signal_type==="BUY3");
+    const reg    = data?.regime;
+    const regTxt = reg ? (reg.ok ? "🟢 TREND" : "🔴 CHOP") : "—";
+    const regCls = reg ? (reg.ok ? "regime-cell-green" : "regime-cell-red") : "";
+    const pills  = [
+      ...b1.map(s=>`<span class="pill buy1">${s.symbol} ${s.strength}</span>`),
+      ...b2.map(s=>`<span class="pill buy2">${s.symbol} ${s.strength}</span>`),
+      ...b3.map(s=>`<span class="pill buy3">${s.symbol} ${s.strength}</span>`),
+    ].join("") || '<span style="color:var(--muted)">—</span>';
+    const isActive = d === current ? ' class="active-row"' : '';
+
+    return `<tr${isActive} onclick="selectDate('${d}')">
+      <td class="date-cell">${formatDate(d)}</td>
+      <td class="${regCls}">${regTxt}</td>
+      <td>${b1.length + b2.length + b3.length}</td>
+      <td>${pills}</td>
+    </tr>`;
+  }).join("");
+
+  return `
+    <div class="history-wrap">
+      <div class="history-header">
+        <span>📆 Lịch sử 30 ngày gần nhất</span>
+        <span style="color:var(--muted);font-weight:400">${allDates.length} phiên</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Ngày</th>
+            <th>Regime</th>
+            <th>Signals</th>
+            <th>Chi tiết</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+async function renderPage(date, data) {
+  const idx   = allDates.indexOf(date);
+  const hasPrev = idx < allDates.length - 1;
+  const hasNext = idx > 0;
+
+  const html = `
+    <div class="date-nav">
+      <button class="date-nav-btn" onclick="goDate(-1)" ${!hasPrev?"disabled":""}>← Trước</button>
+      <div class="current-date">
+        ${formatDate(date)}
+        <span class="weekday">${getWeekday(date)}</span>
+      </div>
+      <button class="date-nav-btn" onclick="goDate(1)" ${!hasNext?"disabled":""}>Sau →</button>
+    </div>
+
+    ${renderRegimeBanner(data?.regime)}
+    ${renderSignals(data)}
+    ${renderHistoryTable()}
+  `;
+
+  document.getElementById("app").innerHTML = html;
+
+  // Update header status
+  const dot  = document.getElementById("statusDot");
+  const txt  = document.getElementById("lastUpdateText");
+  if (data?.generated_at) {
+    const ago  = timeAgo(data.generated_at);
+    const stale = (Date.now() - new Date(data.generated_at)) > 26*3600*1000;
+    txt.textContent = `Cập nhật ${ago}`;
+    dot.className   = stale ? "dot stale" : "dot";
+  } else {
+    txt.textContent = "Chưa có dữ liệu";
+    dot.className   = "dot stale";
+  }
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+async function selectDate(date) {
+  current = date;
+  document.getElementById("app").innerHTML = `<div class="loading"><div class="spinner"></div><div>Đang tải...</div></div>`;
+  const data = await fetchSignal(date);
+  renderPage(date, data);
+}
+
+function goDate(dir) {
+  const idx = allDates.indexOf(current);
+  const next = allDates[idx - dir];
+  if (next) selectDate(next);
+}
+
+// Keyboard navigation
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft")  goDate(-1);
+  if (e.key === "ArrowRight") goDate(1);
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function init() {
+  allDates = await fetchSignalList();
+
+  if (allDates.length === 0) {
+    document.getElementById("app").innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🚀</div>
+        <div class="empty-title">Chưa có dữ liệu</div>
+        <div>Bot chưa chạy lần nào, hoặc repo chưa có file signal.</div>
+      </div>`;
+    document.getElementById("lastUpdateText").textContent = "Không có dữ liệu";
+    return;
+  }
+
+  // Preload 7 ngày gần nhất
+  const toPreload = allDates.slice(0, 7);
+  await Promise.all(toPreload.map(d => fetchSignal(d)));
+
+  // Show latest
+  await selectDate(allDates[0]);
+}
+
+init();
+</script>
+</body>
+</html>
