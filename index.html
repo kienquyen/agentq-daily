@@ -1,261 +1,404 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AgentQ.Daily — VN Stock Signals</title>
+  <title>AgentQ Signal — Tín hiệu giao dịch định lượng HOSE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
+    /* ── TOKENS ─────────────────────────────────────────────────────────── */
     :root {
-      --bg:        #0d1117;
-      --bg2:       #161b22;
-      --bg3:       #21262d;
-      --border:    #30363d;
-      --text:      #e6edf3;
-      --muted:     #7d8590;
-      --green:     #3fb950;
-      --green-dim: #1a3a22;
-      --red:       #f85149;
-      --red-dim:   #3d1a1a;
-      --yellow:    #d29922;
-      --yellow-dim:#3a2f0a;
-      --blue:      #58a6ff;
-      --orange:    #f0883e;
-      --purple:    #bc8cff;
-      --accent:    #1f6feb;
+      --bg:          #0F1117;
+      --surface:     #151A23;
+      --surface2:    #1C2333;
+      --border:      rgba(255,255,255,0.07);
+      --accent:      #7B61FF;
+      --accent-dim:  rgba(123,97,255,0.15);
+      --green:       #00F5A0;
+      --green-dim:   rgba(0,245,160,0.12);
+      --red:         #FF4D6D;
+      --red-dim:     rgba(255,77,109,0.12);
+      --yellow:      #FFB800;
+      --yellow-dim:  rgba(255,184,0,0.12);
+      --blue:        #60A5FA;
+      --blue-dim:    rgba(96,165,250,0.12);
+      --purple:      #C084FC;
+      --purple-dim:  rgba(192,132,252,0.12);
+      --text:        #E6EAF2;
+      --text2:       #A0A7B4;
+      --text3:       #5C6478;
+      --radius:      12px;
+      --radius-sm:   8px;
+      --shadow:      0 4px 24px rgba(0,0,0,0.4);
+    }
+    [data-theme="light"] {
+      --bg:       #F0F3FA;
+      --surface:  #FFFFFF;
+      --surface2: #E8ECF6;
+      --border:   rgba(0,0,0,0.08);
+      --text:     #1A1D2C;
+      --text2:    #5C6478;
+      --text3:    #A0A7B4;
+      --accent:   #6B50F0;
+      --green:    #009962;
+      --green-dim:rgba(0,153,98,0.10);
+      --red:      #D93055;
+      --red-dim:  rgba(217,48,85,0.10);
+      --yellow:   #B87D00;
+      --yellow-dim:rgba(184,125,0,0.10);
+      --blue:     #2563EB;
+      --blue-dim: rgba(37,99,235,0.10);
+      --shadow:   0 4px 24px rgba(0,0,0,0.08);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    /* ── RESET ───────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
+      font-family: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.6;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background .25s, color .25s;
       min-height: 100vh;
     }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    ::-webkit-scrollbar-track { background: transparent; }
 
-    /* ── Header ── */
+    /* ── HEADER ──────────────────────────────────────────────────────────── */
     .header {
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
       height: 56px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background: rgba(15,17,23,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
     }
+    [data-theme="light"] .header { background: rgba(240,243,250,0.9); }
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
     }
-    .logo span { color: var(--blue); }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 12px;
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: var(--accent);
+      border-radius: 7px;
+      box-shadow: 0 0 16px rgba(123,97,255,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: #fff;
+      letter-spacing: -0.5px;
     }
-    .last-update { display: flex; align-items: center; gap: 6px; }
+    .logo-text {
+      font-size: 16px; font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+    .logo-text span { color: var(--accent); }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .live-dot {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: var(--text2);
+    }
     .dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
+      width: 7px; height: 7px; border-radius: 50%;
       background: var(--green);
-      animation: pulse 2s infinite;
+      animation: pulse-dot 2s infinite;
     }
     .dot.stale { background: var(--yellow); animation: none; }
-    @keyframes pulse {
-      0%,100% { opacity: 1; }
-      50%      { opacity: 0.4; }
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(0,245,160,.4); }
+      50%      { opacity:.6; box-shadow: 0 0 0 4px rgba(0,245,160,0); }
     }
 
-    /* ── Layout ── */
-    .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
-
-    /* ── Date nav ── */
-    .date-nav {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .date-nav-btn {
-      background: var(--bg3);
+    /* Theme toggle */
+    .theme-toggle {
+      width: 38px; height: 22px;
+      background: var(--surface2);
       border: 1px solid var(--border);
-      color: var(--text);
-      padding: 6px 14px;
-      border-radius: 6px;
+      border-radius: 11px;
       cursor: pointer;
-      font-size: 13px;
-      transition: background .15s;
+      position: relative;
+      transition: background .25s;
     }
-    .date-nav-btn:hover { background: var(--accent); border-color: var(--accent); }
-    .date-nav-btn:disabled { opacity: .4; cursor: default; }
-    .current-date {
-      font-size: 20px;
-      font-weight: 700;
-      flex: 1;
+    .theme-toggle::after {
+      content: "";
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--text2);
+      transition: transform .25s, background .25s;
     }
-    .weekday { font-weight: 400; color: var(--muted); font-size: 14px; margin-left: 8px; }
-
-    /* ── Regime banner ── */
-    .regime-banner {
-      border-radius: 8px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .regime-banner.green { background: var(--green-dim); border: 1px solid var(--green); }
-    .regime-banner.red   { background: var(--red-dim);   border: 1px solid var(--red);   }
-    .regime-banner.gray  { background: var(--bg3);       border: 1px solid var(--border); }
-    .regime-label { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .regime-stats { display: flex; gap: 20px; flex-wrap: wrap; }
-    .regime-stat  { text-align: center; }
-    .regime-stat-val  { font-size: 18px; font-weight: 700; }
-    .regime-stat-name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
-
-    /* ── Signal grid ── */
-    .section-title {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      color: var(--muted);
-      margin-bottom: 12px;
-      margin-top: 24px;
+    [data-theme="light"] .theme-toggle::after {
+      transform: translateX(16px);
+      background: var(--accent);
     }
 
-    .signal-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 12px;
-      margin-bottom: 8px;
+    /* ── LAYOUT ──────────────────────────────────────────────────────────── */
+    .container {
+      max-width: 640px; margin: 0 auto;
+      padding: 20px 16px 80px;
     }
+    @keyframes fadeIn {
+      from { opacity:0; transform: translateY(4px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeIn .25s ease both; }
 
-    .signal-card {
-      background: var(--bg2);
+    /* ── DATE NAV ────────────────────────────────────────────────────────── */
+    .date-nav {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .nav-btn {
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      transition: border-color .15s, transform .1s;
+      color: var(--text2);
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px; font-weight: 500;
+      transition: background .15s, color .15s, border-color .15s;
     }
-    .signal-card:hover { border-color: var(--blue); transform: translateY(-1px); }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--accent-dim);
+      border-color: rgba(123,97,255,.35);
+      color: var(--accent);
+    }
+    .nav-btn:disabled { opacity: .35; cursor: default; }
+    .date-display {
+      flex: 1; text-align: center;
+    }
+    .date-main {
+      font-size: 18px; font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+    .date-sub {
+      font-size: 11px; color: var(--text2);
+      font-weight: 500; letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    /* ── REGIME BANNER ───────────────────────────────────────────────────── */
+    .regime-banner {
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      border: 1px solid;
+      position: relative; overflow: hidden;
+    }
+    .regime-banner.green {
+      background: linear-gradient(135deg, rgba(0,245,160,.08), var(--surface) 70%);
+      border-color: rgba(0,245,160,.25);
+    }
+    .regime-banner.red {
+      background: linear-gradient(135deg, rgba(255,77,109,.08), var(--surface) 70%);
+      border-color: rgba(255,77,109,.25);
+    }
+    .regime-banner.gray {
+      background: var(--surface); border-color: var(--border);
+    }
+    .regime-left { display: flex; align-items: center; gap: 10px; }
+    .regime-icon {
+      width: 36px; height: 36px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .regime-icon.green { background: rgba(0,245,160,.15); }
+    .regime-icon.red   { background: rgba(255,77,109,.15); }
+    .regime-label {
+      font-size: 13px; font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+    .regime-sub {
+      font-size: 10px; color: var(--text2);
+      font-weight: 600; text-transform: uppercase; letter-spacing: .6px;
+      margin-top: 1px;
+    }
+    .regime-stats { display: flex; gap: 16px; }
+    .regime-stat { text-align: right; }
+    .regime-stat-val {
+      font-size: 16px; font-weight: 700; letter-spacing: -0.3px;
+    }
+    .regime-stat-name {
+      font-size: 9px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .8px;
+      color: var(--text3); margin-top: 1px;
+    }
+
+    /* ── SECTION HEADER ──────────────────────────────────────────────────── */
+    .section-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .8px;
+      color: var(--text3);
+      margin: 20px 0 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after {
+      content: ""; flex: 1; height: 1px;
+      background: var(--border);
+    }
+
+    /* ── SIGNAL CARDS ────────────────────────────────────────────────────── */
+    .signal-grid {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .signal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      position: relative; overflow: hidden;
+      cursor: pointer;
+      transition: border-color .15s, transform .1s, box-shadow .15s;
+    }
+    .signal-card::before {
+      content: "";
+      position: absolute; top:0; left:0; right:0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(123,97,255,.4), transparent);
+    }
+    .signal-card.buy1::before {
+      background: linear-gradient(90deg, transparent, rgba(0,245,160,.5), transparent);
+    }
+    .signal-card.buy2::before {
+      background: linear-gradient(90deg, transparent, rgba(96,165,250,.5), transparent);
+    }
+    .signal-card.buy3::before {
+      background: linear-gradient(90deg, transparent, rgba(255,184,0,.5), transparent);
+    }
+    .signal-card:hover {
+      border-color: rgba(123,97,255,.3);
+      box-shadow: 0 4px 20px rgba(123,97,255,.08);
+      transform: translateY(-1px);
+    }
+    .signal-card:active { transform: scale(.99); }
+
+    /* Left accent bar */
+    .signal-card .accent-bar {
+      position: absolute; left:0; top:12px; bottom:12px;
+      width: 3px; border-radius: 0 2px 2px 0;
+    }
+    .signal-card.buy1 .accent-bar { background: var(--green); }
+    .signal-card.buy2 .accent-bar { background: var(--blue); }
+    .signal-card.buy3 .accent-bar { background: var(--yellow); }
 
     .card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 10px;
+      padding-left: 10px;
     }
-    .symbol {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: .5px;
+    .card-ticker {
+      font-size: 20px; font-weight: 700;
+      letter-spacing: -0.5px;
     }
-    .badge {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
+    .card-price {
+      font-size: 13px; color: var(--text2);
+      margin-top: 1px; font-weight: 500;
     }
-    .badge.buy1 { background: rgba(63,185,80,.2);  color: var(--green);  border: 1px solid var(--green); }
-    .badge.buy2 { background: rgba(88,166,255,.2); color: var(--blue);   border: 1px solid var(--blue);  }
-    .badge.buy3 { background: rgba(240,136,62,.2); color: var(--orange); border: 1px solid var(--orange);}
+    .card-right { text-align: right; }
 
-    .price {
-      font-size: 22px;
-      font-weight: 700;
+    /* Signal type badge */
+    .sig-badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      padding: 3px 9px; border-radius: 20px;
       margin-bottom: 4px;
     }
-    .price span { font-size: 13px; color: var(--muted); font-weight: 400; }
+    .sig-badge.buy1 {
+      background: rgba(0,245,160,.12); color: var(--green);
+      border: 1px solid rgba(0,245,160,.25);
+    }
+    .sig-badge.buy2 {
+      background: rgba(96,165,250,.12); color: var(--blue);
+      border: 1px solid rgba(96,165,250,.25);
+    }
+    .sig-badge.buy3 {
+      background: rgba(255,184,0,.12); color: var(--yellow);
+      border: 1px solid rgba(255,184,0,.25);
+    }
 
+    /* Strength */
     .strength-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 10px 0;
+      display: flex; align-items: center; gap: 8px;
+      padding-left: 10px; margin-bottom: 8px;
     }
-    .strength-bar-wrap {
-      flex: 1;
-      height: 6px;
-      background: var(--bg3);
-      border-radius: 3px;
-      overflow: hidden;
+    .strength-track {
+      flex: 1; height: 4px;
+      background: var(--surface2); border-radius: 2px; overflow: hidden;
     }
-    .strength-bar {
-      height: 100%;
-      border-radius: 3px;
-      transition: width .4s ease;
+    .strength-fill {
+      height: 100%; border-radius: 2px;
+      transition: width .6s cubic-bezier(.4,0,.2,1);
     }
-    .str-fire   { background: linear-gradient(90deg, #ff6b35, #f7c59f); }
-    .str-green  { background: linear-gradient(90deg, #3fb950, #6ee7b7); }
-    .str-yellow { background: linear-gradient(90deg, #d29922, #fde68a); }
-    .str-gray   { background: var(--muted); }
-    .strength-val { font-size: 13px; font-weight: 700; min-width: 26px; text-align: right; }
+    .strength-fill.high {
+      background: linear-gradient(90deg, var(--green), #00c080);
+    }
+    .strength-fill.mid {
+      background: linear-gradient(90deg, var(--accent), #A78BFF);
+    }
+    .strength-fill.low {
+      background: linear-gradient(90deg, var(--yellow), #ffd060);
+    }
+    .strength-val {
+      font-size: 13px; font-weight: 700;
+      min-width: 28px; text-align: right;
+      letter-spacing: -0.3px;
+    }
+    .strength-val.high { color: var(--green); }
+    .strength-val.mid  { color: var(--accent); }
+    .strength-val.low  { color: var(--yellow); }
 
-    .reasons {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.6;
+    /* Reasons */
+    .card-reasons {
+      font-size: 11px; color: var(--text2);
+      line-height: 1.6; padding-left: 10px;
     }
-    .reasons strong { color: var(--text); }
+    .reason-pos { color: var(--green); font-weight: 600; }
+    .reason-neg { color: var(--red);   font-weight: 600; }
 
-    /* ── Empty state ── */
-    .empty {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--muted);
-      background: var(--bg2);
-      border: 1px dashed var(--border);
-      border-radius: 10px;
-    }
-    .empty-icon { font-size: 36px; margin-bottom: 12px; }
-    .empty-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-
-    /* ── History table ── */
+    /* ── HISTORY TABLE ───────────────────────────────────────────────────── */
     .history-wrap {
-      margin-top: 32px;
-      background: var(--bg2);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: var(--radius);
       overflow: hidden;
+      margin-top: 8px;
     }
-    .history-header {
+    .history-head {
       padding: 12px 16px;
       border-bottom: 1px solid var(--border);
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .history-head-title {
+      font-size: 12px; font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+    .history-count {
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .6px;
+      color: var(--text3);
     }
     table { width: 100%; border-collapse: collapse; }
     thead th {
-      padding: 10px 16px;
+      padding: 9px 16px;
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .8px;
+      color: var(--text3);
       text-align: left;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      color: var(--muted);
+      background: var(--surface2);
       border-bottom: 1px solid var(--border);
-      background: var(--bg3);
     }
     tbody tr {
       border-bottom: 1px solid var(--border);
@@ -263,137 +406,157 @@
       transition: background .1s;
     }
     tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: var(--bg3); }
-    tbody tr.active-row { background: rgba(88,166,255,.08); }
-    td { padding: 10px 16px; font-size: 13px; }
-    td.date-cell { font-weight: 600; color: var(--blue); white-space: nowrap; }
-    td.regime-cell-green { color: var(--green); font-weight: 600; }
-    td.regime-cell-red   { color: var(--red);   font-weight: 600; }
+    tbody tr:hover { background: var(--surface2); }
+    tbody tr.row-active { background: var(--accent-dim); }
+    td {
+      padding: 10px 16px;
+      font-size: 12px; font-weight: 500;
+      vertical-align: middle;
+    }
+    td.td-date {
+      font-size: 12px; font-weight: 700;
+      color: var(--accent); letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+    td.td-regime-green { color: var(--green); font-weight: 600; }
+    td.td-regime-red   { color: var(--red);   font-weight: 600; }
+
+    /* Pills in history */
     .pill {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 700;
-      margin: 1px 2px;
+      padding: 2px 7px; border-radius: 20px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .3px; margin: 1px 2px;
     }
-    .pill.buy1 { background: rgba(63,185,80,.15);  color: var(--green);  }
-    .pill.buy2 { background: rgba(88,166,255,.15); color: var(--blue);   }
-    .pill.buy3 { background: rgba(240,136,62,.15); color: var(--orange); }
+    .pill.buy1 { background: rgba(0,245,160,.12);  color: var(--green);  }
+    .pill.buy2 { background: rgba(96,165,250,.12); color: var(--blue);   }
+    .pill.buy3 { background: rgba(255,184,0,.12);  color: var(--yellow); }
 
-    /* ── Loading ── */
-    .loading {
+    /* ── EMPTY STATE ─────────────────────────────────────────────────────── */
+    .empty {
       text-align: center;
-      padding: 60px;
-      color: var(--muted);
+      padding: 56px 20px;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
     }
+    .empty-icon {
+      width: 56px; height: 56px;
+      background: var(--surface2);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin: 0 auto 16px;
+    }
+    .empty-title {
+      font-size: 15px; font-weight: 700;
+      letter-spacing: -0.3px; margin-bottom: 6px;
+    }
+    .empty-sub { color: var(--text2); font-size: 12px; }
+
+    /* ── LOADING ─────────────────────────────────────────────────────────── */
+    .loading { padding: 60px 20px; text-align: center; color: var(--text2); }
     .spinner {
-      width: 32px; height: 32px;
-      border: 3px solid var(--border);
-      border-top-color: var(--blue);
+      width: 28px; height: 28px; margin: 0 auto 14px;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--accent);
       border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: 0 auto 16px;
+      animation: spin .7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Footer ── */
+    /* ── FOOTER ──────────────────────────────────────────────────────────── */
     .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 11px;
-      padding: 32px 16px 24px;
+      text-align: center; color: var(--text3);
+      font-size: 10px; font-weight: 500;
+      letter-spacing: .3px;
+      padding: 32px 16px 20px;
       border-top: 1px solid var(--border);
       margin-top: 40px;
     }
 
-    /* ── Responsive ── */
-    @media (max-width: 600px) {
-      .header { padding: 0 12px; }
-      .regime-stats { gap: 12px; }
-      .history-wrap { font-size: 12px; }
-      td, thead th { padding: 8px 10px; }
+    /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .regime-stats { gap: 10px; }
+      .regime-stat-val { font-size: 14px; }
+      td.td-hide { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- Header -->
+<!-- ── HEADER ────────────────────────────────────────────────────────────── -->
 <header class="header">
   <a class="logo" href="#">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-            stroke="#58a6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    Agent<span>Q</span>.Daily
+    <div class="logo-icon">Q</div>
+    <span class="logo-text">Agent<span>Q</span> Signal</span>
   </a>
   <div class="header-right">
-    <div class="last-update">
+    <div class="live-dot">
       <div class="dot" id="statusDot"></div>
-      <span id="lastUpdateText">Loading...</span>
+      <span id="lastUpdateText" style="font-size:11px">...</span>
     </div>
+    <button class="theme-toggle" id="themeToggle" title="Chuyển giao diện" aria-label="Toggle theme"></button>
   </div>
 </header>
 
-<!-- Main -->
+<!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
 <main class="container">
   <div id="app">
     <div class="loading">
       <div class="spinner"></div>
-      <div>Đang tải dữ liệu...</div>
+      <div style="font-size:12px;font-weight:500">Đang tải dữ liệu tín hiệu...</div>
     </div>
   </div>
 </main>
 
 <footer class="footer">
-  AgentQ.Daily · Dữ liệu cập nhật lúc 19:00 ICT mỗi ngày giao dịch · Không phải khuyến nghị đầu tư
+  AgentQ Signal · Dữ liệu cập nhật lúc 19:00 ICT mỗi phiên giao dịch · Không phải khuyến nghị đầu tư
 </footer>
 
+<!-- ── SCRIPT ─────────────────────────────────────────────────────────────── -->
 <script>
-// ── Config ─────────────────────────────────────────────────────────────────────
+// ── Config ────────────────────────────────────────────────────────────────────
 const GITHUB_USER = "kienquyen";
 const GITHUB_REPO = "agentq-daily";
 const DATA_URL = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main/data.json`;
 
-// ── State ──────────────────────────────────────────────────────────────────────
-let allDates = [];      // ["2026-06-03", "2026-06-02", ...]  sorted desc
-let cache    = {};      // date -> signal data (all loaded from data.json)
-let current  = null;   // date string being shown
+// ── State ─────────────────────────────────────────────────────────────────────
+let allDates = [];
+let cache    = {};
+let current  = null;
+
+// ── Theme ─────────────────────────────────────────────────────────────────────
+const themeBtn = document.getElementById("themeToggle");
+let isDark = true;
+themeBtn.addEventListener("click", () => {
+  isDark = !isDark;
+  document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+});
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const WEEKDAYS = ["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"];
 
 function formatDate(d) {
   const dt = new Date(d + "T00:00:00");
-  return dt.toLocaleDateString("vi-VN", { day:"2-digit", month:"2-digit", year:"numeric" });
+  return dt.toLocaleDateString("vi-VN", {day:"2-digit",month:"2-digit",year:"numeric"});
 }
-function getWeekday(d) {
-  return WEEKDAYS[new Date(d + "T00:00:00").getDay()];
-}
+function getWeekday(d) { return WEEKDAYS[new Date(d+"T00:00:00").getDay()]; }
 function timeAgo(iso) {
-  const diff = Math.floor((Date.now() - new Date(iso)) / 60000);
-  if (diff < 1)   return "vừa xong";
-  if (diff < 60)  return `${diff} phút trước`;
-  if (diff < 1440) return `${Math.floor(diff/60)} giờ trước`;
-  return `${Math.floor(diff/1440)} ngày trước`;
+  const m = Math.floor((Date.now() - new Date(iso)) / 60000);
+  if (m < 1)    return "vừa cập nhật";
+  if (m < 60)   return `${m} phút trước`;
+  if (m < 1440) return `${Math.floor(m/60)} giờ trước`;
+  return `${Math.floor(m/1440)} ngày trước`;
+}
+function strClass(s) {
+  return s >= 75 ? "high" : s >= 60 ? "mid" : "low";
+}
+function strIcon(s) {
+  return s >= 85 ? "🔥" : s >= 75 ? "●" : s >= 60 ? "●" : "●";
 }
 
-function strengthClass(s) {
-  if (s >= 85) return "str-fire";
-  if (s >= 75) return "str-green";
-  if (s >= 60) return "str-yellow";
-  return "str-gray";
-}
-function strengthIcon(s) {
-  if (s >= 85) return "🔥";
-  if (s >= 75) return "🟢";
-  if (s >= 60) return "🟡";
-  return "⚪";
-}
-
-// ── Fetch ──────────────────────────────────────────────────────────────────────
+// ── Fetch ─────────────────────────────────────────────────────────────────────
 async function loadAllData() {
-  // 1 request duy nhất — không bị CDN cache problem
   try {
     const r = await fetch(`${DATA_URL}?t=${Date.now()}`);
     if (!r.ok) throw new Error(r.status);
@@ -404,101 +567,112 @@ async function loadAllData() {
     return [];
   }
 }
+async function fetchSignal(date) { return cache[date] || null; }
 
-async function fetchSignal(date) {
-  return cache[date] || null;
-}
-
-// ── Render ─────────────────────────────────────────────────────────────────────
-function renderRegimeBanner(regime) {
-  if (!regime) return `<div class="regime-banner gray"><div class="regime-label">📡 Regime: N/A</div></div>`;
-
+// ── Render: Regime Banner ────────────────────────────────────────────────────
+function renderRegime(regime) {
+  if (!regime) return `<div class="regime-banner gray"><div class="regime-left"><div class="regime-icon">📡</div><div><div class="regime-label">Không có dữ liệu Regime</div></div></div></div>`;
   const ok    = regime.ok;
   const cls   = ok ? "green" : "red";
-  const icon  = ok ? "🟢" : "🔴";
-  const label = ok ? "TREND — BUY1 ON" : "CHOP/RISK — BUY1 threshold tăng";
-  const adx   = regime.adx   != null ? regime.adx.toFixed(1)            : "—";
-  const roc5  = regime.roc5  != null ? (regime.roc5 >= 0 ? "+" : "") + regime.roc5.toFixed(1) + "%" : "—";
-  const dd20  = regime.dd20  != null ? (regime.dd20 >= 0 ? "+" : "") + regime.dd20.toFixed(1) + "%" : "—";
+  const icon  = ok ? "📈" : "⚠️";
+  const label = ok ? "Thị trường có xu hướng — BUY1 hoạt động" : "Thị trường lình xình — Nâng ngưỡng tín hiệu";
+  const sub   = ok ? "TREND MODE" : "CHOP / RISK MODE";
+  const fmtN  = (v, suffix="") => v != null ? (v>=0?"+":"")+v.toFixed(1)+suffix : "—";
+  const adxC  = (regime.adx||0) >= 25 ? "color:var(--green)" : "";
+  const rocC  = (regime.roc5||0) < -3  ? "color:var(--red)"   : "";
+  const ddC   = (regime.dd20||0) < -8  ? "color:var(--red)"   : "";
 
   return `
-    <div class="regime-banner ${cls}">
-      <div class="regime-label">${icon} &nbsp;${label}</div>
+    <div class="regime-banner ${cls} animate-in">
+      <div class="regime-left">
+        <div class="regime-icon ${cls}">${icon}</div>
+        <div>
+          <div class="regime-label">${label}</div>
+          <div class="regime-sub">${sub}</div>
+        </div>
+      </div>
       <div class="regime-stats">
         <div class="regime-stat">
-          <div class="regime-stat-val">${adx}</div>
+          <div class="regime-stat-val" style="${adxC}">${regime.adx!=null?regime.adx.toFixed(1):"—"}</div>
           <div class="regime-stat-name">ADX</div>
         </div>
         <div class="regime-stat">
-          <div class="regime-stat-val" style="color:${regime.roc5 < -3 ? 'var(--red)' : 'inherit'}">${roc5}</div>
-          <div class="regime-stat-name">ROC 5d</div>
+          <div class="regime-stat-val" style="${rocC}">${fmtN(regime.roc5,"%")}</div>
+          <div class="regime-stat-name">ROC 5D</div>
         </div>
         <div class="regime-stat">
-          <div class="regime-stat-val">${dd20}</div>
-          <div class="regime-stat-name">DD 20d</div>
+          <div class="regime-stat-val" style="${ddC}">${fmtN(regime.dd20,"%")}</div>
+          <div class="regime-stat-name">DD 20D</div>
         </div>
       </div>
     </div>`;
 }
 
-function renderSignalCard(s) {
-  const typeClass = s.signal_type.toLowerCase();
-  const strBar    = Math.min(100, s.strength);
-  const strCls    = strengthClass(s.strength);
-  const reasons   = (s.reasons || []).map(r => {
-    const sign = r.startsWith("+") ? `<strong style="color:var(--green)">${r.split(" ")[0]}</strong>` :
-                                      `<strong style="color:var(--red)">${r.split(" ")[0]}</strong>`;
-    return sign + " " + r.split(" ").slice(1).join(" ");
-  }).join(" · ");
+// ── Render: Signal Card ───────────────────────────────────────────────────────
+function renderCard(s) {
+  const type  = s.signal_type.toLowerCase();
+  const sc    = s.strength;
+  const scC   = strClass(sc);
+  const reasons = (s.reasons || []).map(r => {
+    const isPos = r.startsWith("+");
+    const cls   = isPos ? "reason-pos" : "reason-neg";
+    const parts = r.split(" ");
+    return `<span class="${cls}">${parts[0]}</span> ${parts.slice(1).join(" ")}`;
+  }).join(" &nbsp;·&nbsp; ");
 
   return `
-    <div class="signal-card">
+    <div class="signal-card ${type} animate-in">
+      <div class="accent-bar"></div>
       <div class="card-top">
-        <div class="symbol">${s.symbol}</div>
-        <div class="badge ${typeClass}">${s.signal_type}</div>
-      </div>
-      <div class="price">${s.entry_price.toFixed(1)} <span>k VND</span></div>
-      <div class="strength-row">
-        <div class="strength-bar-wrap">
-          <div class="strength-bar ${strCls}" style="width:${strBar}%"></div>
+        <div>
+          <div class="card-ticker">${s.symbol}</div>
+          <div class="card-price">${s.entry_price.toFixed(1)} <span style="color:var(--text3)">nghìn VND</span></div>
         </div>
-        <div class="strength-val">${strengthIcon(s.strength)} ${s.strength}</div>
+        <div class="card-right">
+          <div class="sig-badge ${type}">${s.signal_type}</div>
+        </div>
       </div>
-      <div class="reasons">${reasons || "—"}</div>
+      <div class="strength-row">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);min-width:40px">Score</div>
+        <div class="strength-track">
+          <div class="strength-fill ${scC}" style="width:${Math.min(sc,100)}%"></div>
+        </div>
+        <div class="strength-val ${scC}">${sc}</div>
+      </div>
+      ${reasons ? `<div class="card-reasons">${reasons}</div>` : ""}
     </div>`;
 }
 
+// ── Render: Signals section ───────────────────────────────────────────────────
 function renderSignals(data) {
-  if (!data || !data.signals || data.signals.length === 0) {
-    return `<div class="empty">
-      <div class="empty-icon">📭</div>
-      <div class="empty-title">Không có signal hôm nay</div>
-      <div>Thị trường chưa có setup phù hợp</div>
-    </div>`;
+  if (!data?.signals?.length) {
+    return `
+      <div class="empty animate-in">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">Không có tín hiệu hôm nay</div>
+        <div class="empty-sub">Thị trường chưa có setup phù hợp điều kiện lọc</div>
+      </div>`;
   }
-
-  const buy1 = data.signals.filter(s => s.signal_type === "BUY1");
-  const buy2 = data.signals.filter(s => s.signal_type === "BUY2");
-  const buy3 = data.signals.filter(s => s.signal_type === "BUY3");
-
+  const buy1 = data.signals.filter(s => s.signal_type==="BUY1");
+  const buy2 = data.signals.filter(s => s.signal_type==="BUY2");
+  const buy3 = data.signals.filter(s => s.signal_type==="BUY3");
   let html = "";
-  if (buy1.length) {
-    html += `<div class="section-title">🔼 BUY1 — Trend Following (${buy1.length})</div>
-             <div class="signal-grid">${buy1.map(renderSignalCard).join("")}</div>`;
-  }
-  if (buy2.length) {
-    html += `<div class="section-title">↩️ BUY2 — Mean Reversion (${buy2.length})</div>
-             <div class="signal-grid">${buy2.map(renderSignalCard).join("")}</div>`;
-  }
-  if (buy3.length) {
-    html += `<div class="section-title">⚡ BUY3 — Extreme Oversold (${buy3.length})</div>
-             <div class="signal-grid">${buy3.map(renderSignalCard).join("")}</div>`;
-  }
+
+  if (buy1.length) html += `
+    <div class="section-label">Xu hướng tăng BUY1 (${buy1.length})</div>
+    <div class="signal-grid">${buy1.map(renderCard).join("")}</div>`;
+  if (buy2.length) html += `
+    <div class="section-label">Hồi phục quá bán BUY2 (${buy2.length})</div>
+    <div class="signal-grid">${buy2.map(renderCard).join("")}</div>`;
+  if (buy3.length) html += `
+    <div class="section-label">Cực kỳ quá bán BUY3 (${buy3.length})</div>
+    <div class="signal-grid">${buy3.map(renderCard).join("")}</div>`;
   return html;
 }
 
-function renderHistoryTable() {
-  if (allDates.length === 0) return "";
+// ── Render: History table ─────────────────────────────────────────────────────
+function renderHistory() {
+  if (!allDates.length) return "";
   const rows = allDates.slice(0,30).map(d => {
     const data   = cache[d];
     const sigs   = data?.signals || [];
@@ -507,71 +681,64 @@ function renderHistoryTable() {
     const b3     = sigs.filter(s=>s.signal_type==="BUY3");
     const reg    = data?.regime;
     const regTxt = reg ? (reg.ok ? "🟢 TREND" : "🔴 CHOP") : "—";
-    const regCls = reg ? (reg.ok ? "regime-cell-green" : "regime-cell-red") : "";
+    const regCls = reg ? (reg.ok ? "td-regime-green" : "td-regime-red") : "";
     const pills  = [
       ...b1.map(s=>`<span class="pill buy1">${s.symbol} ${s.strength}</span>`),
       ...b2.map(s=>`<span class="pill buy2">${s.symbol} ${s.strength}</span>`),
       ...b3.map(s=>`<span class="pill buy3">${s.symbol} ${s.strength}</span>`),
-    ].join("") || '<span style="color:var(--muted)">—</span>';
-    const isActive = d === current ? ' class="active-row"' : '';
-
-    return `<tr${isActive} onclick="selectDate('${d}')">
-      <td class="date-cell">${formatDate(d)}</td>
-      <td class="${regCls}">${regTxt}</td>
-      <td>${b1.length + b2.length + b3.length}</td>
+    ].join("") || `<span style="color:var(--text3)">—</span>`;
+    const active = d === current ? " row-active" : "";
+    return `<tr class="${active}" onclick="selectDate('${d}')">
+      <td class="td-date">${formatDate(d)}</td>
+      <td class="${regCls} td-hide">${regTxt}</td>
+      <td style="font-weight:700;color:var(--text)">${b1.length+b2.length+b3.length}</td>
       <td>${pills}</td>
     </tr>`;
   }).join("");
 
   return `
-    <div class="history-wrap">
-      <div class="history-header">
-        <span>📆 Lịch sử 30 ngày gần nhất</span>
-        <span style="color:var(--muted);font-weight:400">${allDates.length} phiên</span>
+    <div class="section-label">Lịch sử tín hiệu</div>
+    <div class="history-wrap animate-in">
+      <div class="history-head">
+        <span class="history-head-title">30 phiên gần nhất</span>
+        <span class="history-count">${allDates.length} phiên</span>
       </div>
       <table>
-        <thead>
-          <tr>
-            <th>Ngày</th>
-            <th>Regime</th>
-            <th>Signals</th>
-            <th>Chi tiết</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th>Ngày</th>
+          <th class="td-hide">Regime</th>
+          <th>Tín hiệu</th>
+          <th>Chi tiết</th>
+        </tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
 }
 
+// ── Render full page ──────────────────────────────────────────────────────────
 async function renderPage(date, data) {
   const idx   = allDates.indexOf(date);
-  const hasPrev = idx < allDates.length - 1;
-  const hasNext = idx > 0;
-
   const html = `
     <div class="date-nav">
-      <button class="date-nav-btn" onclick="goDate(-1)" ${!hasPrev?"disabled":""}>← Trước</button>
-      <div class="current-date">
-        ${formatDate(date)}
-        <span class="weekday">${getWeekday(date)}</span>
+      <button class="nav-btn" onclick="goDate(-1)" ${idx>=allDates.length-1?"disabled":""}>← Trước</button>
+      <div class="date-display">
+        <div class="date-main">${formatDate(date)}</div>
+        <div class="date-sub">${getWeekday(date)}</div>
       </div>
-      <button class="date-nav-btn" onclick="goDate(1)" ${!hasNext?"disabled":""}>Sau →</button>
+      <button class="nav-btn" onclick="goDate(1)" ${idx<=0?"disabled":""}>Sau →</button>
     </div>
-
-    ${renderRegimeBanner(data?.regime)}
+    ${renderRegime(data?.regime)}
     ${renderSignals(data)}
-    ${renderHistoryTable()}
+    ${renderHistory()}
   `;
-
   document.getElementById("app").innerHTML = html;
 
-  // Update header status
-  const dot  = document.getElementById("statusDot");
-  const txt  = document.getElementById("lastUpdateText");
+  // Update header
+  const dot = document.getElementById("statusDot");
+  const txt = document.getElementById("lastUpdateText");
   if (data?.generated_at) {
-    const ago  = timeAgo(data.generated_at);
     const stale = (Date.now() - new Date(data.generated_at)) > 26*3600*1000;
-    txt.textContent = `Cập nhật ${ago}`;
+    txt.textContent = timeAgo(data.generated_at);
     dot.className   = stale ? "dot stale" : "dot";
   } else {
     txt.textContent = "Chưa có dữ liệu";
@@ -582,18 +749,16 @@ async function renderPage(date, data) {
 // ── Navigation ────────────────────────────────────────────────────────────────
 async function selectDate(date) {
   current = date;
-  document.getElementById("app").innerHTML = `<div class="loading"><div class="spinner"></div><div>Đang tải...</div></div>`;
   const data = await fetchSignal(date);
-  renderPage(date, data);
+  await renderPage(date, data);
+  // Scroll to top smoothly
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
-
 function goDate(dir) {
-  const idx = allDates.indexOf(current);
+  const idx  = allDates.indexOf(current);
   const next = allDates[idx - dir];
   if (next) selectDate(next);
 }
-
-// Keyboard navigation
 document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft")  goDate(-1);
   if (e.key === "ArrowRight") goDate(1);
@@ -601,22 +766,19 @@ document.addEventListener("keydown", e => {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
-  allDates = await loadAllData();  // load tất cả 1 lần từ data.json
-
-  if (allDates.length === 0) {
+  allDates = await loadAllData();
+  if (!allDates.length) {
     document.getElementById("app").innerHTML = `
-      <div class="empty">
+      <div class="empty animate-in">
         <div class="empty-icon">🚀</div>
         <div class="empty-title">Chưa có dữ liệu</div>
-        <div>Bot chưa chạy lần nào, hoặc repo chưa có file data.json.</div>
+        <div class="empty-sub">Bot chưa chạy lần nào, hoặc repo chưa có file data.json</div>
       </div>`;
-    document.getElementById("lastUpdateText").textContent = "Không có dữ liệu";
+    document.getElementById("lastUpdateText").textContent = "Chưa có dữ liệu";
     return;
   }
-
   await selectDate(allDates[0]);
 }
-
 init();
 </script>
 </body>
