@@ -352,9 +352,10 @@
 <script>
 // ── Config ─────────────────────────────────────────────────────────────────────
 const GITHUB_USER = "kienquyen";
-const GITHUB_REPO = "agentq-daily";
-const SIGNALS_PATH = "signals";
+const GITHUB_REPO = "vnstock_xno_prod";
+const SIGNALS_PATH = "web/signals";   // thư mục chứa JSON files trong repo
 const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${SIGNALS_PATH}`;
+const API_BASE = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${SIGNALS_PATH}`;
 
 // ── State ──────────────────────────────────────────────────────────────────────
 let allDates = [];      // ["2026-06-03", "2026-06-02", ...]  sorted desc
@@ -394,12 +395,14 @@ function strengthIcon(s) {
 
 // ── Fetch ──────────────────────────────────────────────────────────────────────
 async function fetchSignalList() {
-  // Dùng manifest.json thay vì GitHub API để tránh rate limit
   try {
-    const r = await fetch(`${RAW_BASE}/manifest.json?t=${Date.now()}`);
+    const r = await fetch(API_BASE);
     if (!r.ok) throw new Error(r.status);
-    const dates = await r.json();
-    return Array.isArray(dates) ? dates.sort((a,b) => b.localeCompare(a)) : [];
+    const files = await r.json();
+    return files
+      .filter(f => f.name.match(/^\d{4}-\d{2}-\d{2}\.json$/))
+      .map(f => f.name.replace(".json",""))
+      .sort((a,b) => b.localeCompare(a));
   } catch(e) {
     console.error("fetchSignalList error:", e);
     return [];
