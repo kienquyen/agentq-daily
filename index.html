@@ -1167,7 +1167,7 @@ async function renderAITab(model) {
 }
 
 // ── Password Protection ───────────────────────────────────────────────────────
-const PASSWORD_HASH = "agentq2024signal"; // Simple password check
+const PASSWORD_HASH = "agenqyourinvestmentmanager"; // Simple password check
 function handlePasswordSubmit(e) {
   e.preventDefault();
   const input = document.getElementById("passwordInput");
@@ -1175,7 +1175,7 @@ function handlePasswordSubmit(e) {
   const pwd = input.value.trim();
 
   // Simple check: store in localStorage if correct
-  if (pwd === PASSWORD_HASH || pwd === "agentq") {
+  if (pwd === PASSWORD_HASH) {
     localStorage.setItem("agentq_authenticated", "true");
     document.getElementById("passwordOverlay").classList.add("hidden");
     input.value = "";
