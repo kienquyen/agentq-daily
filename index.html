@@ -771,6 +771,7 @@ let current   = null;
 let activeTab = "rules";
 let v3aData   = null;
 let v5Data    = null;
+let lastDataHash = null; // Track for auto-refresh
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 const themeBtn = document.getElementById("themeToggle");
@@ -782,6 +783,17 @@ themeBtn.addEventListener("click", () => {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const WEEKDAYS = ["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"];
+
+// Simple hash function for comparing data
+function hashCode(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    const char = s.charCodeAt(i);
+    h = ((h << 5) - h) + char;
+    h = h & h; // Convert to 32bit integer
+  }
+  return Math.abs(h).toString(36);
+}
 
 function formatDate(d) {
   const dt = new Date(d + "T00:00:00");
@@ -1167,6 +1179,34 @@ async function renderAITab(model) {
   document.getElementById("app").innerHTML = html;
 }
 
+// ── Auto-Refresh ──────────────────────────────────────────────────────────────
+async function checkForUpdates() {
+  try {
+    const r = await fetch(`${DATA_URL}&t=${Date.now()}`);
+    if (!r.ok) return;
+    const data = await r.text();
+    const hash = hashCode(data);
+
+    if (lastDataHash && lastDataHash !== hash) {
+      // Data changed! Reload page
+      console.log("📡 Phát hiện signal mới — đang refresh...");
+      setTimeout(() => location.reload(), 1000);
+    } else if (!lastDataHash) {
+      lastDataHash = hash; // First load
+    }
+  } catch(e) {
+    console.debug("checkForUpdates error:", e.message);
+  }
+}
+
+// Start polling every 5 minutes
+function startAutoRefresh() {
+  // Initial check after 1 minute
+  setTimeout(checkForUpdates, 60000);
+  // Then every 5 minutes
+  setInterval(checkForUpdates, 5 * 60000);
+}
+
 // ── Password Protection ───────────────────────────────────────────────────────
 const PASSWORD_HASH = "agenqyourinvestmentmanager"; // Simple password check
 function handlePasswordSubmit(e) {
@@ -1210,6 +1250,7 @@ async function init() {
     return;
   }
   await selectDate(allDates[0]);
+  startAutoRefresh(); // Begin polling for updates
 }
 
 // Check password on load
