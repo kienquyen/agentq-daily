@@ -2,13 +2,13 @@
   "model": "v5",
   "name": "Outperform Market — V5",
   "description": "CD5 + value/momentum gate, SL -7% | Selective — im lặng khi không có setup",
-  "generated_at": "2026-06-05T01:37:59Z",
+  "generated_at": "2026-06-05T01:39:15Z",
   "stats": {
     "total": 11,
-    "win_rate": 0,
-    "avg_return": 0,
-    "best": 0,
-    "worst": 0,
+    "win_rate": 63.6,
+    "avg_return": 19.17,
+    "best": 72.83,
+    "worst": -0.6,
     "note": "WIN = outperform VNIndex (alpha > 0)"
   },
   "active_signals": [],
@@ -23,9 +23,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 1.6,
+      "alpha": -5.47,
+      "is_win": false,
       "sl_pct": -7.0
     },
     {
@@ -38,9 +38,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": -0.6,
+      "alpha": -11.33,
+      "is_win": false,
       "sl_pct": -7.0
     },
     {
@@ -53,9 +53,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 4.22,
+      "alpha": -9.32,
+      "is_win": false,
       "sl_pct": -7.0
     },
     {
@@ -68,9 +68,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 3.31,
+      "alpha": -1.76,
+      "is_win": false,
       "sl_pct": -7.0
     },
     {
@@ -83,9 +83,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 12.12,
+      "alpha": 10.78,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -98,9 +98,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 14.65,
+      "alpha": 24.59,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -113,9 +113,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 13.47,
+      "alpha": 27.93,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -128,9 +128,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 14.99,
+      "alpha": 24.65,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -143,9 +143,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 32.86,
+      "alpha": 36.37,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -158,9 +158,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 41.42,
+      "alpha": 48.96,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -173,9 +173,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 72.83,
+      "alpha": 71.98,
+      "is_win": true,
       "sl_pct": -7.0
     }
   ],
@@ -190,9 +190,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 1.6,
+      "alpha": -5.47,
+      "is_win": false,
       "sl_pct": -7.0
     },
     {
@@ -205,9 +205,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": -0.6,
+      "alpha": -11.33,
+      "is_win": false,
       "sl_pct": -7.0
     },
     {
@@ -220,9 +220,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 4.22,
+      "alpha": -9.32,
+      "is_win": false,
       "sl_pct": -7.0
     },
     {
@@ -235,9 +235,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 3.31,
+      "alpha": -1.76,
+      "is_win": false,
       "sl_pct": -7.0
     },
     {
@@ -250,9 +250,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 12.12,
+      "alpha": 10.78,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -265,9 +265,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 14.65,
+      "alpha": 24.59,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -280,9 +280,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 13.47,
+      "alpha": 27.93,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -295,9 +295,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 14.99,
+      "alpha": 24.65,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -310,9 +310,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 32.86,
+      "alpha": 36.37,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -325,9 +325,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 41.42,
+      "alpha": 48.96,
+      "is_win": true,
       "sl_pct": -7.0
     },
     {
@@ -340,9 +340,9 @@
       "status": "completed",
       "exit_date": null,
       "exit_price": null,
-      "actual_return": null,
-      "alpha": null,
-      "is_win": null,
+      "actual_return": 72.83,
+      "alpha": 71.98,
+      "is_win": true,
       "sl_pct": -7.0
     }
   ]
