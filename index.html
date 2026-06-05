@@ -1038,19 +1038,25 @@ async function renderAITab(model) {
 
   // History table
   if (history.length) {
+    const hasAlpha = history.some(s => s.alpha != null);
     const rows = history.map(s => {
       const isPending = s.status !== "completed";
       const status = isPending ? "pending" : (s.is_win ? "win" : "loss");
       const lbl    = isPending ? "MỞ" : (s.is_win ? "THẮNG" : "THUA");
+      const alphaCell = hasAlpha
+        ? `<td>${fmtReturn(s.alpha)}</td>`
+        : "";
       return `<tr>
         <td class="td-date">${s.signal_date}</td>
         <td style="font-weight:700">${s.symbol}</td>
         <td style="color:var(--text2)">${fmtPrice(s.entry_price)}</td>
         <td><span class="status-badge ${status}">${lbl}</span></td>
         <td>${fmtReturn(s.actual_return)}</td>
+        ${alphaCell}
         <td class="td-hide" style="color:var(--text3);font-size:11px;text-transform:uppercase">${s.regime||"—"}</td>
       </tr>`;
     }).join("");
+    const alphaHeader = hasAlpha ? `<th>Alpha</th>` : "";
     html += `<div class="section-label">Lịch sử giao dịch (20 gần nhất)</div>
       <div class="history-wrap animate-in">
         <div class="history-head">
@@ -1058,7 +1064,7 @@ async function renderAITab(model) {
           <span class="history-count">${data.stats?.total||0} tổng</span>
         </div>
         <table>
-          <thead><tr><th>Ngày</th><th>Mã</th><th>Giá vào</th><th>Kết quả</th><th>Return</th><th class="td-hide">Regime</th></tr></thead>
+          <thead><tr><th>Ngày</th><th>Mã</th><th>Giá vào</th><th>Kết quả</th><th>Return</th>${alphaHeader}<th class="td-hide">Regime</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>`;
