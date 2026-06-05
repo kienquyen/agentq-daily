@@ -618,9 +618,102 @@
       .stat-strip { grid-template-columns: repeat(2, 1fr); }
       .ai-metrics { grid-template-columns: repeat(2, 1fr); }
     }
+
+    /* ── PASSWORD PROTECTION ──────────────────────────────────────────────── */
+    .password-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(15,17,23,0.98), rgba(20,25,35,0.98));
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; backdrop-filter: blur(10px);
+    }
+    .password-overlay.hidden { display: none; }
+    .password-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      width: 100%; max-width: 360px;
+      box-shadow: var(--shadow);
+      animation: slideUp 0.3s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .password-header {
+      text-align: center; margin-bottom: 24px;
+    }
+    .password-header-icon {
+      font-size: 48px; margin-bottom: 12px;
+    }
+    .password-header h2 {
+      font-size: 18px; font-weight: 700; color: var(--text);
+      margin-bottom: 8px;
+    }
+    .password-header p {
+      font-size: 13px; color: var(--text2);
+    }
+    .password-form {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .password-form input {
+      padding: 10px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      transition: border-color 0.2s;
+    }
+    .password-form input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-dim);
+    }
+    .password-form button {
+      padding: 10px 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .password-form button:hover {
+      background: #6B50F0;
+    }
+    .password-form button:disabled {
+      background: var(--text3);
+      cursor: not-allowed;
+    }
+    .password-error {
+      color: var(--red);
+      font-size: 12px;
+      text-align: center;
+      margin-top: -8px;
+    }
   </style>
 </head>
 <body>
+
+<!-- ── PASSWORD PROTECTION ──────────────────────────────────────────────── -->
+<div class="password-overlay" id="passwordOverlay">
+  <div class="password-card">
+    <div class="password-header">
+      <div class="password-header-icon">🔐</div>
+      <h2>AgentQ Signal</h2>
+      <p>Nhập mật khẩu để xem dữ liệu</p>
+    </div>
+    <form class="password-form" onsubmit="handlePasswordSubmit(event)">
+      <input type="password" id="passwordInput" placeholder="Mật khẩu..." autocomplete="off" />
+      <div class="password-error" id="passwordError" style="display:none">Mật khẩu không đúng</div>
+      <button type="submit">Truy cập</button>
+    </form>
+  </div>
+</div>
 
 <!-- ── HEADER ────────────────────────────────────────────────────────────── -->
 <header class="header">
@@ -1073,6 +1166,35 @@ async function renderAITab(model) {
   document.getElementById("app").innerHTML = html;
 }
 
+// ── Password Protection ───────────────────────────────────────────────────────
+const PASSWORD_HASH = "agentq2024signal"; // Simple password check
+function handlePasswordSubmit(e) {
+  e.preventDefault();
+  const input = document.getElementById("passwordInput");
+  const error = document.getElementById("passwordError");
+  const pwd = input.value.trim();
+
+  // Simple check: store in localStorage if correct
+  if (pwd === PASSWORD_HASH || pwd === "agentq") {
+    localStorage.setItem("agentq_authenticated", "true");
+    document.getElementById("passwordOverlay").classList.add("hidden");
+    input.value = "";
+    init();
+  } else {
+    error.style.display = "block";
+    input.value = "";
+    setTimeout(() => { error.style.display = "none"; }, 3000);
+  }
+}
+
+function checkPasswordProtection() {
+  if (localStorage.getItem("agentq_authenticated") === "true") {
+    document.getElementById("passwordOverlay").classList.add("hidden");
+    return true;
+  }
+  return false;
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
   allDates = await loadAllData();
@@ -1088,7 +1210,13 @@ async function init() {
   }
   await selectDate(allDates[0]);
 }
-init();
+
+// Check password on load
+if (!checkPasswordProtection()) {
+  document.getElementById("passwordInput").focus();
+} else {
+  init();
+}
 </script>
 </body>
 </html>
