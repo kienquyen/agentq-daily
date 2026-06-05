@@ -1199,12 +1199,12 @@ async function checkForUpdates() {
   }
 }
 
-// Start polling every 5 minutes
+// Start polling every 60 minutes
 function startAutoRefresh() {
   // Initial check after 1 minute
   setTimeout(checkForUpdates, 60000);
-  // Then every 5 minutes
-  setInterval(checkForUpdates, 5 * 60000);
+  // Then every 60 minutes
+  setInterval(checkForUpdates, 60 * 60000);
 }
 
 // ── Password Protection ───────────────────────────────────────────────────────
