@@ -474,11 +474,149 @@
       margin-top: 40px;
     }
 
+    /* ── TAB BAR ─────────────────────────────────────────────────────────── */
+    .tab-bar {
+      position: sticky; top: 56px; z-index: 90;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex; overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 16px;
+    }
+    [data-theme="light"] .tab-bar { background: rgba(240,243,250,0.95); }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 13px; font-weight: 500;
+      color: var(--text2);
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover  { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── AI MODEL CARDS ─────────────────────────────────────────────────── */
+    .model-header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .model-title {
+      font-size: 15px; font-weight: 700;
+      letter-spacing: -0.3px; margin-bottom: 4px;
+    }
+    .model-desc { font-size: 11px; color: var(--text2); margin-bottom: 14px; }
+    .stat-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; border-radius: var(--radius-sm);
+      overflow: hidden; border: 1px solid var(--border);
+    }
+    .stat-cell {
+      background: var(--surface2);
+      padding: 12px 10px; text-align: center;
+    }
+    .stat-val {
+      font-size: 18px; font-weight: 700;
+      letter-spacing: -0.4px; line-height: 1.2;
+    }
+    .stat-lbl {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .7px;
+      color: var(--text3); margin-top: 2px;
+    }
+
+    /* AI Signal row cards */
+    .ai-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      position: relative; overflow: hidden;
+      transition: border-color .15s;
+    }
+    .ai-card::before {
+      content: ""; position: absolute;
+      top:0; left:0; right:0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(123,97,255,.5), transparent);
+    }
+    .ai-card.win::before  { background: linear-gradient(90deg, transparent, rgba(0,245,160,.5), transparent); }
+    .ai-card.loss::before { background: linear-gradient(90deg, transparent, rgba(255,77,109,.5), transparent); }
+    .ai-card.pending::before { background: linear-gradient(90deg, transparent, rgba(123,97,255,.5), transparent); }
+    .ai-card:hover { border-color: rgba(123,97,255,.3); }
+
+    .ai-card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 10px;
+    }
+    .ai-ticker { font-size: 18px; font-weight: 700; letter-spacing: -0.4px; }
+    .ai-date   { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+    .status-badge {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      padding: 3px 9px; border-radius: 20px;
+    }
+    .status-badge.win     { background: rgba(0,245,160,.12); color: var(--green);  border: 1px solid rgba(0,245,160,.25); }
+    .status-badge.loss    { background: rgba(255,77,109,.10); color: var(--red);    border: 1px solid rgba(255,77,109,.22); }
+    .status-badge.pending { background: rgba(123,97,255,.12); color: var(--accent); border: 1px solid rgba(123,97,255,.22); }
+
+    .ai-metrics {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .ai-metric { text-align: center; }
+    .ai-metric-val {
+      font-size: 13px; font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .ai-metric-lbl {
+      font-size: 9px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .6px;
+      color: var(--text3); margin-top: 1px;
+    }
+    .return-pos { color: var(--green); }
+    .return-neg { color: var(--red); }
+    .return-nil { color: var(--text2); }
+
+    /* AI insight glow card */
+    .ai-insight {
+      background: linear-gradient(135deg, rgba(123,97,255,.1), rgba(123,97,255,.04));
+      border: 1px solid rgba(123,97,255,.25);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex; gap: 12px; align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .ai-insight-icon {
+      width: 32px; height: 32px; flex-shrink: 0;
+      background: var(--accent-dim); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      animation: glow-pulse 3s infinite;
+    }
+    @keyframes glow-pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(123,97,255,0); }
+      50%      { box-shadow: 0 0 12px rgba(123,97,255,.35); }
+    }
+    .ai-insight-text { font-size: 12px; line-height: 1.6; color: var(--text2); }
+    .ai-insight-text strong { color: var(--accent); }
+
     /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
     @media (max-width: 480px) {
       .regime-stats { gap: 10px; }
       .regime-stat-val { font-size: 14px; }
       td.td-hide { display: none; }
+      .stat-strip { grid-template-columns: repeat(2, 1fr); }
+      .ai-metrics { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -499,6 +637,13 @@
   </div>
 </header>
 
+<!-- ── TAB BAR ────────────────────────────────────────────────────────────── -->
+<nav class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('rules')"  id="tab-rules">📊 Tín hiệu Rule-based</button>
+  <button class="tab-btn"        onclick="switchTab('v3a')"    id="tab-v3a"  >🤖 AI v3a — 20D Hold</button>
+  <button class="tab-btn"        onclick="switchTab('v5')"     id="tab-v5"   >🚀 Outperform — V5</button>
+</nav>
+
 <!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
 <main class="container">
   <div id="app">
@@ -518,12 +663,20 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 const GITHUB_USER = "kienquyen";
 const GITHUB_REPO = "agentq-daily";
-const DATA_URL = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main/data.json`;
+// Local dev: dùng relative path; Production: dùng CDN
+const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const CDN      = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main`;
+const DATA_URL  = IS_LOCAL ? "./data.json"     : `${CDN}/data.json`;
+const V3A_URL   = IS_LOCAL ? "./v3a_data.json" : `${CDN}/v3a_data.json`;
+const V5_URL    = IS_LOCAL ? "./v5_data.json"  : `${CDN}/v5_data.json`;
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let allDates = [];
-let cache    = {};
-let current  = null;
+let allDates  = [];
+let cache     = {};
+let current   = null;
+let activeTab = "rules";
+let v3aData   = null;
+let v5Data    = null;
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 const themeBtn = document.getElementById("themeToggle");
@@ -763,6 +916,156 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft")  goDate(-1);
   if (e.key === "ArrowRight") goDate(1);
 });
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+// ── Tab switching ─────────────────────────────────────────────────────────────
+async function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById(`tab-${tab}`).classList.add("active");
+  if (tab === "rules") {
+    if (current) await renderPage(current, await fetchSignal(current));
+    else if (allDates.length) await selectDate(allDates[0]);
+  } else {
+    await renderAITab(tab);
+  }
+}
+
+// ── AI helpers ────────────────────────────────────────────────────────────────
+function fmtPrice(p) {
+  if (p == null) return "—";
+  return p >= 1000 ? (p/1000).toFixed(1)+"k" : p.toLocaleString("vi-VN");
+}
+function fmtReturn(r) {
+  if (r == null) return `<span style="color:var(--text3)">—</span>`;
+  const cls = r > 0 ? "color:var(--green)" : r < 0 ? "color:var(--red)" : "color:var(--text2)";
+  return `<span style="${cls};font-weight:700">${r > 0 ? "+" : ""}${r.toFixed(2)}%</span>`;
+}
+function fmtProb(p) { return p != null ? (p*100).toFixed(1)+"%" : "—"; }
+
+function renderStatStrip(st) {
+  if (!st) return "";
+  const wr  = st.win_rate ?? 0;
+  const avg = st.avg_return ?? 0;
+  const wrColor  = wr >= 60 ? "var(--green)" : wr >= 50 ? "var(--text)" : "var(--red)";
+  const avgColor = avg > 0 ? "var(--green)" : avg < 0 ? "var(--red)" : "var(--text)";
+  return `<div class="stat-strip">
+    <div class="stat-cell"><div class="stat-val">${st.total??0}</div><div class="stat-lbl">Tổng lệnh</div></div>
+    <div class="stat-cell"><div class="stat-val" style="color:${wrColor}">${wr}%</div><div class="stat-lbl">Win Rate</div></div>
+    <div class="stat-cell"><div class="stat-val" style="color:${avgColor}">${avg>0?"+":""}${avg}%</div><div class="stat-lbl">Avg Return</div></div>
+    <div class="stat-cell"><div class="stat-val" style="color:var(--green)">+${st.best??0}%</div><div class="stat-lbl">Best Trade</div></div>
+  </div>`;
+}
+
+function renderAICard(s) {
+  const isPending = s.status !== "completed";
+  const status    = isPending ? "pending" : (s.is_win ? "win" : "loss");
+  const lbl       = isPending ? "ĐANG MỞ" : (s.is_win ? "THẮNG" : "THUA");
+  const regime    = s.regime ? `<span style="font-size:10px;color:var(--text3);margin-left:6px;text-transform:uppercase">${s.regime}</span>` : "";
+  return `<div class="ai-card ${status} animate-in">
+    <div class="ai-card-top">
+      <div>
+        <div class="ai-ticker">${s.symbol}${regime}</div>
+        <div class="ai-date">Vào ${s.signal_date||"—"}</div>
+      </div>
+      <span class="status-badge ${status}">${lbl}</span>
+    </div>
+    <div class="ai-metrics">
+      <div class="ai-metric"><div class="ai-metric-val">${fmtPrice(s.entry_price)}</div><div class="ai-metric-lbl">GIÁ VÀO</div></div>
+      <div class="ai-metric"><div class="ai-metric-val" style="color:var(--accent)">${fmtProb(s.prob)}</div><div class="ai-metric-lbl">XÁC SUẤT</div></div>
+      <div class="ai-metric"><div class="ai-metric-val">${s.exit_date||"—"}</div><div class="ai-metric-lbl">NGÀY RA</div></div>
+      <div class="ai-metric"><div class="ai-metric-val">${fmtReturn(s.actual_return)}</div><div class="ai-metric-lbl">RETURN</div></div>
+    </div>
+  </div>`;
+}
+
+async function renderAITab(model) {
+  document.getElementById("app").innerHTML = `<div class="loading"><div class="spinner"></div><div style="font-size:12px">Đang tải dữ liệu AI...</div></div>`;
+
+  // Load data
+  if (model === "v3a" && !v3aData) {
+    try { const r = await fetch(`${V3A_URL}?t=${Date.now()}`); v3aData = await r.json(); } catch(e){}
+  }
+  if (model === "v5" && !v5Data) {
+    try { const r = await fetch(`${V5_URL}?t=${Date.now()}`); v5Data = await r.json(); } catch(e){}
+  }
+  const data = model === "v3a" ? v3aData : v5Data;
+
+  if (!data) {
+    document.getElementById("app").innerHTML = `<div class="empty animate-in"><div class="empty-icon">⚠️</div><div class="empty-title">Không tải được dữ liệu</div><div class="empty-sub">Chạy export_ai_signals.py để cập nhật</div></div>`;
+    return;
+  }
+
+  if (data.generated_at) {
+    document.getElementById("lastUpdateText").textContent = timeAgo(data.generated_at);
+    document.getElementById("statusDot").className = "dot";
+  }
+
+  const active  = data.active_signals  || [];
+  const history = data.recent_history  || [];
+  const daily   = data.daily_signals   || [];
+
+  let html = `<div class="model-header animate-in">
+    <div class="ai-insight">
+      <div class="ai-insight-icon">🤖</div>
+      <div class="ai-insight-text"><strong>${data.name}</strong><br>${data.description}</div>
+    </div>
+    ${renderStatStrip(data.stats)}
+  </div>`;
+
+  // Active positions
+  html += `<div class="section-label">Vị thế đang mở (${active.length})</div>`;
+  if (active.length) {
+    html += `<div class="signal-grid">${active.map(renderAICard).join("")}</div>`;
+  } else {
+    html += `<div class="empty animate-in" style="padding:20px 16px"><div class="empty-sub">Không có vị thế mở — chờ signal tiếp theo từ model</div></div>`;
+  }
+
+  // Daily signals (v3a shadow signals)
+  if (daily.length) {
+    html += `<div class="section-label">Các phiên model có tín hiệu</div>`;
+    for (const day of daily.slice(0,5)) {
+      const cutoff = day.prob_cutoff ? ` · cutoff ${(day.prob_cutoff*100).toFixed(0)}%` : "";
+      html += `<div style="font-size:11px;color:var(--text2);margin:8px 0 6px;font-weight:600">${day.date} — ${day.n_signals} tín hiệu${cutoff}</div>
+               <div class="signal-grid">${(day.signals||[]).map(s => renderAICard({
+                  symbol: s.symbol, signal_date: day.date,
+                  entry_price: s.close_vnd||null, prob: s.prob,
+                  regime: day.regime||"", status: "completed",
+                  is_win: null, actual_return: null, exit_date: null
+               })).join("")}</div>`;
+    }
+  }
+
+  // History table
+  if (history.length) {
+    const rows = history.map(s => {
+      const isPending = s.status !== "completed";
+      const status = isPending ? "pending" : (s.is_win ? "win" : "loss");
+      const lbl    = isPending ? "MỞ" : (s.is_win ? "THẮNG" : "THUA");
+      return `<tr>
+        <td class="td-date">${s.signal_date}</td>
+        <td style="font-weight:700">${s.symbol}</td>
+        <td style="color:var(--text2)">${fmtPrice(s.entry_price)}</td>
+        <td><span class="status-badge ${status}">${lbl}</span></td>
+        <td>${fmtReturn(s.actual_return)}</td>
+        <td class="td-hide" style="color:var(--text3);font-size:11px;text-transform:uppercase">${s.regime||"—"}</td>
+      </tr>`;
+    }).join("");
+    html += `<div class="section-label">Lịch sử giao dịch (20 gần nhất)</div>
+      <div class="history-wrap animate-in">
+        <div class="history-head">
+          <span class="history-head-title">Giao dịch đã hoàn tất</span>
+          <span class="history-count">${data.stats?.total||0} tổng</span>
+        </div>
+        <table>
+          <thead><tr><th>Ngày</th><th>Mã</th><th>Giá vào</th><th>Kết quả</th><th>Return</th><th class="td-hide">Regime</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  document.getElementById("app").innerHTML = html;
+}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
