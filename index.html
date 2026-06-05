@@ -756,12 +756,13 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 const GITHUB_USER = "kienquyen";
 const GITHUB_REPO = "agentq-daily";
+const CACHE_BUST = "v20260605"; // Invalidate CDN cache
 // Local dev: dùng relative path; Production: dùng CDN
 const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
 const CDN      = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main`;
-const DATA_URL  = IS_LOCAL ? "./data.json"     : `${CDN}/data.json`;
-const V3A_URL   = IS_LOCAL ? "./v3a_data.json" : `${CDN}/v3a_data.json`;
-const V5_URL    = IS_LOCAL ? "./v5_data.json"  : `${CDN}/v5_data.json`;
+const DATA_URL  = IS_LOCAL ? "./data.json"     : `${CDN}/data.json?cb=${CACHE_BUST}`;
+const V3A_URL   = IS_LOCAL ? "./v3a_data.json" : `${CDN}/v3a_data.json?cb=${CACHE_BUST}`;
+const V5_URL    = IS_LOCAL ? "./v5_data.json"  : `${CDN}/v5_data.json?cb=${CACHE_BUST}`;
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let allDates  = [];
