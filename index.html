@@ -237,6 +237,31 @@
       color: var(--text3); margin-top: 1px;
     }
 
+    /* 4-Layer Regime Breakdown */
+    .regime-breakdown {
+      display: flex; gap: 12px; flex: 1; min-width: 280px;
+      padding-left: 10px; justify-content: flex-start;
+    }
+    .breakdown-item {
+      text-align: center; flex: 1;
+    }
+    .breakdown-val {
+      font-size: 14px; font-weight: 700; letter-spacing: -0.2px;
+      margin-bottom: 2px;
+    }
+    .breakdown-name {
+      font-size: 9px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .6px;
+      color: var(--text3);
+    }
+
+    /* Regime Score */
+    .regime-score {
+      font-size: 10px; color: var(--text2);
+      font-weight: 600; margin-top: 2px;
+      letter-spacing: .4px;
+    }
+
     /* ── SECTION HEADER ──────────────────────────────────────────────────── */
     .section-label {
       font-size: 10px; font-weight: 700;
@@ -327,6 +352,17 @@
     .sig-badge.buy3 {
       background: rgba(255,184,0,.12); color: var(--yellow);
       border: 1px solid rgba(255,184,0,.25);
+    }
+
+    /* Hold period badge */
+    .hold-badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 600;
+      padding: 4px 8px; border-radius: 4px;
+      background: rgba(192,132,252,.12); color: var(--purple);
+      border: 1px solid rgba(192,132,252,.25);
+      margin-left: 6px;
+      white-space: nowrap;
     }
 
     /* Strength */
@@ -739,39 +775,82 @@ async function fetchSignal(date) { return cache[date] || null; }
 // ── Render: Regime Banner ────────────────────────────────────────────────────
 function renderRegime(regime) {
   if (!regime) return `<div class="regime-banner gray"><div class="regime-left"><div class="regime-icon">📡</div><div><div class="regime-label">Không có dữ liệu Regime</div></div></div></div>`;
-  const ok    = regime.ok;
-  const cls   = ok ? "green" : "red";
-  const icon  = ok ? "📈" : "⚠️";
-  const label = ok ? "Thị trường có xu hướng — BUY1 hoạt động" : "Thị trường lình xình — Nâng ngưỡng tín hiệu";
-  const sub   = ok ? "TREND MODE" : "CHOP / RISK MODE";
-  const fmtN  = (v, suffix="") => v != null ? (v>=0?"+":"")+v.toFixed(1)+suffix : "—";
-  const adxC  = (regime.adx||0) >= 25 ? "color:var(--green)" : "";
-  const rocC  = (regime.roc5||0) < -3  ? "color:var(--red)"   : "";
-  const ddC   = (regime.dd20||0) < -8  ? "color:var(--red)"   : "";
+
+  // Parse detail string to extract 4-layer breakdown
+  const detail = regime.detail || "";
+  const lines = detail.split("\n");
+
+  // Extract regime icon and label (e.g., "🟢 TREND" or "🔴 GIẢM")
+  const regimeLine = lines[0] || "";
+  const regimeMatch = regimeLine.match(/([🟢🔴🟡]) (\*\*)?([^*\n]+)(\*\*)?/);
+  const regimeIcon = regimeMatch ? regimeMatch[1] : (regime.ok ? "🟢" : "🔴");
+  const regimeLabel = regimeMatch ? regimeMatch[3].trim() : (regime.ok ? "TREND" : "CHOP");
+
+  // Extract score and regime classification (e.g., "🔴 **GIẢM** (Score 24/100)")
+  const scoreLine = lines[1] || "";
+  const scoreMatch = scoreLine.match(/Score (\d+)/);
+  const score = scoreMatch ? parseInt(scoreMatch[1]) : 50;
+
+  // Determine regime class for styling
+  let regimeCls = "ranging";
+  if (score >= 75) regimeCls = "strong-bull";
+  else if (score >= 60) regimeCls = "bull";
+  else if (score >= 45) regimeCls = "recovery";
+  else if (score >= 30) regimeCls = "ranging";
+  else regimeCls = "bear-risk";
+
+  // Extract 4-layer breakdown (e.g., "Trend 0.28 · Breadth 0.23 · Flow 0.50 · Vol 0.52")
+  const breakdownLine = lines[2] || "";
+  const breakdownMatch = breakdownLine.match(/Trend ([\d.]+) · Breadth ([\d.]+) · Flow ([\d.]+) · Vol ([\d.]+)/);
+
+  let breakdownHtml = "";
+  if (breakdownMatch) {
+    const trend = parseFloat(breakdownMatch[1]);
+    const breadth = parseFloat(breakdownMatch[2]);
+    const flow = parseFloat(breakdownMatch[3]);
+    const vol = parseFloat(breakdownMatch[4]);
+
+    const scoreToColor = (s) => {
+      if (s >= 0.75) return "color:var(--green)";
+      if (s >= 0.6) return "color:var(--blue)";
+      if (s >= 0.45) return "color:var(--purple)";
+      return "color:var(--yellow)";
+    };
+
+    breakdownHtml = `
+      <div class="regime-breakdown">
+        <div class="breakdown-item">
+          <div class="breakdown-val" style="${scoreToColor(trend)}">${(trend*100).toFixed(0)}</div>
+          <div class="breakdown-name">Trend</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-val" style="${scoreToColor(breadth)}">${(breadth*100).toFixed(0)}</div>
+          <div class="breakdown-name">Breadth</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-val" style="${scoreToColor(flow)}">${(flow*100).toFixed(0)}</div>
+          <div class="breakdown-name">Flow</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-val" style="${scoreToColor(vol)}">${(vol*100).toFixed(0)}</div>
+          <div class="breakdown-name">Vol</div>
+        </div>
+      </div>`;
+  }
+
+  const ok = regime.ok;
+  const cls = ok ? "green" : "red";
 
   return `
-    <div class="regime-banner ${cls} animate-in">
+    <div class="regime-banner ${cls} regime-${regimeCls} animate-in">
       <div class="regime-left">
-        <div class="regime-icon ${cls}">${icon}</div>
+        <div class="regime-icon">${regimeIcon}</div>
         <div>
-          <div class="regime-label">${label}</div>
-          <div class="regime-sub">${sub}</div>
+          <div class="regime-label">${regimeLabel}</div>
+          <div class="regime-score">Score: ${score}/100</div>
         </div>
       </div>
-      <div class="regime-stats">
-        <div class="regime-stat">
-          <div class="regime-stat-val" style="${adxC}">${regime.adx!=null?regime.adx.toFixed(1):"—"}</div>
-          <div class="regime-stat-name">ADX</div>
-        </div>
-        <div class="regime-stat">
-          <div class="regime-stat-val" style="${rocC}">${fmtN(regime.roc5,"%")}</div>
-          <div class="regime-stat-name">ROC 5D</div>
-        </div>
-        <div class="regime-stat">
-          <div class="regime-stat-val" style="${ddC}">${fmtN(regime.dd20,"%")}</div>
-          <div class="regime-stat-name">DD 20D</div>
-        </div>
-      </div>
+      ${breakdownHtml}
     </div>`;
 }
 
@@ -780,6 +859,7 @@ function renderCard(s) {
   const type  = s.signal_type.toLowerCase();
   const sc    = s.strength;
   const scC   = strClass(sc);
+  const holdDays = s.hold_days || 15;  // Default 15d if not specified
   const reasons = (s.reasons || []).map(r => {
     const isPos = r.startsWith("+");
     const cls   = isPos ? "reason-pos" : "reason-neg";
@@ -793,10 +873,11 @@ function renderCard(s) {
       <div class="card-top">
         <div>
           <div class="card-ticker">${s.symbol}</div>
-          <div class="card-price">${s.entry_price.toFixed(1)} <span style="color:var(--text3)">nghìn VND</span></div>
+          <div class="card-price">${s.entry_price.toFixed(1)} <span style="color:var(--text3)">k VND</span></div>
         </div>
         <div class="card-right">
           <div class="sig-badge ${type}">${s.signal_type}</div>
+          <div class="hold-badge" title="Recommended hold period">${holdDays}d</div>
         </div>
       </div>
       <div class="strength-row">

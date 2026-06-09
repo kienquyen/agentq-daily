@@ -1,19 +1,19 @@
 {
   "date": "2026-06-05",
-  "generated_at": "2026-06-05T16:56:04Z",
+  "generated_at": "2026-06-09T13:38:46Z",
   "regime": {
     "ok": true,
-    "adx": 27.16852716099266,
+    "adx": 27.16942514723993,
     "roc5": -1.3195670489243305,
     "dd20": -4.8734940070663235,
-    "detail": "🟢 TREND  ADX=27.2  ROC5d=-1.3%  DD20d=-4.9%  →  BUY1=ON"
+    "detail": "🟢 TREND  ADX=27.2  ROC5d=-1.3%  DD20d=-4.9%  →  BUY1=ON\n🟡 **ĐI NGANG** (Score 33/100)\nTrend 0.39 · Breadth 0.47 · Flow 0.50 · Vol 0.73\nOverrides: dist_days=10 (CRITICAL) ×0.70"
   },
   "signals": [
     {
       "symbol": "FRT",
       "signal_type": "BUY2",
       "entry_price": 124.8,
-      "strength": 50,
+      "strength": 56,
       "reasons": [
         "+RSI2 OS (11.4)",
         "+RSI14 Pocket (5.9)",
@@ -21,13 +21,13 @@
       ]
     },
     {
-      "symbol": "NVL",
+      "symbol": "ANV",
       "signal_type": "BUY2",
-      "entry_price": 13.6,
-      "strength": 33,
+      "entry_price": 21.0,
+      "strength": 53,
       "reasons": [
-        "+RSI14 Pocket (4.9)",
-        "+RSI Div (2.3)",
+        "+RSI14 Pocket (9.9)",
+        "+RSI2 OS (5.4)",
         "-Knife (12.0)"
       ]
     }

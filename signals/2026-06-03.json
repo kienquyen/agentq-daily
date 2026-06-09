@@ -1,43 +1,12 @@
 {
   "date": "2026-06-03",
-  "generated_at": "2026-06-03T18:20:32Z",
+  "generated_at": "2026-06-09T13:10:30Z",
   "regime": {
     "ok": true,
-    "adx": 26.048578440991527,
+    "adx": 25.336927561375,
     "roc5": -2.956632149506788,
     "dd20": -5.902405967585906,
-    "detail": "🟢 TREND  ADX=26.0  ROC5d=-3.0%  DD20d=-5.9%  →  BUY1=ON"
+    "detail": "🟢 TREND  ADX=25.3  ROC5d=-3.0%  DD20d=-5.9%  →  BUY1=ON\n🔴 **GIẢM** (Score 28/100)\nTrend 0.33 · Breadth 0.30 · Flow 0.50 · Vol 0.78\nOverrides: dist_days=11 (CRITICAL) ×0.70"
   },
-  "signals": [
-    {
-      "symbol": "SSB",
-      "signal_type": "BUY1",
-      "entry_price": 14.4,
-      "strength": 76,
-      "reasons": [
-        "+ADX (12.0)",
-        "+RSI (6.9)"
-      ]
-    },
-    {
-      "symbol": "VGI",
-      "signal_type": "BUY1",
-      "entry_price": 94.2,
-      "strength": 76,
-      "reasons": [
-        "+Kumo (7.8)",
-        "+RSI (7.1)"
-      ]
-    },
-    {
-      "symbol": "CMG",
-      "signal_type": "BUY1",
-      "entry_price": 28.8,
-      "strength": 73,
-      "reasons": [
-        "+RSI (7.2)",
-        "+EMA9 break (6.9)"
-      ]
-    }
-  ]
+  "signals": []
 }

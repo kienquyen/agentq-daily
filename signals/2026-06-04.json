@@ -1,19 +1,19 @@
 {
   "date": "2026-06-04",
-  "generated_at": "2026-06-04T13:43:50Z",
+  "generated_at": "2026-06-09T13:25:00Z",
   "regime": {
     "ok": true,
-    "adx": 27.398018426406253,
+    "adx": 26.75489978710441,
     "roc5": -1.723481088390122,
     "dd20": -5.25371034240162,
-    "detail": "🟢 TREND  ADX=27.4  ROC5d=-1.7%  DD20d=-5.3%  →  BUY1=ON"
+    "detail": "🟢 TREND  ADX=26.8  ROC5d=-1.7%  DD20d=-5.3%  →  BUY1=ON\n🟡 **ĐI NGANG** (Score 32/100)\nTrend 0.37 · Breadth 0.41 · Flow 0.50 · Vol 0.75\nOverrides: dist_days=11 (CRITICAL) ×0.70"
   },
   "signals": [
     {
       "symbol": "FRT",
       "signal_type": "BUY2",
       "entry_price": 127.0,
-      "strength": 47,
+      "strength": 53,
       "reasons": [
         "+RSI14 Pocket (8.9)",
         "+RSI Div (6.0)",
