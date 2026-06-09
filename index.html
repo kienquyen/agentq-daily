@@ -1203,7 +1203,9 @@ function startAutoRefresh() {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
-  allDates = await loadAllData();
+  const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const all   = await loadAllData();
+  allDates    = all.filter(d => d <= today);           // chỉ hiện ngày ≤ hôm nay
   if (!allDates.length) {
     document.getElementById("app").innerHTML = `
       <div class="empty animate-in">
