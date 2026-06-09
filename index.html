@@ -777,18 +777,23 @@ function renderRegime(regime) {
   if (!regime) return `<div class="regime-banner gray"><div class="regime-left"><div class="regime-icon">📡</div><div><div class="regime-label">Không có dữ liệu Regime</div></div></div></div>`;
 
   // Parse detail string to extract 4-layer breakdown
+  // Detail format:
+  //   Line 0: "🟢 TREND  ADX=28.5  ROC5d=...  →  BUY1=ON"   ← legacy BUY1 check
+  //   Line 1: "🔴 **GIẢM** (Score 24/100)"                   ← AgentQ regime label
+  //   Line 2: "Trend 0.25 · Breadth 0.21 · Flow 0.50 · Vol 0.64"
+  //   Line 3: "Overrides: ..."
   const detail = regime.detail || "";
   const lines = detail.split("\n");
 
-  // Extract regime icon and label (e.g., "🟢 TREND" or "🔴 GIẢM")
-  const regimeLine = lines[0] || "";
-  const regimeMatch = regimeLine.match(/([🟢🔴🟡]) (\*\*)?([^*\n]+)(\*\*)?/);
-  const regimeIcon = regimeMatch ? regimeMatch[1] : (regime.ok ? "🟢" : "🔴");
-  const regimeLabel = regimeMatch ? regimeMatch[3].trim() : (regime.ok ? "TREND" : "CHOP");
+  // Line 1 = AgentQ regime line: "🔴 **GIẢM** (Score 24/100)"
+  const agentqLine = lines[1] || lines[0] || "";
+  const regimeIconMatch = agentqLine.match(/^([🟢🔴🟡🔵💪]+)/u);
+  const regimeIcon = regimeIconMatch ? regimeIconMatch[1] : (regime.ok ? "🟢" : "🔴");
+  const labelMatch = agentqLine.match(/\*\*([^*]+)\*\*/);
+  const regimeLabel = labelMatch ? labelMatch[1].trim() : (regime.ok ? "TREND" : "CHOP");
 
-  // Extract score and regime classification (e.g., "🔴 **GIẢM** (Score 24/100)")
-  const scoreLine = lines[1] || "";
-  const scoreMatch = scoreLine.match(/Score (\d+)/);
+  // Extract score from Line 1
+  const scoreMatch = agentqLine.match(/Score (\d+)/);
   const score = scoreMatch ? parseInt(scoreMatch[1]) : 50;
 
   // Determine regime class for styling
@@ -799,7 +804,7 @@ function renderRegime(regime) {
   else if (score >= 30) regimeCls = "ranging";
   else regimeCls = "bear-risk";
 
-  // Extract 4-layer breakdown (e.g., "Trend 0.28 · Breadth 0.23 · Flow 0.50 · Vol 0.52")
+  // Extract 4-layer breakdown from Line 2 (e.g., "Trend 0.28 · Breadth 0.23 · Flow 0.50 · Vol 0.52")
   const breakdownLine = lines[2] || "";
   const breakdownMatch = breakdownLine.match(/Trend ([\d.]+) · Breadth ([\d.]+) · Flow ([\d.]+) · Vol ([\d.]+)/);
 
