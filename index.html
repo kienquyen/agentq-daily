@@ -528,6 +528,23 @@
       margin-top: 40px;
     }
 
+    /* ── SVG ICON SYSTEM ────────────────────────────────────────────────── */
+    .icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .icon svg { display: block; }
+    /* Tab icons — inherit currentColor */
+    .tab-icon .icon svg { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    /* Status dots — regime */
+    .reg-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .reg-dot.bull-strong { background: #22C55E; }
+    .reg-dot.bull        { background: #86efac; }
+    .reg-dot.recovery    { background: #3B82F6; }
+    .reg-dot.ranging     { background: #F59E0B; }
+    .reg-dot.bear        { background: #EF4444; }
+    /* Empty state icon */
+    .empty-icon svg { stroke: var(--text3); fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+    /* AI insight icon */
+    .ai-insight-icon svg { stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
     /* ── TAB BAR ─────────────────────────────────────────────────────────── */
     .tab-bar {
       position: sticky; top: 60px; z-index: 90;
@@ -645,10 +662,10 @@
     .return-neg { color: var(--red); }
     .return-nil { color: var(--text2); }
 
-    /* AI insight glow card */
+    /* AI insight card */
     .ai-insight {
-      background: linear-gradient(135deg, rgba(123,97,255,.1), rgba(123,97,255,.04));
-      border: 1px solid rgba(123,97,255,.25);
+      background: var(--accent-dim);
+      border: 1px solid rgba(34,197,94,.20);
       border-radius: var(--radius);
       padding: 14px 16px;
       display: flex; gap: 12px; align-items: flex-start;
@@ -656,14 +673,8 @@
     }
     .ai-insight-icon {
       width: 32px; height: 32px; flex-shrink: 0;
-      background: var(--accent-dim); border-radius: 8px;
+      background: rgba(34,197,94,.15); border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
-      animation: glow-pulse 3s infinite;
-    }
-    @keyframes glow-pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(123,97,255,0); }
-      50%      { box-shadow: 0 0 12px rgba(123,97,255,.35); }
     }
     .ai-insight-text { font-size: 12px; line-height: 1.6; color: var(--text2); }
     .ai-insight-text strong { color: var(--accent); }
@@ -704,7 +715,8 @@
         color: var(--accent);
         background: var(--accent-dim);
       }
-      .tab-btn .tab-icon { font-size: 20px; line-height: 1; display: block; }
+      .tab-btn .tab-icon { font-size: 0; line-height: 1; display: block; }
+      .tab-btn .tab-icon svg { width: 22px; height: 22px; }
       .tab-btn .tab-label { display: block; font-size: 9px; line-height: 1.2; }
 
       /* Push content above bottom tab */
@@ -775,10 +787,22 @@
 
 <!-- ── TAB BAR ────────────────────────────────────────────────────────────── -->
 <nav class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('rules')"  id="tab-rules"  ><span class="tab-icon">📊</span><span class="tab-label">Rule-based</span></button>
-  <button class="tab-btn"        onclick="switchTab('v3a')"    id="tab-v3a"    ><span class="tab-icon">🤖</span><span class="tab-label">Monthly</span></button>
-  <button class="tab-btn"        onclick="switchTab('v5')"     id="tab-v5"     ><span class="tab-icon">🚀</span><span class="tab-label">Outperform</span></button>
-  <button class="tab-btn"        onclick="switchTab('weekly')" id="tab-weekly" ><span class="tab-icon">📅</span><span class="tab-label">Long-hold</span></button>
+  <button class="tab-btn active" onclick="switchTab('rules')"  id="tab-rules">
+    <span class="tab-icon"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg></span></span>
+    <span class="tab-label">Rule-based</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('v3a')" id="tab-v3a">
+    <span class="tab-icon"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M3 12h3M18 12h3M12 3v3M12 18v3"/><path d="M6.34 6.34l2.12 2.12M15.54 15.54l2.12 2.12M6.34 17.66l2.12-2.12M15.54 8.46l2.12-2.12"/></svg></span></span>
+    <span class="tab-label">Monthly</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('v5')" id="tab-v5">
+    <span class="tab-icon"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span></span>
+    <span class="tab-label">Outperform</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('weekly')" id="tab-weekly">
+    <span class="tab-icon"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></span></span>
+    <span class="tab-label">Long-hold</span>
+  </button>
 </nav>
 
 <!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
@@ -876,7 +900,7 @@ async function fetchSignal(date) { return cache[date] || null; }
 
 // ── Render: Regime Banner ────────────────────────────────────────────────────
 function renderRegime(regime) {
-  if (!regime) return `<div class="regime-banner gray"><div class="regime-left"><div class="regime-icon">📡</div><div><div class="regime-label">Không có dữ liệu Regime</div></div></div></div>`;
+  if (!regime) return `<div class="regime-banner gray"><div class="regime-left"><div class="regime-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div class="regime-label">Không có dữ liệu Regime</div></div></div></div>`;
 
   // Parse detail string to extract 4-layer breakdown
   // Detail format:
@@ -889,8 +913,10 @@ function renderRegime(regime) {
 
   // Line 1 = AgentQ regime line: "🔴 **GIẢM** (Score 24/100)"
   const agentqLine = lines[1] || lines[0] || "";
-  const regimeIconMatch = agentqLine.match(/^([🟢🔴🟡🔵💪]+)/u);
-  const regimeIcon = regimeIconMatch ? regimeIconMatch[1] : (regime.ok ? "🟢" : "🔴");
+  const _regOk = regime.ok;
+  const _regScore = regime.score || 0;
+  const regimeDotClass = _regScore >= 75 ? "bull-strong" : _regScore >= 60 ? "bull" : _regScore >= 45 ? "recovery" : _regScore >= 30 ? "ranging" : "bear";
+  const regimeIcon = `<span class="reg-dot ${regimeDotClass}"></span>`;
   const labelMatch = agentqLine.match(/\*\*([^*]+)\*\*/);
   const regimeLabel = labelMatch ? labelMatch[1].trim() : (regime.ok ? "TREND" : "CHOP");
 
@@ -1012,7 +1038,7 @@ function renderSignals(data) {
   if (!data?.signals?.length) {
     return `
       <div class="empty animate-in">
-        <div class="empty-icon">📭</div>
+        <div class="empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg></div>
         <div class="empty-title">Không có tín hiệu hôm nay</div>
         <div class="empty-sub">Thị trường chưa có setup phù hợp điều kiện lọc</div>
       </div>`;
@@ -1054,10 +1080,9 @@ function renderHistory() {
     const score = scoreMatch ? parseInt(scoreMatch[1]) : null;
     const labelMatch = agentqLine.match(/\*\*([^*]+)\*\*/);
     const regLabel = labelMatch ? labelMatch[1].trim() : null;
-    const regIcon = score === null ? "—"
-      : score >= 75 ? "🟢💪" : score >= 60 ? "🟢" : score >= 45 ? "🔵" : score >= 30 ? "🟡" : "🔴";
+    const dotCls = score === null ? "" : score >= 75 ? "bull-strong" : score >= 60 ? "bull" : score >= 45 ? "recovery" : score >= 30 ? "ranging" : "bear";
     const regStr = score !== null
-      ? `<span style="font-size:12px">${regIcon}</span> <span style="font-size:10px;color:var(--text2)">${regLabel||""} <span style="color:var(--text3)">${score}</span></span>`
+      ? `<span style="display:inline-flex;align-items:center;gap:5px"><span class="reg-dot ${dotCls}"></span><span style="font-size:10px;color:var(--text2)">${regLabel||""} <span style="color:var(--text3)">${score}</span></span></span>`
       : `<span style="color:var(--text3)">—</span>`;
 
     const pills = [
@@ -1237,7 +1262,7 @@ async function renderAITab(model) {
   const data = model === "v3a" ? v3aData : v5Data;
 
   if (!data) {
-    document.getElementById("app").innerHTML = `<div class="empty animate-in"><div class="empty-icon">⚠️</div><div class="empty-title">Không tải được dữ liệu</div><div class="empty-sub">Chạy export_ai_signals.py để cập nhật</div></div>`;
+    document.getElementById("app").innerHTML = `<div class="empty animate-in"><div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Không tải được dữ liệu</div><div class="empty-sub">Chạy export_ai_signals.py để cập nhật</div></div>`;
     return;
   }
 
@@ -1252,7 +1277,7 @@ async function renderAITab(model) {
 
   let html = `<div class="model-header animate-in">
     <div class="ai-insight">
-      <div class="ai-insight-icon">🤖</div>
+      <div class="ai-insight-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 12h3M18 12h3M12 3v3M12 18v3"/><path d="M6.34 6.34l2.12 2.12M15.54 15.54l2.12 2.12M6.34 17.66l2.12-2.12M15.54 8.46l2.12-2.12"/></svg></div>
       <div class="ai-insight-text"><strong>${data.name}</strong><br>${data.description}</div>
     </div>
     ${renderStatStrip(data.stats)}
@@ -1329,7 +1354,7 @@ async function renderWeeklyTab() {
   }
 
   if (!weeklyData) {
-    document.getElementById("app").innerHTML = `<div class="empty animate-in"><div class="empty-icon">⚠️</div><div class="empty-title">Không tải được dữ liệu</div><div class="empty-sub">Chạy export_weekly_signals.py để cập nhật</div></div>`;
+    document.getElementById("app").innerHTML = `<div class="empty animate-in"><div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Không tải được dữ liệu</div><div class="empty-sub">Chạy export_weekly_signals.py để cập nhật</div></div>`;
     return;
   }
 
@@ -1344,7 +1369,7 @@ async function renderWeeklyTab() {
 
   let html = `<div class="model-header animate-in">
     <div class="ai-insight">
-      <div class="ai-insight-icon">📅</div>
+      <div class="ai-insight-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></div>
       <div class="ai-insight-text"><strong>${weeklyData.name}</strong><br>${weeklyData.description}</div>
     </div>
     <div class="stat-strip">
@@ -1448,7 +1473,7 @@ async function init() {
   if (!allDates.length) {
     document.getElementById("app").innerHTML = `
       <div class="empty animate-in">
-        <div class="empty-icon">🚀</div>
+        <div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg></div>
         <div class="empty-title">Chưa có dữ liệu</div>
         <div class="empty-sub">Bot chưa chạy lần nào, hoặc repo chưa có file data.json</div>
       </div>`;
