@@ -760,9 +760,9 @@
 <!-- ── TAB BAR ────────────────────────────────────────────────────────────── -->
 <nav class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('rules')"  id="tab-rules"  ><span class="tab-icon">📊</span><span class="tab-label">Rule-based</span></button>
-  <button class="tab-btn"        onclick="switchTab('v3a')"    id="tab-v3a"    ><span class="tab-icon">🤖</span><span class="tab-label">AI v3a</span></button>
-  <button class="tab-btn"        onclick="switchTab('v5')"     id="tab-v5"     ><span class="tab-icon">🚀</span><span class="tab-label">V5</span></button>
-  <button class="tab-btn"        onclick="switchTab('weekly')" id="tab-weekly" ><span class="tab-icon">📅</span><span class="tab-label">Weekly</span></button>
+  <button class="tab-btn"        onclick="switchTab('v3a')"    id="tab-v3a"    ><span class="tab-icon">🤖</span><span class="tab-label">Monthly</span></button>
+  <button class="tab-btn"        onclick="switchTab('v5')"     id="tab-v5"     ><span class="tab-icon">🚀</span><span class="tab-label">Outperform</span></button>
+  <button class="tab-btn"        onclick="switchTab('weekly')" id="tab-weekly" ><span class="tab-icon">📅</span><span class="tab-label">Long-hold</span></button>
 </nav>
 
 <!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
@@ -1188,19 +1188,22 @@ function renderAICard(s) {
   const status    = isPending ? "pending" : (s.is_win ? "win" : "loss");
   const lbl       = isPending ? "ĐANG MỞ" : (s.is_win ? "THẮNG" : "THUA");
   const regime    = s.regime ? `<span style="font-size:10px;color:var(--text3);margin-left:6px;text-transform:uppercase">${s.regime}</span>` : "";
+  const dateRange = isPending
+    ? `<div class="ai-date">Mở từ ${s.signal_date||"—"}</div>`
+    : `<div class="ai-date">${s.signal_date||"—"} → <strong style="color:var(--text)">${s.exit_date||"—"}</strong></div>`;
   return `<div class="ai-card ${status} animate-in">
     <div class="ai-card-top">
       <div>
         <div class="ai-ticker">${s.symbol}${regime}</div>
-        <div class="ai-date">Vào ${s.signal_date||"—"}</div>
+        ${dateRange}
       </div>
       <span class="status-badge ${status}">${lbl}</span>
     </div>
     <div class="ai-metrics">
       <div class="ai-metric"><div class="ai-metric-val">${fmtPrice(s.entry_price)}</div><div class="ai-metric-lbl">GIÁ VÀO</div></div>
       <div class="ai-metric"><div class="ai-metric-val" style="color:var(--accent)">${fmtProb(s.prob)}</div><div class="ai-metric-lbl">XÁC SUẤT</div></div>
-      <div class="ai-metric"><div class="ai-metric-val">${s.exit_date||"—"}</div><div class="ai-metric-lbl">NGÀY RA</div></div>
-      <div class="ai-metric"><div class="ai-metric-val">${fmtReturn(s.actual_return)}</div><div class="ai-metric-lbl">RETURN</div></div>
+      <div class="ai-metric"><div class="ai-metric-val">${isPending ? (s.exit_date||"—") : fmtReturn(s.actual_return)}</div><div class="ai-metric-lbl">${isPending ? "NGÀY RA DỰ KIẾN" : "RETURN"}</div></div>
+      <div class="ai-metric"><div class="ai-metric-val">${isPending ? "—" : (s.exit_date||"—")}</div><div class="ai-metric-lbl">${isPending ? "" : "ĐÓNG LỆNH"}</div></div>
     </div>
   </div>`;
 }
@@ -1272,14 +1275,16 @@ async function renderAITab(model) {
       const alphaCell = hasAlpha
         ? `<td>${fmtReturn(s.alpha)}</td>`
         : "";
+      const dateCell = isPending
+        ? `${s.signal_date}`
+        : `${s.signal_date}<br><span style="color:var(--text3);font-size:10px">→ ${s.exit_date||"—"}</span>`;
       return `<tr>
-        <td class="td-date">${s.signal_date}</td>
+        <td class="td-date" style="line-height:1.4">${dateCell}</td>
         <td style="font-weight:700">${s.symbol}</td>
         <td style="color:var(--text2)">${fmtPrice(s.entry_price)}</td>
         <td><span class="status-badge ${status}">${lbl}</span></td>
         <td>${fmtReturn(s.actual_return)}</td>
         ${alphaCell}
-        <td class="td-hide" style="color:var(--text3);font-size:11px;text-transform:uppercase">${s.regime||"—"}</td>
       </tr>`;
     }).join("");
     const alphaHeader = hasAlpha ? `<th>Alpha</th>` : "";
@@ -1290,7 +1295,7 @@ async function renderAITab(model) {
           <span class="history-count">${data.stats?.total||0} tổng</span>
         </div>
         <table>
-          <thead><tr><th>Ngày</th><th>Mã</th><th>Giá vào</th><th>Kết quả</th><th>Return</th>${alphaHeader}<th class="td-hide">Regime</th></tr></thead>
+          <thead><tr><th>Ngày vào → ra</th><th>Mã</th><th>Giá vào</th><th>Kết quả</th><th>Return</th>${alphaHeader}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>`;
