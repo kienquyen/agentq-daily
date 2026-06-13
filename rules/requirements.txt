@@ -1,0 +1,11 @@
+pandas
+numpy
+ta
+requests
+pytz
+python-dotenv
+tenacity
+beautifulsoup4
+lxml
+pydantic
+

@@ -1,0 +1,15 @@
+{
+  "date": "2026-03-30",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "DGC",
+      "prob": 0.658,
+      "close_price": 49100
+    }
+  ],
+  "error": null
+}

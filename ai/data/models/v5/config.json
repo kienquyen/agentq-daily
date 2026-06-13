@@ -1,0 +1,34 @@
+{
+  "_version": "v5",
+  "_description": "v5 — outperform VNINDEX >= 10% in 1 month (alpha label)",
+  "_label": "alpha_20d >= 0.1",
+  "_horizon": "20d",
+  "_auc_test": 0.6028,
+  "_pos_rate": 0.0931,
+  "_decision_layer": {
+    "type": "value_gate",
+    "min_liquidity_b": 1.391,
+    "min_price": 14063.0,
+    "prob_cutoff": 0.657,
+    "no_hardcheck": true,
+    "_note": "value gate (liquidity+price only) — keeps oversold/value candidates",
+    "momentum_gate": {
+      "return_20d_min": 0.0,
+      "ema9_vs_ema26_min": 0.0,
+      "_note": "value + momentum confirmation — avoids falling knives (validated OOS: win 15%->30-36%, alpha +2%->+10%)"
+    },
+    "cooldown_days": 5,
+    "stop_loss_pct": 0.07
+  },
+  "_eval_p10_oos": 0.4375,
+  "_eval_lift_oos": 4.751,
+  "_eval_oos_dedup": {
+    "win_alpha": 0.45,
+    "win_profit": 0.59,
+    "mean_ret": 0.138,
+    "n_bets": 22,
+    "total_pnl_200m": "+607M",
+    "period": "2025→2026-04",
+    "cooldown": 5
+  }
+}

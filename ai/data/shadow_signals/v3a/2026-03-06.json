@@ -1,0 +1,9 @@
+{
+  "date": "2026-03-06",
+  "version": "v3a",
+  "regime": "recovery",
+  "prob_cutoff": 0.53,
+  "n_signals": 0,
+  "signals": [],
+  "error": null
+}

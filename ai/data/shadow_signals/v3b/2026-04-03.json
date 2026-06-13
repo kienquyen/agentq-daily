@@ -1,0 +1,15 @@
+{
+  "date": "2026-04-03",
+  "version": "v3b",
+  "regime": "sideways",
+  "prob_cutoff": 0.62,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "DGC",
+      "prob": 0.6343,
+      "close_price": 56500
+    }
+  ],
+  "error": null
+}

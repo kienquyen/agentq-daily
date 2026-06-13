@@ -1,0 +1,16 @@
+# nixpacks.toml — Railway build config
+
+[phases.setup]
+nixPkgs = [
+  "libgcc",
+  "openmp",
+  "git",
+]
+
+[phases.install]
+cmds = [
+  "pip install -r requirements.txt",
+]
+
+[start]
+cmd = "python scheduler/run_daily.py"

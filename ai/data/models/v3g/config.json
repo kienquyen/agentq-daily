@@ -1,0 +1,10 @@
+{
+  "_version": "v3g",
+  "_description": "v3g — alpha-based label: outperform VNINDEX by 2% AND ret > 0%",
+  "_created": "2026-05-30",
+  "_experiment": "alpha_label_v3g",
+  "_label_def": "alpha_20d > 2% AND return_20d > 0%",
+  "_auc_v3g_test": 0.5373,
+  "_auc_v3g_val": 0.5668,
+  "prob_cutoff_default": 0.55
+}

@@ -1,0 +1,3 @@
+'\nCác hàm tiện ích để loại bỏ các bản ghi trùng lặp trong dữ liệu.\n'
+import pandas as pd
+def drop_duplicates(df,subset=None):'\n    Loại bỏ các dòng trùng lặp trong DataFrame dựa trên các cột xác định.\n    \n    :param df: DataFrame cần xử lý.\n    :param subset: Danh sách các cột để kiểm tra trùng lặp. Nếu None, kiểm tra tất cả các cột.\n    :return: DataFrame đã loại bỏ các bản ghi trùng lặp.\n    ';return df.drop_duplicates(subset=subset).reset_index(drop=True)

@@ -1,0 +1,14 @@
+{
+  "date": "2026-01-28",
+  "version": "v5",
+  "prob_cutoff": 0.657,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "BSR",
+      "prob": 0.6704,
+      "close_price": 21900
+    }
+  ],
+  "error": null
+}

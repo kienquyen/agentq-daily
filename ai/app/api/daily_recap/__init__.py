@@ -1,0 +1,1 @@
+"""Daily Recap Discord Views"""

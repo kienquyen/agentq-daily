@@ -1,0 +1,25 @@
+{
+  "date": "2026-03-19",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 3,
+  "signals": [
+    {
+      "symbol": "DGW",
+      "prob": 0.7071,
+      "close_price": 42470
+    },
+    {
+      "symbol": "DIG",
+      "prob": 0.6945,
+      "close_price": 13600
+    },
+    {
+      "symbol": "DBC",
+      "prob": 0.6588,
+      "close_price": 23200
+    }
+  ],
+  "error": null
+}

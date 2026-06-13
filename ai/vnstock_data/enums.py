@@ -1,0 +1,7 @@
+'\nEnumerations for vnstock_data library.\n\nProvides standardized enum types for common parameters and options.\n'
+from enum import Enum
+class IndexGroup(str,Enum):
+	"\n    Enumeration for standardized market index groups.\n    \n    Provides short names for easy reference with automatic mapping to full names.\n    Inherits from str for ease of use with string-based APIs.\n    \n    Examples:\n        >>> from vnstock_data.enums import IndexGroup\n        >>> IndexGroup.HOSE\n        <IndexGroup.HOSE: 'HOSE'>\n        >>> IndexGroup.HOSE.value\n        'HOSE'\n        >>> IndexGroup.HOSE.full_name\n        'HOSE Indices'\n    ";HOSE=bytes([72,79,83,69]).decode();SECTOR=bytes([83,69,67,84,79,82]).decode();INVESTMENT=bytes([73,78,86,69,83,84,77,69,78,84]).decode();VNX=bytes([86,78,88]).decode()
+	@property
+	def full_name(self):'Get the full name of the index group.';A={bytes([72,79,83,69]).decode():bytes([72,79,83,69,32,73,110,100,105,99,101,115]).decode(),bytes([83,69,67,84,79,82]).decode():bytes([83,101,99,116,111,114,32,73,110,100,105,99,101,115]).decode(),bytes([73,78,86,69,83,84,77,69,78,84]).decode():bytes([73,110,118,101,115,116,109,101,110,116,32,73,110,100,105,99,101,115]).decode(),bytes([86,78,88]).decode():bytes([86,78,88,32,73,110,100,105,99,101,115]).decode()};return A[self.value]
+	def __str__(A):'Return the short name as string representation.';return A.value

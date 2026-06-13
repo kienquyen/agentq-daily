@@ -1,0 +1,13 @@
+{
+  "_version": "v4",
+  "_description": "v4 — long-term position model: +30% touch within 6 months",
+  "_horizon": "6m (120 trading days)",
+  "_label": "max(high[t+1:t+120])/close[t]-1 >= 0.3",
+  "_stop_loss": "none (touch-based)",
+  "_auc_test": 0.5719,
+  "_purged_split": {
+    "train_end": "2023-06-30",
+    "val": "2024-01-01→2024-06-30",
+    "test": "2025-01-01→2025-11-28"
+  }
+}

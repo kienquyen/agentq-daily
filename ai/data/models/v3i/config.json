@@ -1,0 +1,20 @@
+{
+  "_version": "v3i",
+  "_description": "v3i — per-regime hybrid routing",
+  "_architecture": "hybrid_routing",
+  "_routing": {
+    "deep_bear": "v3i/model_deep_bear.pkl",
+    "choppy": "v3i/model_deep_bear.pkl",
+    "bull": "v3i/model_bull.pkl",
+    "recovery": "v3i/model_bull.pkl",
+    "sideways": "v3b/lgbm_model_20d.pkl",
+    "default": "v3b/lgbm_model_20d.pkl"
+  },
+  "_backtest_wr": {
+    "v3b only": 0.6058,
+    "v3i (+deep_bear)": 0.6241,
+    "v3i (+bull)": 0.5882,
+    "v3i full hybrid": 0.5972
+  },
+  "_best_scenario": "v3i (+deep_bear)"
+}

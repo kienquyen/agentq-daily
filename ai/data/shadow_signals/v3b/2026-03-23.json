@@ -1,0 +1,55 @@
+{
+  "date": "2026-03-23",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 9,
+  "signals": [
+    {
+      "symbol": "CMG",
+      "prob": 0.7851,
+      "close_price": 28150
+    },
+    {
+      "symbol": "BCM",
+      "prob": 0.7459,
+      "close_price": 50500
+    },
+    {
+      "symbol": "FCN",
+      "prob": 0.7002,
+      "close_price": 11800
+    },
+    {
+      "symbol": "CII",
+      "prob": 0.6988,
+      "close_price": 15600
+    },
+    {
+      "symbol": "VRE",
+      "prob": 0.6919,
+      "close_price": 25350
+    },
+    {
+      "symbol": "DIG",
+      "prob": 0.6788,
+      "close_price": 12800
+    },
+    {
+      "symbol": "BID",
+      "prob": 0.6772,
+      "close_price": 38450
+    },
+    {
+      "symbol": "HHV",
+      "prob": 0.671,
+      "close_price": 11250
+    },
+    {
+      "symbol": "PDR",
+      "prob": 0.6635,
+      "close_price": 14500
+    }
+  ],
+  "error": null
+}

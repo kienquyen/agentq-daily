@@ -1,0 +1,69 @@
+{
+  "_version": "v3c",
+  "_description": "v3c — Hybrid label (ret>=5% + alpha>=1% + RR>=1.2 + dd>=-10%)",
+  "_created": "2026-05-28",
+  "_model_file": "lgbm_model_20d.pkl",
+  "prob_cutoff_default": 0.55,
+  "ema_near_pct": 12.0,
+  "win_threshold_pct": 0.0,
+  "stop_loss_pct": 0.1,
+  "hold_days_default": 25,
+  "regime_cutoffs": {
+    "recovery": 0.53,
+    "bull": 0.55,
+    "sideways": 0.58,
+    "deep_bear": 0.58,
+    "choppy": 0.58
+  },
+  "regime_size_mult": {
+    "recovery": 1.2,
+    "bull": 1.0,
+    "sideways": 1.0,
+    "deep_bear": 0.5,
+    "choppy": 0.4
+  },
+  "hold_days_regime": {
+    "bull": 25,
+    "deep_bear": 25,
+    "choppy": 25,
+    "sideways": 20,
+    "recovery": 20,
+    "unknown": 25
+  },
+  "sector_cutoffs": {
+    "Hàng không – Du lịch": 0.58,
+    "Công nghệ": 0.56,
+    "VLXD": 0.56,
+    "NA": 0.56,
+    "Bất động sản": 0.58,
+    "Thực phẩm": 0.58
+  },
+  "sector_cutoffs_deep_bear": {
+    "Hàng không – Du lịch": 0.58,
+    "Công nghệ": 0.56,
+    "VLXD": 0.56,
+    "NA": 0.56,
+    "Thực phẩm": 0.58
+  },
+  "tier_filters": {
+    "T2_vol_ratio_min": 0.8,
+    "T3_ema_near_pct": 12.0,
+    "T4_bearish_candles": true,
+    "T5_vol_spike_ratio": 1.6,
+    "T5_regimes": [
+      "deep_bear",
+      "choppy"
+    ]
+  },
+  "_experiment": "hybrid_label_v3c",
+  "_label_version": "v3c_hybrid",
+  "_label_conditions": {
+    "ret_20d": ">= 5%",
+    "max_dd": ">= -10%",
+    "alpha_vs_vni": ">= 1%",
+    "rr": ">= 1.2"
+  },
+  "_auc_v3a": 0.6575,
+  "_auc_v3c": 0.957,
+  "_auc_delta_vs_v3a": 0.2995
+}

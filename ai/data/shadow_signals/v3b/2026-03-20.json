@@ -1,0 +1,80 @@
+{
+  "date": "2026-03-20",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 14,
+  "signals": [
+    {
+      "symbol": "AGG",
+      "prob": 0.7881,
+      "close_price": 12700
+    },
+    {
+      "symbol": "SHS",
+      "prob": 0.7543,
+      "close_price": 16000
+    },
+    {
+      "symbol": "DXG",
+      "prob": 0.7505,
+      "close_price": 14000
+    },
+    {
+      "symbol": "PDR",
+      "prob": 0.7371,
+      "close_price": 15150
+    },
+    {
+      "symbol": "VRE",
+      "prob": 0.7164,
+      "close_price": 26150
+    },
+    {
+      "symbol": "TV2",
+      "prob": 0.7145,
+      "close_price": 36450
+    },
+    {
+      "symbol": "BID",
+      "prob": 0.7064,
+      "close_price": 39750
+    },
+    {
+      "symbol": "GAS",
+      "prob": 0.6948,
+      "close_price": 82000
+    },
+    {
+      "symbol": "MIG",
+      "prob": 0.687,
+      "close_price": 17750
+    },
+    {
+      "symbol": "TCH",
+      "prob": 0.6851,
+      "close_price": 14900
+    },
+    {
+      "symbol": "IDC",
+      "prob": 0.6815,
+      "close_price": 43500
+    },
+    {
+      "symbol": "MSN",
+      "prob": 0.6668,
+      "close_price": 71300
+    },
+    {
+      "symbol": "VIX",
+      "prob": 0.6654,
+      "close_price": 16250
+    },
+    {
+      "symbol": "HAG",
+      "prob": 0.6513,
+      "close_price": 15400
+    }
+  ],
+  "error": null
+}

@@ -1,0 +1,25 @@
+{
+  "date": "2026-03-24",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 3,
+  "signals": [
+    {
+      "symbol": "BID",
+      "prob": 0.7075,
+      "close_price": 39100
+    },
+    {
+      "symbol": "AGG",
+      "prob": 0.6921,
+      "close_price": 12950
+    },
+    {
+      "symbol": "CII",
+      "prob": 0.6771,
+      "close_price": 16650
+    }
+  ],
+  "error": null
+}

@@ -1,0 +1,20 @@
+{
+  "date": "2026-03-31",
+  "version": "v3a",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.58,
+  "n_signals": 2,
+  "signals": [
+    {
+      "symbol": "AGR",
+      "prob": 0.6699,
+      "close_price": 14700
+    },
+    {
+      "symbol": "VDS",
+      "prob": 0.5902,
+      "close_price": 14550
+    }
+  ],
+  "error": null
+}

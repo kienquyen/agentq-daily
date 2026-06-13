@@ -11,14 +11,16 @@ from pathlib import Path
 from datetime import datetime
 
 import pandas as pd
-sys.path.insert(0, str(Path(__file__).parent.parent / "Vnstock_Daily_Signals_Rules"))
+
+REPO    = Path(__file__).resolve().parent.parent  # repo root (agentq-daily/)
+sys.path.insert(0, str(REPO / "rules"))           # for rules/main.py helpers
+sys.path.insert(0, str(REPO / "ai"))              # for ai/ pipeline modules
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
-BASE    = Path(__file__).parent.parent / "Project AgentQ (Sabo)" / "Historical version"
-CURR    = BASE / "20260523_update AI shortlist_v3a_add foreign flow"  # project đang chạy
-V3A_DIR = CURR   # v3a signals ở đây
-V5_DIR  = CURR   # V5 production signals cũng ở đây (shadow_signals/v5/)
-OUT_DIR = Path(__file__).parent  # agentq-daily/
+CURR    = REPO / "ai"    # AI pipeline root inside monorepo
+V3A_DIR = CURR
+V5_DIR  = CURR
+OUT_DIR = REPO           # JSON files go to repo root (served by GitHub Pages)
 
 # ── Helper ─────────────────────────────────────────────────────────────────────
 def _trading_calendar() -> list[str]:
@@ -139,7 +141,11 @@ def export_v5():
     _price_cache = {}
     _unit_div    = 1000  # VCI trả về đơn vị nghìn VND
     try:
-        from main import _fetch_history_any_source
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location("rules_main", REPO / "rules" / "main.py")
+        _rules = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_rules)
+        _fetch_history_any_source = _rules._fetch_history_any_source
         for sym in ["NAF","BSR","VNINDEX"]:
             df, _ = _fetch_history_any_source(sym, "2026-01-01",
                                                datetime.utcnow().strftime("%Y-%m-%d"))
@@ -293,6 +299,13 @@ def push_to_github():
         if "nothing to commit" in (commit.stdout + commit.stderr):
             print("📁 No changes to push")
             return
+        # Support GITHUB_TOKEN env var for Railway deployment
+        import os
+        token = os.environ.get("GITHUB_TOKEN", "")
+        if token:
+            remote_url = f"https://{token}@github.com/kienquyen/agentq-daily.git"
+            subprocess.run(["git", "remote", "set-url", "origin", remote_url],
+                           cwd=OUT_DIR, capture_output=True)
         push = subprocess.run(["git", "push", "origin", "main"],
                               cwd=OUT_DIR, capture_output=True, text=True)
         if push.returncode == 0:

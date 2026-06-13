@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+
+# Large data — stored on Railway Volume, not in git
+ai/data/features/
+ai/data/ohlcv/
+ai/data/labels/
+ai/data/exports/
+ai/data/fundamentals/
+ai/data/foreign/
+
+# Logs & temp
+*.log
+*.bak
+*.bak2
+*.bak_*
+logs/
+
+# Env
+.env
+.env.local
+
+# macOS
+.DS_Store
+
+# Dev artifacts
+*.png
+db_import.log
+import*.log
+sources_out.txt
+cf_columns.txt
+
+# Test artifacts
+.pytest_cache/

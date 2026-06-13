@@ -1,0 +1,14 @@
+{
+  "last_retrain_date": "2026-05-17",
+  "rows_at_last_retrain": 194929,
+  "train_end": "2026-05-07",
+  "val_auc": 0.6546,
+  "retrain_reason": "no previous retrain found — first run",
+  "retrain_history": [
+    {
+      "date": "2026-05-17",
+      "rows": 194929,
+      "reason": "no previous retrain found — first run"
+    }
+  ]
+}

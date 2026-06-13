@@ -1,0 +1,45 @@
+{
+  "date": "2026-03-26",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 7,
+  "signals": [
+    {
+      "symbol": "HCM",
+      "prob": 0.7795,
+      "close_price": 21750
+    },
+    {
+      "symbol": "HDC",
+      "prob": 0.7591,
+      "close_price": 17750
+    },
+    {
+      "symbol": "CMG",
+      "prob": 0.7302,
+      "close_price": 28900
+    },
+    {
+      "symbol": "FCN",
+      "prob": 0.7082,
+      "close_price": 12800
+    },
+    {
+      "symbol": "VPB",
+      "prob": 0.6701,
+      "close_price": 25740
+    },
+    {
+      "symbol": "VTP",
+      "prob": 0.6622,
+      "close_price": 69960
+    },
+    {
+      "symbol": "AGG",
+      "prob": 0.658,
+      "close_price": 12750
+    }
+  ],
+  "error": null
+}

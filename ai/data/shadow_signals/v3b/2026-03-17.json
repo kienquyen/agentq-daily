@@ -1,0 +1,9 @@
+{
+  "date": "2026-03-17",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 0,
+  "signals": [],
+  "error": null
+}

@@ -1,0 +1,14 @@
+{
+  "date": "2026-02-23",
+  "version": "v5",
+  "prob_cutoff": 0.657,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "NAF",
+      "prob": 0.6575,
+      "close_price": 43050
+    }
+  ],
+  "error": null
+}

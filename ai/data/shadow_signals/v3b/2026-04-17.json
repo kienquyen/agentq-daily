@@ -1,0 +1,15 @@
+{
+  "date": "2026-04-17",
+  "version": "v3b",
+  "regime": "bull",
+  "prob_cutoff": 0.62,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "DCL",
+      "prob": 0.6505,
+      "close_price": 36900
+    }
+  ],
+  "error": null
+}

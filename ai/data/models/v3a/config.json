@@ -1,0 +1,62 @@
+{
+  "_version": "v3a",
+  "_description": "LightGBM 20D — T1-T5 filters, regime v2 (5 regimes), foreign flow features",
+  "_created": "2026-05-23",
+  "_model_file": "lgbm_model_20d.pkl",
+
+  "prob_cutoff_default": 0.55,
+  "ema_near_pct": 12.0,
+  "win_threshold_pct": 0.0,
+  "stop_loss_pct": 0.10,
+  "hold_days_default": 25,
+
+  "regime_cutoffs": {
+    "recovery":  0.53,
+    "bull":      0.55,
+    "sideways":  0.58,
+    "deep_bear": 0.58,
+    "choppy":    0.58
+  },
+
+  "regime_size_mult": {
+    "recovery":  1.2,
+    "bull":      1.0,
+    "sideways":  1.0,
+    "deep_bear": 0.5,
+    "choppy":    0.4
+  },
+
+  "hold_days_regime": {
+    "bull":      25,
+    "deep_bear": 25,
+    "choppy":    25,
+    "sideways":  20,
+    "recovery":  20,
+    "unknown":   25
+  },
+
+  "sector_cutoffs": {
+    "Hàng không – Du lịch": 0.58,
+    "Công nghệ":             0.56,
+    "VLXD":                  0.56,
+    "NA":                    0.56,
+    "Bất động sản":          0.58,
+    "Thực phẩm":             0.58
+  },
+
+  "sector_cutoffs_deep_bear": {
+    "Hàng không – Du lịch": 0.58,
+    "Công nghệ":             0.56,
+    "VLXD":                  0.56,
+    "NA":                    0.56,
+    "Thực phẩm":             0.58
+  },
+
+  "tier_filters": {
+    "T2_vol_ratio_min":     0.8,
+    "T3_ema_near_pct":      12.0,
+    "T4_bearish_candles":   true,
+    "T5_vol_spike_ratio":   1.6,
+    "T5_regimes":           ["deep_bear", "choppy"]
+  }
+}

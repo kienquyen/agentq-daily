@@ -1,0 +1,23 @@
+{
+  "train": {
+    "roc_auc": 0.856,
+    "pr_auc": 0.6974,
+    "precision_at_50": 0.94,
+    "n_rows": 94291,
+    "n_pos": 26808
+  },
+  "val": {
+    "roc_auc": 0.5619,
+    "pr_auc": 0.1798,
+    "precision_at_50": 0.22,
+    "n_rows": 24414,
+    "n_pos": 3839
+  },
+  "test": {
+    "roc_auc": 0.632,
+    "pr_auc": 0.3619,
+    "precision_at_50": 0.58,
+    "n_rows": 60598,
+    "n_pos": 15454
+  }
+}

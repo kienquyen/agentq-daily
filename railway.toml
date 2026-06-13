@@ -1,0 +1,16 @@
+# Railway deployment config for AgentQ monorepo
+# Docs: https://docs.railway.app/reference/config-as-code
+
+[build]
+builder = "nixpacks"
+buildCommand = "pip install -r requirements.txt"
+
+[deploy]
+# Daily cron: run at 09:05 UTC = 16:05 ICT (after HOSE close at 15:15 ICT)
+# Mon–Fri only via run_daily.py's own trading-day check
+cronSchedule = "5 9 * * 1-5"
+startCommand = "python scheduler/run_daily.py"
+restartPolicyType = "never"
+
+# Volume must be mounted at /app/ai/data in Railway dashboard
+# so features/ and ohlcv/ persist across deployments

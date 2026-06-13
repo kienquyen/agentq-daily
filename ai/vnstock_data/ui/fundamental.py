@@ -1,0 +1,17 @@
+'\nFundamental Module Entry Point (Layer 3).\n'
+import pandas as pd
+from vnstock_data.ui.domains.fundamental.equity import EquityFundamental
+class EquityFundamentalProxy:
+	'\n    Proxy to support both:\n    1. fun.equity("TCB").cash_flow(...)\n    2. fun.equity.cash_flow("TCB", ...)\n    '
+	def __call__(A,symbol):return EquityFundamental(symbol)
+	def ratio(B,symbol,**A):return EquityFundamental(symbol).ratio(**A)
+	def income_statement(B,symbol,**A):return EquityFundamental(symbol).income_statement(**A)
+	def balance_sheet(B,symbol,**A):return EquityFundamental(symbol).balance_sheet(**A)
+	def cash_flow(B,symbol,**A):return EquityFundamental(symbol).cash_flow(**A)
+	def note(B,symbol,**A):return EquityFundamental(symbol).note(**A)
+	def filing(B,symbol,**A):"\n        Extracts Corporate filing and Document URLs (inspired by Bloomberg CF).\n        Accepts `doc_type` to filter. Options: 'financial_report', 'annual_report', 'prospectus', \n        'shareholder_resolution', 'shareholder_material', 'business_explanation', \n        'management_report', 'capital_adequacy', 'board_resolution', 'capital_safety', 'other'.\n        ";return EquityFundamental(symbol).filing(**A)
+	def financial_health(B,symbol,scorecard=bytes([97,117,116,111]).decode(),**A):'\n        Combines Income Statement, Balance Sheet, and Ratios into a single summarized matrix using TCBS scorecard conventions.\n        ';return EquityFundamental(symbol).financial_health(scorecard=scorecard,**A)
+class Fundamental:
+	"\n    Central API Gateway for Layer 3 - Fundamental Data (Unified UI).\n    Provides financial statements, ratios, and diagnostic analysis for equities.\n    \n    ✅ METHODS AVAILABLE (6 total):\n    \n    equity(symbol) → EquityFundamental object with 6 methods:\n        - ratio()               → Financial ratios (P/E, ROE, Debt/Equity, etc.)\n        - income_statement()    → Revenue, expenses, profit (quarterly/annual)\n        - balance_sheet()       → Assets, liabilities, equity position\n        - cash_flow()           → Operating, investing, financing cash flows\n        - note()                → Footnotes and disclosures (Thuyết minh)\n        - filing()             → Corporate filing and document URLs\n    \n    Example:\n        fund = Fundamental()\n        vic = fund.equity('VIC')\n        \n        ratios = vic.ratio()                    # 12 periods\n        income = vic.income_statement()         # 12 periods\n        balance = vic.balance_sheet()           # 12 periods\n        cash = vic.cash_flow()                  # 12 periods\n        notes = vic.note()                      # All footnotes\n    "
+	@property
+	def equity(self):"\n        Access financial data for a specific corporate equity (Fundamental Layer).\n        \n        Args:\n            symbol (str): The stock ticker symbol (e.g. 'VIC', 'VNM', 'FPT')\n            \n        Returns:\n            EquityFundamental: Object with 6 methods for financial analysis:\n                - ratio()          - Key financial ratios\n                - income_statement()- Income statement (12+ periods)\n                - balance_sheet()  - Balance sheet (12+ periods)\n                - cash_flow()      - Cash flow statement (12+ periods)\n                - note()           - Financial disclosures/footnotes\n                - filing()        - Corporate filing and documents\n        \n        Example:\n            fund = Fundamental()\n            vic_data = fund.equity('VIC')\n            ratios = vic_data.ratio()\n        ";return EquityFundamentalProxy()

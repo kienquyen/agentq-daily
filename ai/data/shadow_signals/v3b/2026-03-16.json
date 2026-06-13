@@ -1,0 +1,25 @@
+{
+  "date": "2026-03-16",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 3,
+  "signals": [
+    {
+      "symbol": "HDC",
+      "prob": 0.7229,
+      "close_price": 18350
+    },
+    {
+      "symbol": "DIG",
+      "prob": 0.7184,
+      "close_price": 13700
+    },
+    {
+      "symbol": "PDR",
+      "prob": 0.6709,
+      "close_price": 15600
+    }
+  ],
+  "error": null
+}

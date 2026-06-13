@@ -1,0 +1,9 @@
+{
+  "date": "2026-05-27",
+  "version": "v3b",
+  "regime": "sideways",
+  "prob_cutoff": 0.62,
+  "n_signals": 0,
+  "signals": [],
+  "error": null
+}

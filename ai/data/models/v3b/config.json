@@ -1,0 +1,82 @@
+{
+  "_version": "v3b",
+  "_description": "v3b — foreign flow v2 (trend + cum + reversal + buy_pct_20d)",
+  "_created": "2026-05-28",
+  "_model_file": "lgbm_model_20d.pkl",
+  "prob_cutoff_default": 0.62,
+  "ema_near_pct": 12.0,
+  "win_threshold_pct": 0.0,
+  "stop_loss_pct": 0.1,
+  "hold_days_default": 25,
+  "regime_cutoffs": {
+    "recovery": 0.520,
+    "bull": 0.667,
+    "sideways": 0.699,
+    "deep_bear": 0.595,
+    "choppy": 0.599
+  },
+  "_regime_cutoffs_source": "optuna_150_trials_2026-05-30",
+  "_regime_cutoffs_prev": {
+    "recovery": 0.58,
+    "bull": 0.62,
+    "sideways": 0.62,
+    "deep_bear": 0.65,
+    "choppy": 0.62
+  },
+  "regime_size_mult": {
+    "recovery": 1.2,
+    "bull": 1.0,
+    "sideways": 1.0,
+    "deep_bear": 0.5,
+    "choppy": 0.4
+  },
+  "hold_days_regime": {
+    "bull": 25,
+    "deep_bear": 25,
+    "choppy": 25,
+    "sideways": 20,
+    "recovery": 20,
+    "unknown": 25
+  },
+  "sector_cutoffs": {
+    "Hàng không – Du lịch": 0.58,
+    "Công nghệ": 0.56,
+    "VLXD": 0.56,
+    "NA": 0.56,
+    "Bất động sản": 0.58,
+    "Thực phẩm": 0.58
+  },
+  "sector_cutoffs_deep_bear": {
+    "Hàng không – Du lịch": 0.58,
+    "Công nghệ": 0.56,
+    "VLXD": 0.56,
+    "NA": 0.56,
+    "Thực phẩm": 0.58
+  },
+  "topk_per_regime": {
+    "bull":      3,
+    "sideways":  3,
+    "deep_bear": 10,
+    "recovery":  7,
+    "choppy":    2,
+    "unknown":   5
+  },
+  "tier_filters": {
+    "T2_vol_ratio_min": 0.8,
+    "T3_ema_near_pct": 12.0,
+    "T4_bearish_candles": true,
+    "T5_vol_spike_ratio": 1.6,
+    "T5_regimes": [
+      "deep_bear",
+      "choppy"
+    ]
+  },
+  "_experiment": "foreign_flow_v2",
+  "_new_features": [
+    "foreign_trend_5_20",
+    "foreign_cum_flow_63d",
+    "foreign_flow_reversal",
+    "foreign_buy_pct_20d"
+  ],
+  "_auc_delta_vs_v3a": -0.0255
+}

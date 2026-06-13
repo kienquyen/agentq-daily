@@ -1,0 +1,15 @@
+{
+  "date": "2026-03-11",
+  "version": "v3b",
+  "regime": "sideways",
+  "prob_cutoff": 0.62,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "DIG",
+      "prob": 0.6239,
+      "close_price": 13350
+    }
+  ],
+  "error": null
+}

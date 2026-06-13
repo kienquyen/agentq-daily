@@ -1,0 +1,15 @@
+{
+  "date": "2026-04-07",
+  "version": "v3b",
+  "regime": "recovery",
+  "prob_cutoff": 0.58,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "ANV",
+      "prob": 0.5827,
+      "close_price": 23700
+    }
+  ],
+  "error": null
+}

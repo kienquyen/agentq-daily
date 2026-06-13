@@ -1,0 +1,15 @@
+{
+  "date": "2026-03-30",
+  "version": "v3a",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.58,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "GVR",
+      "prob": 0.6292,
+      "close_price": 33100
+    }
+  ],
+  "error": null
+}

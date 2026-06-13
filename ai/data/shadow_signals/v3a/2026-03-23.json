@@ -1,0 +1,15 @@
+{
+  "date": "2026-03-23",
+  "version": "v3a",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.58,
+  "n_signals": 1,
+  "signals": [
+    {
+      "symbol": "BCM",
+      "prob": 0.6512,
+      "close_price": 50500
+    }
+  ],
+  "error": null
+}

@@ -1,0 +1,9 @@
+{
+  "date": "2026-05-08",
+  "version": "v3a",
+  "regime": "bull",
+  "prob_cutoff": 0.55,
+  "n_signals": 0,
+  "signals": [],
+  "error": null
+}

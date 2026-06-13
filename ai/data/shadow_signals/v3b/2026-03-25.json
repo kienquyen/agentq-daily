@@ -1,0 +1,30 @@
+{
+  "date": "2026-03-25",
+  "version": "v3b",
+  "regime": "deep_bear",
+  "prob_cutoff": 0.65,
+  "n_signals": 4,
+  "signals": [
+    {
+      "symbol": "ANV",
+      "prob": 0.7432,
+      "close_price": 23100
+    },
+    {
+      "symbol": "SHS",
+      "prob": 0.7034,
+      "close_price": 16000
+    },
+    {
+      "symbol": "HCM",
+      "prob": 0.6543,
+      "close_price": 21100
+    },
+    {
+      "symbol": "HDC",
+      "prob": 0.6532,
+      "close_price": 17950
+    }
+  ],
+  "error": null
+}

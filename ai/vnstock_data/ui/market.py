@@ -1,0 +1,26 @@
+'\nMarket Data Layer Entry Point.\n'
+from __future__ import annotations
+from typing import TYPE_CHECKING
+import pandas as pd
+if TYPE_CHECKING:from vnstock_data.ui.domains.market.commodity import CommodityMarket;from vnstock_data.ui.domains.market.crypto import CryptoMarket;from vnstock_data.ui.domains.market.derivatives import FuturesMarket,WarrantMarket;from vnstock_data.ui.domains.market.equity import EquityMarket;from vnstock_data.ui.domains.market.etf import ETFMarket;from vnstock_data.ui.domains.market.forex import ForexMarket;from vnstock_data.ui.domains.market.fund import FundMarket
+from vnstock_data.ui._base import BaseDomain
+from vnstock_data.ui._registry import MARKET_SOURCES
+class Market:
+	"\n    Market Data Layer (Layer 2).\n    Provides access to real-time and historical pricing data across all asset classes.\n    \n    ✅ METHODS AVAILABLE:\n    \n    - equity(symbol)   → EquityMarket: OHLCV, intraday trades, order book, stats for equities.\n    - index(symbol)    → IndexMarket: OHLCV, quote, summary for indices.\n    - futures(symbol)  → FuturesMarket: OHLCV, order book, quote for futures.\n    - warrant(symbol)  → WarrantMarket: OHLCV, order book, quote for warrants.\n    - etf(symbol)      → ETFMarket: OHLCV, intraday trades, foreign flow for ETFs.\n    - fund(symbol)     → FundMarket: NAV history, portfolio holdings for mutual funds.\n    - crypto(symbol)   → CryptoMarket: OHLCV, trades, order book for cryptocurrencies.\n    - forex(symbol)    → ForexMarket: OHLCV, intraday for forex pairs.\n    - commodity(symbol)→ CommodityMarket: OHLCV, intraday for commodities.\n    - quote(symbols)   → DataFrame: Real-time snapshot for multiple symbols.\n    \n    Example:\n        market = Market()\n        fpt = market.equity('FPT')\n        history = fpt.ohlcv()\n    "
+	def __init__(A,index=bytes([86,78,73,78,68,69,88]).decode(),random_agent=False,show_log=False,**B):A._index=index;A._deprecated_warned=False
+	def _warn_deprecate(A):
+		if not getattr(A,bytes([95,100,101,112,114,101,99,97,116,101,100,95,119,97,114,110,101,100]).decode(),False):import warnings as B;B.warn(bytes([77,97,114,107,101,116,32,109,101,116,104,111,100,115,32,112,101,40,41,44,32,112,98,40,41,44,32,101,118,97,108,117,97,116,105,111,110,40,41,32,119,105,108,108,32,98,101,32,114,101,109,111,118,101,100,32,111,110,32,50,48,50,54,45,48,56,45,51,49,46,32,80,108,101,97,115,101,32,117,115,101,32,116,104,101,32,110,101,119,32,115,116,114,117,99,116,117,114,101,58,32,96,65,110,97,108,121,116,105,99,115,40,41,46,118,97,108,117,97,116,105,111,110,40,105,110,100,101,120,41,46,112,101,40,41,96,32,105,110,115,116,101,97,100,46]).decode(),PendingDeprecationWarning,stacklevel=3);A._deprecated_warned=True
+	def pe(A,duration=bytes([53,89]).decode()):A._warn_deprecate();from vnstock_data.ui.analytics import Analytics as B;return B().valuation(index=A._index).pe(duration=duration)
+	def pb(A,duration=bytes([53,89]).decode()):A._warn_deprecate();from vnstock_data.ui.analytics import Analytics as B;return B().valuation(index=A._index).pb(duration=duration)
+	def evaluation(A,duration=bytes([53,89]).decode()):A._warn_deprecate();from vnstock_data.ui.analytics import Analytics as B;return B().valuation(index=A._index).evaluation(duration=duration)
+	def equity(B,symbol):'Access equity market data.';from vnstock_data.ui.domains.market.equity import EquityMarket as A;return A(symbol)
+	def index(C,symbol,**A):'Access index market data.';from vnstock_data.ui.domains.market.index import IndexMarket as B;return B(symbol,**A)
+	def futures(B,symbol):'Access futures market data.';from vnstock_data.ui.domains.market.derivatives import FuturesMarket as A;return A(symbol)
+	def warrant(B,symbol):'Access warrant market data.';from vnstock_data.ui.domains.market.derivatives import WarrantMarket as A;return A(symbol)
+	def etf(B,symbol):'Access ETF market data.';from vnstock_data.ui.domains.market.etf import ETFMarket as A;return A(symbol)
+	def fund(B,symbol=None):'\n        Access historical NAVs and portfolio compositions for a specific Mutual Fund.\n        ';from vnstock_data.ui.domains.market.fund import FundMarket as A;return A(symbol=symbol)
+	def crypto(C,symbol,**A):"Access crypto market data (e.g., 'BTC').";from vnstock_data.ui.domains.market.crypto import CryptoMarket as B;return B(symbol,**A)
+	def forex(C,symbol,**A):"Access forex market data (e.g., 'USDVND').";from vnstock_data.ui.domains.market.forex import ForexMarket as B;return B(symbol,**A)
+	def commodity(C,symbol,**A):"Access commodity market data (e.g., 'GC=F').";from vnstock_data.ui.domains.market.commodity import CommodityMarket as B;return B(symbol,**A)
+	def quote(C,symbols_list,**A):'\n        Real-time multi-symbol pricing snapshot.\n        ';B=BaseDomain(bytes([109,97,114,107,101,116,46,109,97,114,107,101,116,95,119,105,100,101]).decode(),MARKET_SOURCES);A[bytes([115,121,109,98,111,108,115,95,108,105,115,116]).decode()]=symbols_list;A[bytes([103,101,116,95,97,108,108]).decode()]=True;return B._dispatch(bytes([113,117,111,116,101]).decode(),**A)
+	def price_board(A,symbols_list,**B):'\n        [Backward Compatible Alias] Relays to `.quote()`.\n        Provides real-time multi-symbol pricing snapshot.\n        ';return A.quote(symbols_list,**B)
