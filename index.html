@@ -676,9 +676,10 @@
 
 <!-- ── TAB BAR ────────────────────────────────────────────────────────────── -->
 <nav class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('rules')"  id="tab-rules">📊 Tín hiệu Rule-based</button>
-  <button class="tab-btn"        onclick="switchTab('v3a')"    id="tab-v3a"  >🤖 AI v3a — 20D Hold</button>
-  <button class="tab-btn"        onclick="switchTab('v5')"     id="tab-v5"   >🚀 Outperform — V5</button>
+  <button class="tab-btn active" onclick="switchTab('rules')"  id="tab-rules"  >📊 Tín hiệu Rule-based</button>
+  <button class="tab-btn"        onclick="switchTab('v3a')"    id="tab-v3a"    >🤖 AI v3a — 20D Hold</button>
+  <button class="tab-btn"        onclick="switchTab('v5')"     id="tab-v5"     >🚀 Outperform — V5</button>
+  <button class="tab-btn"        onclick="switchTab('weekly')" id="tab-weekly" >📅 Weekly — 120D Hold</button>
 </nav>
 
 <!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
@@ -705,16 +706,18 @@ const CACHE_BUST = "v" + Math.random().toString(36).slice(2, 8); // Random cache
 const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
 const CDN      = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main`;
 const DATA_URL  = IS_LOCAL ? "./data.json"     : `${CDN}/data.json?cb=${CACHE_BUST}`;
-const V3A_URL   = IS_LOCAL ? "./v3a_data.json" : `${CDN}/v3a_data.json?cb=${CACHE_BUST}`;
-const V5_URL    = IS_LOCAL ? "./v5_data.json"  : `${CDN}/v5_data.json?cb=${CACHE_BUST}`;
+const V3A_URL    = IS_LOCAL ? "./v3a_data.json"    : `${CDN}/v3a_data.json?cb=${CACHE_BUST}`;
+const V5_URL     = IS_LOCAL ? "./v5_data.json"     : `${CDN}/v5_data.json?cb=${CACHE_BUST}`;
+const WEEKLY_URL = IS_LOCAL ? "./weekly_data.json" : `${CDN}/weekly_data.json?cb=${CACHE_BUST}`;
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let allDates  = [];
-let cache     = {};
-let current   = null;
-let activeTab = "rules";
-let v3aData   = null;
-let v5Data    = null;
+let allDates   = [];
+let cache      = {};
+let current    = null;
+let activeTab  = "rules";
+let v3aData    = null;
+let v5Data     = null;
+let weeklyData = null;
 let lastDataHash = null; // Track for auto-refresh
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
@@ -1026,6 +1029,8 @@ async function switchTab(tab) {
   if (tab === "rules") {
     if (current) await renderPage(current, await fetchSignal(current));
     else if (allDates.length) await selectDate(allDates[0]);
+  } else if (tab === "weekly") {
+    await renderWeeklyTab();
   } else {
     await renderAITab(tab);
   }
@@ -1168,6 +1173,96 @@ async function renderAITab(model) {
           <tbody>${rows}</tbody>
         </table>
       </div>`;
+  }
+
+  document.getElementById("app").innerHTML = html;
+}
+
+// ── Weekly Tab ────────────────────────────────────────────────────────────────
+async function renderWeeklyTab() {
+  document.getElementById("app").innerHTML = `<div class="loading"><div class="spinner"></div><div style="font-size:12px">Đang tải weekly signals...</div></div>`;
+
+  if (!weeklyData) {
+    try { const r = await fetch(`${WEEKLY_URL}?t=${Date.now()}`); weeklyData = await r.json(); } catch(e){}
+  }
+
+  if (!weeklyData) {
+    document.getElementById("app").innerHTML = `<div class="empty animate-in"><div class="empty-icon">⚠️</div><div class="empty-title">Không tải được dữ liệu</div><div class="empty-sub">Chạy export_weekly_signals.py để cập nhật</div></div>`;
+    return;
+  }
+
+  if (weeklyData.generated_at) {
+    document.getElementById("lastUpdateText").textContent = timeAgo(weeklyData.generated_at);
+    document.getElementById("statusDot").className = "dot";
+  }
+
+  const stats   = weeklyData.stats || {};
+  const weeks   = weeklyData.weekly_signals || {};
+  const entries = Object.entries(weeks).sort((a,b) => b[0].localeCompare(a[0]));
+
+  let html = `<div class="model-header animate-in">
+    <div class="ai-insight">
+      <div class="ai-insight-icon">📅</div>
+      <div class="ai-insight-text"><strong>${weeklyData.name}</strong><br>${weeklyData.description}</div>
+    </div>
+    <div class="stat-strip">
+      <div class="stat-cell"><div class="stat-val">${stats.total_signals ?? 0}</div><div class="stat-lbl">Tổng tín hiệu</div></div>
+      <div class="stat-cell"><div class="stat-val">${stats.weeks_with_signal ?? 0}</div><div class="stat-lbl">Tuần có signal</div></div>
+      <div class="stat-cell"><div class="stat-val" style="color:var(--purple)">${stats.hold_days ?? 120}d</div><div class="stat-lbl">Hold tối đa</div></div>
+      <div class="stat-cell"><div class="stat-val" style="color:var(--accent)">${((stats.cutoff ?? 0.60)*100).toFixed(0)}%</div><div class="stat-lbl">Cutoff</div></div>
+    </div>
+  </div>`;
+
+  for (const [date, week] of entries) {
+    const signals    = week.signals || [];
+    const nearMisses = week.near_misses || [];
+    const hasSignals = signals.length > 0;
+    const regimeColor = week.regime === "bear_risk" || week.regime === "bear" ? "var(--red)"
+                      : week.regime === "bull" || week.regime === "strong_bull" ? "var(--green)"
+                      : "var(--yellow)";
+
+    html += `<div class="animate-in" style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">📅 Thứ 6 — ${date}</div>
+        <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:var(--surface2);color:${regimeColor};text-transform:uppercase;font-weight:600">${week.regime||'—'}</span>
+        <span style="font-size:10px;color:var(--text3)">cutoff ${((week.prob_cutoff||0.60)*100).toFixed(0)}%</span>
+        <span style="font-size:10px;color:var(--text3)">${week.n_universe||0} mã → ${week.n_hardcheck||0} HC → <strong style="color:${hasSignals?'var(--green)':'var(--text3)'}">${signals.length} signal</strong></span>
+      </div>`;
+
+    if (hasSignals) {
+      html += `<div class="signal-grid">`;
+      for (const s of signals) {
+        const probPct = ((s.prob||0)*100).toFixed(1);
+        const probColor = s.prob >= 0.75 ? "var(--green)" : s.prob >= 0.65 ? "var(--blue)" : "var(--accent)";
+        html += `<div class="ai-card pending animate-in">
+          <div class="ai-card-top">
+            <div>
+              <div class="ai-ticker">${s.symbol}</div>
+              <div class="ai-date">Vào ${date}</div>
+            </div>
+            <span class="status-badge pending">WEEKLY</span>
+          </div>
+          <div class="ai-metrics">
+            <div class="ai-metric"><div class="ai-metric-val">${fmtPrice(s.entry_price)}</div><div class="ai-metric-lbl">GIÁ VÀO</div></div>
+            <div class="ai-metric"><div class="ai-metric-val" style="color:${probColor}">${probPct}%</div><div class="ai-metric-lbl">XÁC SUẤT</div></div>
+            <div class="ai-metric"><div class="ai-metric-val" style="color:var(--purple)">${s.hold_days||120}d</div><div class="ai-metric-lbl">HOLD TỐI ĐA</div></div>
+            <div class="ai-metric"><div class="ai-metric-val">${s.exit_date||'—'}</div><div class="ai-metric-lbl">NGÀY RA</div></div>
+          </div>
+        </div>`;
+      }
+      html += `</div>`;
+    } else if (nearMisses.length) {
+      html += `<div style="font-size:11px;color:var(--text3);padding:8px 12px;background:var(--surface);border-radius:8px;border:1px solid var(--border)">
+        🔍 Gần đạt: `;
+      html += nearMisses.map(nm =>
+        `<span style="margin-right:10px"><strong>${nm.symbol}</strong> ${((nm.prob||0)*100).toFixed(1)}%</span>`
+      ).join("");
+      html += `</div>`;
+    } else {
+      html += `<div style="font-size:11px;color:var(--text3);padding:8px 12px;background:var(--surface);border-radius:8px;border:1px solid var(--border)">Không có setup đủ điều kiện tuần này</div>`;
+    }
+
+    html += `</div>`;
   }
 
   document.getElementById("app").innerHTML = html;
