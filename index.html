@@ -647,12 +647,89 @@
     .ai-insight-text strong { color: var(--accent); }
 
     /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
-    @media (max-width: 480px) {
+
+    /* Bottom tab bar on mobile (native-app feel) */
+    @media (max-width: 600px) {
+      .tab-bar {
+        position: fixed;
+        top: auto; bottom: 0; left: 0; right: 0;
+        z-index: 200;
+        height: auto;
+        padding: 0 0 env(safe-area-inset-bottom);
+        border-top: 1px solid var(--border);
+        border-bottom: none;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        overflow: visible;
+      }
+      .tab-btn {
+        padding: 8px 4px;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: .2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        border-bottom: none;
+        border-top: 2px solid transparent;
+        min-height: 52px;
+      }
+      .tab-btn.active {
+        border-bottom: none;
+        border-top-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-dim);
+      }
+      .tab-btn .tab-icon { font-size: 20px; line-height: 1; display: block; }
+      .tab-btn .tab-label { display: block; font-size: 9px; line-height: 1.2; }
+
+      /* Push content above bottom tab */
+      .container { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+      footer.footer { margin-bottom: calc(60px + env(safe-area-inset-bottom)); }
+
+      /* Compact header */
+      .header { height: 48px; padding: 0 12px; }
+      .logo-text { font-size: 14px; }
+      #lastUpdateText { display: none; }
+
+      /* Larger touch targets for date nav */
+      .nav-btn { padding: 10px 16px; min-height: 44px; font-size: 14px; }
+      .date-main { font-size: 16px; }
+
+      /* Regime banner — stack on mobile */
+      .regime-banner { flex-direction: column; gap: 10px; padding: 12px; }
+      .regime-breakdown {
+        min-width: 0; width: 100%; padding-left: 0;
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+      }
+      .breakdown-val { font-size: 16px; }
+      .breakdown-name { font-size: 8px; }
+
+      /* History table — horizontal scroll */
+      .history-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { min-width: 420px; }
+      td.td-hide { display: none; }
+      td, thead th { padding: 9px 10px; font-size: 11px; }
+
+      /* Stat/metric grids — 2×2 */
+      .stat-strip { grid-template-columns: repeat(2, 1fr); }
+      .stat-val { font-size: 16px; }
+      .ai-metrics { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .ai-metric-val { font-size: 14px; }
+
+      /* Misc */
       .regime-stats { gap: 10px; }
       .regime-stat-val { font-size: 14px; }
-      td.td-hide { display: none; }
-      .stat-strip { grid-template-columns: repeat(2, 1fr); }
-      .ai-metrics { grid-template-columns: repeat(2, 1fr); }
+      .section-label { margin: 16px 0 8px; }
+      .empty { padding: 36px 16px; }
+      .card-ticker { font-size: 18px; }
+    }
+
+    @media (max-width: 360px) {
+      .breakdown-val { font-size: 13px; }
+      .nav-btn { padding: 10px 10px; font-size: 13px; }
     }
 
   </style>
@@ -676,10 +753,10 @@
 
 <!-- ── TAB BAR ────────────────────────────────────────────────────────────── -->
 <nav class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('rules')"  id="tab-rules"  >📊 Tín hiệu Rule-based</button>
-  <button class="tab-btn"        onclick="switchTab('v3a')"    id="tab-v3a"    >🤖 AI v3a — 20D Hold</button>
-  <button class="tab-btn"        onclick="switchTab('v5')"     id="tab-v5"     >🚀 Outperform — V5</button>
-  <button class="tab-btn"        onclick="switchTab('weekly')" id="tab-weekly" >📅 Weekly — 120D Hold</button>
+  <button class="tab-btn active" onclick="switchTab('rules')"  id="tab-rules"  ><span class="tab-icon">📊</span><span class="tab-label">Rule-based</span></button>
+  <button class="tab-btn"        onclick="switchTab('v3a')"    id="tab-v3a"    ><span class="tab-icon">🤖</span><span class="tab-label">AI v3a</span></button>
+  <button class="tab-btn"        onclick="switchTab('v5')"     id="tab-v5"     ><span class="tab-icon">🚀</span><span class="tab-label">V5</span></button>
+  <button class="tab-btn"        onclick="switchTab('weekly')" id="tab-weekly" ><span class="tab-icon">📅</span><span class="tab-label">Weekly</span></button>
 </nav>
 
 <!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
@@ -1019,6 +1096,22 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft")  goDate(-1);
   if (e.key === "ArrowRight") goDate(1);
 });
+
+// ── Swipe gesture for date navigation (mobile) ────────────────────────────────
+(function() {
+  let startX = 0, startY = 0;
+  document.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener("touchend", e => {
+    if (activeTab !== "rules") return;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 0.8) return; // too short or too vertical
+    goDate(dx < 0 ? 1 : -1); // swipe left = newer, swipe right = older
+  }, { passive: true });
+})();
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 // ── Tab switching ─────────────────────────────────────────────────────────────
