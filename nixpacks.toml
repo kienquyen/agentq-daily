@@ -2,8 +2,7 @@
 
 [phases.setup]
 nixPkgs = [
-  "libgcc",
-  "openmp",
+  "gcc",
   "git",
 ]
 
