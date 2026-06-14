@@ -324,11 +324,22 @@ def calculate_regime_score_agentq(feat: dict) -> dict:
     )
 
     # ── LAYER 2: BREADTH (30%) ──────────────────────────────────────
-    # Indicators: A/D ratio, RSI state, divergences
+    # Indicators: A/D ratio (real), RSI divergence, VNIndex RSI
 
-    # Fallback if no Daily Recap data
+    ad_ratio  = feat.get("ad_ratio", None)
+    ad_5d_avg = feat.get("ad_5d_avg", None)
     rsi_neutral = _tri_ideal(feat.get("rsi14_idx", 50), 50, 25)
-    breadth_score = rsi_neutral * 0.6
+
+    if ad_ratio is not None:
+        # Real A/D data available
+        # ad_ratio: % cổ phiếu tăng hôm nay (0→1), ideal ≈ 0.55–0.65 (thị trường khoẻ)
+        ad_today  = _linear(ad_ratio, 0.25, 0.75)    # 25%→75% tăng
+        # Momentum: hôm nay so với TB 5 phiên
+        ad_momentum = _linear(ad_ratio - ad_5d_avg, -0.15, 0.15)  # breadth đang cải thiện?
+        breadth_score = ad_today * 0.55 + ad_momentum * 0.20 + rsi_neutral * 0.25
+    else:
+        # Fallback: chỉ dùng RSI của VNINDEX
+        breadth_score = rsi_neutral * 0.6
 
     # Adjust for divergences and overbought
     if feat.get("rsi_bear_div"):
@@ -446,7 +457,69 @@ def calculate_regime_score_agentq(feat: dict) -> dict:
         }
     }
 
-def get_vnindex_regime(as_of_date: pd.Timestamp | None = None) -> dict:
+def compute_ad_ratio(data_map: dict, as_of_date: pd.Timestamp | None = None) -> dict:
+    """
+    Tính Advance/Decline ratio từ universe data.
+    Returns: {ad_ratio, ad_5d_avg, advances, declines, unchanged}
+    """
+    target = (as_of_date or pd.Timestamp.today()).normalize()
+    advances = declines = unchanged = 0
+    ad_history = []  # ad_ratio theo từng ngày trong 5 phiên gần nhất
+
+    daily_results: dict[str, list] = {}  # date → [ad_ratio per day]
+
+    for sym, data in data_map.items():
+        try:
+            df = data["df"].copy()
+            df["time"] = pd.to_datetime(df["time"])
+            df = df[df["time"] <= target].sort_values("time")
+            if len(df) < 2:
+                continue
+            c = df["close"]
+            # 5 phiên gần nhất
+            for i in range(max(1, len(df) - 5), len(df)):
+                date_key = str(df["time"].iloc[i])[:10]
+                prev_c = float(c.iloc[i - 1])
+                curr_c = float(c.iloc[i])
+                if prev_c == 0:
+                    continue
+                chg = curr_c - prev_c
+                daily_results.setdefault(date_key, []).append(1 if chg > 0 else (-1 if chg < 0 else 0))
+        except Exception:
+            continue
+
+    if not daily_results:
+        return {"ad_ratio": 0.5, "ad_5d_avg": 0.5, "advances": 0, "declines": 0, "unchanged": 0}
+
+    sorted_dates = sorted(daily_results.keys())
+    # Today (last date)
+    today_key = sorted_dates[-1]
+    today_vals = daily_results[today_key]
+    advances  = sum(1 for v in today_vals if v > 0)
+    declines  = sum(1 for v in today_vals if v < 0)
+    unchanged = sum(1 for v in today_vals if v == 0)
+    total = advances + declines + unchanged
+    ad_ratio = advances / total if total > 0 else 0.5
+
+    # 5-day average
+    ratios_5d = []
+    for dk in sorted_dates[-5:]:
+        vals = daily_results[dk]
+        t = len(vals)
+        if t > 0:
+            ratios_5d.append(sum(1 for v in vals if v > 0) / t)
+    ad_5d_avg = sum(ratios_5d) / len(ratios_5d) if ratios_5d else ad_ratio
+
+    return {
+        "ad_ratio": round(ad_ratio, 3),
+        "ad_5d_avg": round(ad_5d_avg, 3),
+        "advances": advances,
+        "declines": declines,
+        "unchanged": unchanged,
+    }
+
+
+def get_vnindex_regime(as_of_date: pd.Timestamp | None = None, universe_data: dict | None = None) -> dict:
     """
     Fetch VNINDEX & compute AgentQ 4-layer market regime.
 
@@ -545,7 +618,17 @@ def get_vnindex_regime(as_of_date: pd.Timestamp | None = None) -> dict:
         "foreign_net_pct_rank": 0.5,
         "flow_streak": 0,
         "flow_acceleration": 0.0,
+        "ad_ratio": 0.5,
+        "ad_5d_avg": 0.5,
     }
+
+    # Inject real A/D ratio if universe data available
+    if universe_data:
+        ad = compute_ad_ratio(universe_data, as_of_date)
+        feat["ad_ratio"]   = ad["ad_ratio"]
+        feat["ad_5d_avg"]  = ad["ad_5d_avg"]
+        feat["ad_advances"] = ad["advances"]
+        feat["ad_declines"] = ad["declines"]
 
     # ── Calculate AgentQ regime ─────────────────────────────────────
     regime_info = calculate_regime_score_agentq(feat)
@@ -570,8 +653,11 @@ def get_vnindex_regime(as_of_date: pd.Timestamp | None = None) -> dict:
     regime_label = "🟢 TREND" if ok else "🔴 CHOP/RISK"
 
     # ── Format detail message ──────────────────────────────────────
+    ad_str = ""
+    if feat.get("ad_advances") is not None:
+        ad_str = f"  A/D={feat['ad_advances']}↑/{feat['ad_declines']}↓"
     detail = (
-        f"{regime_label}  ADX={adx_val:.1f}  ROC5d={roc5_val:+.1f}%  DD20d={dd20_val:.1f}%  →  BUY1={'ON' if ok else 'OFF'}\n"
+        f"{regime_label}  ADX={adx_val:.1f}  ROC5d={roc5_val:+.1f}%  DD20d={dd20_val:.1f}%{ad_str}  →  BUY1={'ON' if ok else 'OFF'}\n"
         f"{regime_info['icon']} **{regime_info['vn_label']}** (Score {regime_info['score']:.0f}/100)\n"
         f"Trend {regime_info['breakdown']['trend']:.2f} · Breadth {regime_info['breakdown']['breadth']:.2f} · "
         f"Flow {regime_info['breakdown']['flow']:.2f} · Vol {regime_info['breakdown']['vol']:.2f}"
@@ -1000,12 +1086,11 @@ def run_screener_latest(run_date: pd.Timestamp | None = None):
     # Regime dùng để CẢNH BÁO và lọc strength, không tắt hoàn toàn BUY1.
     # Backtest cho thấy filter cứng làm giảm performance vì BUY1 hoạt động
     # tốt ngay cả khi VNIndex đang correction (cổ phiếu mạnh là outlier thật).
-    regime = get_vnindex_regime(as_of_date=run_date)
+    data_map = fetch_top_vn100_data()
+    regime = get_vnindex_regime(as_of_date=run_date, universe_data=data_map)
     print(regime["detail"])
     # Khi regime xấu: nâng ngưỡng strength tối thiểu lên 75 (chỉ lấy signal mạnh)
     buy1_min_strength = 75 if not regime["ok"] else 60
-
-    data_map = fetch_top_vn100_data()
     results = []
 
     for sym, data in data_map.items():
