@@ -917,6 +917,23 @@ function renderRegime(regime) {
     const lg = (a1 - a2) > 180 ? 1 : 0;
     return `M${s.x},${s.y} A${r},${r} 0 ${lg},0 ${e.x},${e.y} L${ei.x},${ei.y} A${r-w},${r-w} 0 ${lg},1 ${si.x},${si.y} Z`;
   }
+  const gaugeColor = score >= 75 ? "#22C55E" : score >= 60 ? "#86EFAC" : score >= 45 ? "#EAB308" : score >= 25 ? "#F97316" : "#EF4444";
+
+  // Stroke-based arcs → stroke-linecap="round" gives rounded ends naturally
+  const R = 71; // arc radius (midpoint of track)
+  const SW = 16; // stroke-width
+  function strokeArc(a1, a2, color) {
+    const r1 = a1 * Math.PI / 180, r2 = a2 * Math.PI / 180;
+    const x1 = (100 + R * Math.cos(r1)).toFixed(2), y1 = (100 - R * Math.sin(r1)).toFixed(2);
+    const x2 = (100 + R * Math.cos(r2)).toFixed(2), y2 = (100 - R * Math.sin(r2)).toFixed(2);
+    const lg = (a1 - a2) > 180 ? 1 : 0;
+    return `<path d="M${x1},${y1} A${R},${R} 0 ${lg},0 ${x2},${y2}" fill="none" stroke="${color}" stroke-width="${SW}" stroke-linecap="round" opacity="0.92"/>`;
+  }
+  // Track background (slightly wider, grey)
+  const trackPath = (() => {
+    const x1=(100-R).toFixed(2), x2=(100+R).toFixed(2);
+    return `<path d="M${x1},100 A${R},${R} 0 0,1 ${x2},100" fill="none" stroke="#e2e8f0" stroke-width="${SW+2}" stroke-linecap="round"/>`;
+  })();
   const segs = [
     { from:180, to:144, c:"#EF4444" },
     { from:144, to:108, c:"#F97316" },
@@ -924,25 +941,24 @@ function renderRegime(regime) {
     { from: 72, to: 36, c:"#86EFAC" },
     { from: 36, to:  0, c:"#22C55E" },
   ];
-  const segPaths = segs.map(s => `<path d="${arcPath(s.from,s.to,80,18)}" fill="${s.c}" opacity="0.9"/>`).join("");
+  const segPaths = segs.map(s => strokeArc(s.from, s.to, s.c)).join("");
 
   const needleDeg = 180 - score * 1.8;
   const needleRad = needleDeg * Math.PI / 180;
-  const nx = (100 + 62 * Math.cos(needleRad)).toFixed(1);
-  const ny = (100 - 62 * Math.sin(needleRad)).toFixed(1);
-
-  const gaugeColor = score >= 75 ? "#22C55E" : score >= 60 ? "#86EFAC" : score >= 45 ? "#EAB308" : score >= 25 ? "#F97316" : "#EF4444";
+  const nx = (100 + 58 * Math.cos(needleRad)).toFixed(1);
+  const ny = (100 - 58 * Math.sin(needleRad)).toFixed(1);
 
   const gaugeSvg = `<svg class="gauge-svg" viewBox="0 0 200 108" xmlns="http://www.w3.org/2000/svg">
-    <path d="${arcPath(180,0,80,18)}" fill="#f1f5f9"/>
+    ${trackPath}
     ${segPaths}
-    <line x1="100" y1="100" x2="${nx}" y2="${ny}" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="100" y1="100" x2="${nx}" y2="${ny}" stroke="${gaugeColor}" stroke-width="3" stroke-linecap="round"/>
     <circle cx="100" cy="100" r="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
-    <circle cx="100" cy="100" r="3.5" fill="#1e293b"/>
+    <circle cx="100" cy="100" r="3.5" fill="${gaugeColor}"/>
   </svg>`;
 
   // ── Breakdown cards ────────────────────────────────────────────────────────
   const bdMatch = breakdownLine.match(/Trend ([\d.]+) · Breadth ([\d.]+) · Flow ([\d.]+) · Vol ([\d.]+)/);
+  let bdTitle = "";
   let bdHtml = "";
   if (bdMatch) {
     const trend   = parseFloat(bdMatch[1]);
@@ -981,6 +997,7 @@ function renderRegime(regime) {
       { name:"DÒNG TIỀN", val:flow,    note:flowNote    },
       { name:"BIẾN ĐỘNG", val:vol,     note:volNote     },
     ];
+    bdTitle = `<div class="regime-card-title" style="margin:10px 0 8px">Điểm các cấu phần</div>`;
     bdHtml = `<div class="breakdown-grid">${items.map(it => `
       <div class="bd-card">
         <div class="bd-bar-wrap"><div class="bd-bar" style="width:${(it.val*100).toFixed(0)}%;background:${bdColor(it.val)}"></div></div>
@@ -1001,7 +1018,7 @@ function renderRegime(regime) {
         <div class="gauge-score-num" style="color:${gaugeColor}">${score}</div>
         <div class="gauge-score-label" style="color:${gaugeColor}">${regimeLabel}</div>
       </div>
-      ${bdHtml}
+      ${bdTitle}${bdHtml}
     </div>`;
 }
 
