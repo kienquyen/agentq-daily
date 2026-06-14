@@ -1422,6 +1422,9 @@ async function renderWeeklyTab() {
       const probColor = s.prob >= 0.75 ? "var(--green)" : s.prob >= 0.65 ? "var(--blue)" : "var(--accent)";
       const regime = s.regime || "";
       const regColor = regime.includes("bear") ? "var(--red)" : regime.includes("bull") ? "var(--green)" : "var(--yellow)";
+      const pnl = s.actual_return;
+      const pnlColor = pnl == null ? "var(--text3)" : pnl > 0 ? "var(--accent)" : "var(--red)";
+      const pnlStr  = pnl == null ? "—" : (pnl > 0 ? "+" : "") + pnl.toFixed(1) + "%";
       html += `<div class="ai-card pending animate-in">
         <div class="ai-card-top">
           <div><div class="ai-ticker">${s.symbol}</div><div class="ai-date">Vào ${s.signal_date}</div></div>
@@ -1430,7 +1433,7 @@ async function renderWeeklyTab() {
         <div class="ai-metrics">
           <div class="ai-metric"><div class="ai-metric-val">${fmtPrice(s.entry_price)}</div><div class="ai-metric-lbl">GIÁ VÀO</div></div>
           <div class="ai-metric"><div class="ai-metric-val" style="color:${probColor}">${prob}%</div><div class="ai-metric-lbl">XÁC SUẤT</div></div>
-          <div class="ai-metric"><div class="ai-metric-val" style="color:var(--purple)">${s.hold_days||60}d</div><div class="ai-metric-lbl">HOLD TỐI ĐA</div></div>
+          <div class="ai-metric"><div class="ai-metric-val" style="color:${pnlColor};font-weight:700">${pnlStr}</div><div class="ai-metric-lbl">P&amp;L HIỆN TẠI</div></div>
           <div class="ai-metric"><div class="ai-metric-val" style="color:${regColor};font-size:10px">${regime.toUpperCase()||'—'}</div><div class="ai-metric-lbl">REGIME</div></div>
         </div>
       </div>`;
