@@ -825,7 +825,8 @@ const CDN      = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main
 const DATA_URL  = IS_LOCAL ? "./data.json"     : `${CDN}/data.json?cb=${CACHE_BUST}`;
 const V3A_URL    = IS_LOCAL ? "./v3a_data.json"    : `${CDN}/v3a_data.json?cb=${CACHE_BUST}`;
 const V5_URL     = IS_LOCAL ? "./v5_data.json"     : `${CDN}/v5_data.json?cb=${CACHE_BUST}`;
-const WEEKLY_URL = IS_LOCAL ? "./weekly_data.json" : `${CDN}/weekly_data.json?cb=${CACHE_BUST}`;
+const WEEKLY_URL   = IS_LOCAL ? "./weekly_data.json"   : `${CDN}/weekly_data.json?cb=${CACHE_BUST}`;
+const LONGHOLD_URL = IS_LOCAL ? "./longhold_data.json" : `${CDN}/longhold_data.json?cb=${CACHE_BUST}`;
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let allDates   = [];
@@ -834,7 +835,8 @@ let current    = null;
 let activeTab  = "rules";
 let v3aData    = null;
 let v5Data     = null;
-let weeklyData = null;
+let weeklyData    = null;
+let longholdData  = null;
 let lastDataHash = null; // Track for auto-refresh
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
@@ -1373,89 +1375,124 @@ async function renderAITab(model) {
 
 // ── Weekly Tab ────────────────────────────────────────────────────────────────
 async function renderWeeklyTab() {
-  document.getElementById("app").innerHTML = `<div class="loading"><div class="spinner"></div><div style="font-size:12px">Đang tải weekly signals...</div></div>`;
+  document.getElementById("app").innerHTML = `<div class="loading"><div class="spinner"></div><div style="font-size:12px">Đang tải Long-hold signals...</div></div>`;
 
-  if (!weeklyData) {
-    try { const r = await fetch(`${WEEKLY_URL}?t=${Date.now()}`); weeklyData = await r.json(); } catch(e){}
+  if (!longholdData) {
+    try { const r = await fetch(`${LONGHOLD_URL}?t=${Date.now()}`); longholdData = await r.json(); } catch(e){}
   }
 
-  if (!weeklyData) {
-    document.getElementById("app").innerHTML = `<div class="empty animate-in"><div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Không tải được dữ liệu</div><div class="empty-sub">Chạy export_weekly_signals.py để cập nhật</div></div>`;
+  if (!longholdData) {
+    document.getElementById("app").innerHTML = `<div class="empty animate-in"><div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Không tải được dữ liệu</div><div class="empty-sub">Chạy export_longhold_signals.py để cập nhật</div></div>`;
     return;
   }
 
-  if (weeklyData.generated_at) {
-    document.getElementById("lastUpdateText").textContent = timeAgo(weeklyData.generated_at);
+  if (longholdData.generated_at) {
+    document.getElementById("lastUpdateText").textContent = timeAgo(longholdData.generated_at);
     document.getElementById("statusDot").className = "dot";
   }
 
-  const stats   = weeklyData.stats || {};
-  const weeks   = weeklyData.weekly_signals || {};
-  const entries = Object.entries(weeks).sort((a,b) => b[0].localeCompare(a[0]));
+  const stats   = longholdData.stats || {};
+  const active  = longholdData.active_signals || [];
+  const history = longholdData.recent_history || [];
+  const daily   = longholdData.daily_signals  || {};
 
+  const retColor = (r) => r == null ? "var(--text3)" : r > 0 ? "var(--accent)" : "var(--red)";
+  const retStr   = (r) => r == null ? "—" : (r > 0 ? "+" : "") + r.toFixed(1) + "%";
+
+  // ── Header stats ─────────────────────────────────────────────────────────
   let html = `<div class="model-header animate-in">
     <div class="ai-insight">
       <div class="ai-insight-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></div>
-      <div class="ai-insight-text"><strong>${weeklyData.name}</strong><br>${weeklyData.description}</div>
+      <div class="ai-insight-text"><strong>${longholdData.name||'Long-hold'}</strong><br>${longholdData.description||''}</div>
     </div>
     <div class="stat-strip">
-      <div class="stat-cell"><div class="stat-val">${stats.total_signals ?? 0}</div><div class="stat-lbl">Tổng tín hiệu</div></div>
-      <div class="stat-cell"><div class="stat-val">${stats.weeks_with_signal ?? 0}</div><div class="stat-lbl">Tuần có signal</div></div>
-      <div class="stat-cell"><div class="stat-val" style="color:var(--purple)">${stats.hold_days ?? 120}d</div><div class="stat-lbl">Hold tối đa</div></div>
-      <div class="stat-cell"><div class="stat-val" style="color:var(--accent)">${((stats.cutoff ?? 0.60)*100).toFixed(0)}%</div><div class="stat-lbl">Cutoff</div></div>
+      <div class="stat-cell"><div class="stat-val">${stats.total??0}</div><div class="stat-lbl">Tổng tín hiệu</div></div>
+      <div class="stat-cell"><div class="stat-val" style="color:var(--accent)">${stats.win_rate??0}%</div><div class="stat-lbl">Tỷ lệ thắng</div></div>
+      <div class="stat-cell"><div class="stat-val" style="color:${retColor(stats.avg_return)}">${retStr(stats.avg_return)}</div><div class="stat-lbl">TB Return</div></div>
+      <div class="stat-cell"><div class="stat-val" style="color:var(--blue)">${stats.active??0}</div><div class="stat-lbl">Đang giữ</div></div>
     </div>
   </div>`;
 
-  for (const [date, week] of entries) {
-    const signals    = week.signals || [];
-    const nearMisses = week.near_misses || [];
-    const hasSignals = signals.length > 0;
-    const regimeColor = week.regime === "bear_risk" || week.regime === "bear" ? "var(--red)"
-                      : week.regime === "bull" || week.regime === "strong_bull" ? "var(--green)"
-                      : "var(--yellow)";
-
-    html += `<div class="animate-in" style="margin-bottom:20px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="font-size:13px;font-weight:700;color:var(--text)">📅 Thứ 6 — ${date}</div>
-        <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:var(--surface2);color:${regimeColor};text-transform:uppercase;font-weight:600">${week.regime||'—'}</span>
-        <span style="font-size:10px;color:var(--text3)">cutoff ${((week.prob_cutoff||0.60)*100).toFixed(0)}%</span>
-        <span style="font-size:10px;color:var(--text3)">${week.n_universe||0} mã → ${week.n_hardcheck||0} HC → <strong style="color:${hasSignals?'var(--green)':'var(--text3)'}">${signals.length} signal</strong></span>
+  // ── Active signals ────────────────────────────────────────────────────────
+  if (active.length) {
+    html += `<div class="section-label">Đang giữ (${active.length})</div>
+    <div class="signal-grid">`;
+    for (const s of active) {
+      const prob = ((s.prob||0)*100).toFixed(1);
+      const probColor = s.prob >= 0.75 ? "var(--green)" : s.prob >= 0.65 ? "var(--blue)" : "var(--accent)";
+      const regime = s.regime || "";
+      const regColor = regime.includes("bear") ? "var(--red)" : regime.includes("bull") ? "var(--green)" : "var(--yellow)";
+      html += `<div class="ai-card pending animate-in">
+        <div class="ai-card-top">
+          <div><div class="ai-ticker">${s.symbol}</div><div class="ai-date">Vào ${s.signal_date}</div></div>
+          <span class="status-badge pending">GIỮ</span>
+        </div>
+        <div class="ai-metrics">
+          <div class="ai-metric"><div class="ai-metric-val">${fmtPrice(s.entry_price)}</div><div class="ai-metric-lbl">GIÁ VÀO</div></div>
+          <div class="ai-metric"><div class="ai-metric-val" style="color:${probColor}">${prob}%</div><div class="ai-metric-lbl">XÁC SUẤT</div></div>
+          <div class="ai-metric"><div class="ai-metric-val" style="color:var(--purple)">${s.hold_days||60}d</div><div class="ai-metric-lbl">HOLD TỐI ĐA</div></div>
+          <div class="ai-metric"><div class="ai-metric-val" style="color:${regColor};font-size:10px">${regime.toUpperCase()||'—'}</div><div class="ai-metric-lbl">REGIME</div></div>
+        </div>
       </div>`;
+    }
+    html += `</div>`;
+  }
 
-    if (hasSignals) {
-      html += `<div class="signal-grid">`;
-      for (const s of signals) {
-        const probPct = ((s.prob||0)*100).toFixed(1);
-        const probColor = s.prob >= 0.75 ? "var(--green)" : s.prob >= 0.65 ? "var(--blue)" : "var(--accent)";
-        html += `<div class="ai-card pending animate-in">
-          <div class="ai-card-top">
-            <div>
-              <div class="ai-ticker">${s.symbol}</div>
-              <div class="ai-date">Vào ${date}</div>
-            </div>
-            <span class="status-badge pending">WEEKLY</span>
-          </div>
-          <div class="ai-metrics">
-            <div class="ai-metric"><div class="ai-metric-val">${fmtPrice(s.entry_price)}</div><div class="ai-metric-lbl">GIÁ VÀO</div></div>
-            <div class="ai-metric"><div class="ai-metric-val" style="color:${probColor}">${probPct}%</div><div class="ai-metric-lbl">XÁC SUẤT</div></div>
-            <div class="ai-metric"><div class="ai-metric-val" style="color:var(--purple)">${s.hold_days||120}d</div><div class="ai-metric-lbl">HOLD TỐI ĐA</div></div>
-            <div class="ai-metric"><div class="ai-metric-val">${s.exit_date||'—'}</div><div class="ai-metric-lbl">NGÀY RA</div></div>
-          </div>
+  // ── History table ─────────────────────────────────────────────────────────
+  if (history.length) {
+    html += `<div class="section-label" style="margin-top:20px">Lịch sử giao dịch (${history.length})</div>
+    <div class="history-wrap"><table>
+      <thead><tr>
+        <th>NGÀY VÀO</th><th>MÃ</th><th>GIÁ VÀO</th><th>GIÁ RA</th><th>RETURN</th><th>NGÀY RA</th><th>REGIME</th>
+      </tr></thead><tbody>`;
+    for (const s of history) {
+      const rc = retColor(s.actual_return);
+      const rs = retStr(s.actual_return);
+      const win = s.is_win;
+      html += `<tr>
+        <td>${s.signal_date}</td>
+        <td style="font-weight:700">${s.symbol}</td>
+        <td>${fmtPrice(s.entry_price)}</td>
+        <td>${s.exit_price ? fmtPrice(s.exit_price) : '—'}</td>
+        <td style="font-weight:700;color:${rc}">${rs}</td>
+        <td>${s.exit_date||'—'}</td>
+        <td style="font-size:10px;color:var(--text3)">${(s.regime||'').toUpperCase()}</td>
+      </tr>`;
+    }
+    html += `</tbody></table></div>`;
+  }
+
+  // ── Daily signal log (grouped by date, collapsed) ─────────────────────────
+  const entries = Object.entries(daily).sort((a,b) => b[0].localeCompare(a[0]));
+  const daysWithSignal = entries.filter(([,d]) => (d.signals||[]).length > 0);
+
+  if (daysWithSignal.length) {
+    html += `<div class="section-label" style="margin-top:20px">Nhật ký tín hiệu (${daysWithSignal.length} ngày có signal)</div>`;
+    for (const [date, day] of daysWithSignal) {
+      const sigs = day.signals || [];
+      const regColor = (day.regime||"").includes("bear") ? "var(--red)"
+                     : (day.regime||"").includes("bull") ? "var(--green)" : "var(--yellow)";
+      html += `<div style="margin-bottom:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:12px;font-weight:700;color:var(--text)">${date}</span>
+          <span style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface2);color:${regColor};font-weight:600;text-transform:uppercase">${day.regime||'—'}</span>
+          <span style="font-size:10px;color:var(--text3)">cutoff ${((day.prob_cutoff||0.60)*100).toFixed(0)}%</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">`;
+      for (const s of sigs) {
+        const rc = retColor(s.actual_return);
+        const rs = retStr(s.actual_return);
+        const badge = s.status === "completed"
+          ? `<span style="font-size:10px;font-weight:700;color:${rc}">${rs}</span>`
+          : `<span style="font-size:10px;color:var(--text3)">giữ</span>`;
+        html += `<div style="display:flex;align-items:center;gap:6px;padding:5px 10px;background:var(--surface2);border-radius:7px;border:1px solid var(--border)">
+          <span style="font-weight:700;font-size:13px">${s.symbol}</span>
+          <span style="font-size:11px;color:var(--text2)">${((s.prob||0)*100).toFixed(1)}%</span>
+          ${badge}
         </div>`;
       }
-      html += `</div>`;
-    } else if (nearMisses.length) {
-      html += `<div style="font-size:11px;color:var(--text3);padding:8px 12px;background:var(--surface);border-radius:8px;border:1px solid var(--border)">
-        🔍 Gần đạt: `;
-      html += nearMisses.map(nm =>
-        `<span style="margin-right:10px"><strong>${nm.symbol}</strong> ${((nm.prob||0)*100).toFixed(1)}%</span>`
-      ).join("");
-      html += `</div>`;
-    } else {
-      html += `<div style="font-size:11px;color:var(--text3);padding:8px 12px;background:var(--surface);border-radius:8px;border:1px solid var(--border)">Không có setup đủ điều kiện tuần này</div>`;
+      html += `</div></div>`;
     }
-
-    html += `</div>`;
   }
 
   document.getElementById("app").innerHTML = html;

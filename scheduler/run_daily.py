@@ -134,6 +134,14 @@ def step_export_weekly() -> bool:
     )
 
 
+def step_export_longhold() -> bool:
+    """Export longhold_data.json (v3b signals, daily)."""
+    return _run(
+        [sys.executable, str(SCHED_DIR / "export_longhold_signals.py")],
+        cwd=SCHED_DIR, desc="Export long-hold signals JSON",
+    )
+
+
 def step_git_push_rules(run_date: str) -> bool:
     """Push rule-based signal JSON to GitHub Pages."""
     import os
@@ -196,6 +204,8 @@ def main():
                 failures.append("export_ai")
             if not step_export_weekly():
                 failures.append("export_weekly")
+            if not step_export_longhold():
+                failures.append("export_longhold")
 
     if not args.skip_rules:
         if not step_score_rules(run_date):
