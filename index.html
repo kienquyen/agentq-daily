@@ -848,7 +848,10 @@
     <div class="modal-title" id="modalTitle"></div>
     <div class="modal-date"  id="modalDate"></div>
     <div class="modal-sub"   id="modalSub"></div>
-    <button class="modal-close" onclick="closeUpdateModal()">Đã hiểu</button>
+    <div id="modalActions" style="display:flex;gap:8px;margin-top:18px">
+      <button id="modalBtnYes" class="modal-close" style="flex:1" onclick="triggerPipeline()">Cập nhật ngay</button>
+      <button id="modalBtnNo"  class="modal-close" style="flex:1;background:var(--surface3);color:var(--text)" onclick="closeUpdateModal()">Đóng</button>
+    </div>
   </div>
 </div>
 <div class="header-tagline-mobile">"I don't chase predictions. I build systems that compound."</div>
@@ -1576,46 +1579,115 @@ async function renderWeeklyTab() {
 }
 
 // ── Update Modal ──────────────────────────────────────────────────────────────
+// GitHub fine-grained PAT: chỉ cần quyền Actions: write trên repo này
+// Tạo tại: github.com/settings/personal-access-tokens → Fine-grained → Actions: write
+const GH_OWNER    = "kienquyen";
+const GH_REPO     = "agentq-daily";
+const GH_WORKFLOW = "run_pipeline.yml";
+const GH_TOKEN    = "";  // ← điền PAT vào đây (hoặc để trống để chỉ xem thông báo)
+
+let _pipelineDate = "";  // date string YYYY-MM-DD để pass vào trigger
+
+const _fmtDate = (d) => {
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return `${dd}/${mm}/${d.getFullYear()}`;
+};
+
+const _isoDate = (d) => d.toISOString().slice(0, 10);
+
+const _prevTradingDay = (ref) => {
+  const d = new Date(ref);
+  d.setDate(d.getDate() - 1);
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() - 1);
+  return d;
+};
+
 function showUpdateModal() {
-  // Vietnam time = UTC+7
-  const now = new Date();
+  const now    = new Date();
   const vnTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
-  const hours = vnTime.getHours();
-  const minutes = vnTime.getMinutes();
-  const isAfterClose = hours > 15 || (hours === 15 && minutes >= 15);
+  const isAfterClose = vnTime.getHours() > 15 || (vnTime.getHours() === 15 && vnTime.getMinutes() >= 15);
 
-  const fmtDate = (d) => {
-    const dd = String(d.getDate()).padStart(2, "0");
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const yyyy = d.getFullYear();
-    return `${dd}/${mm}/${yyyy}`;
-  };
-
-  // T-1: bỏ qua cuối tuần
-  const yesterday = new Date(vnTime);
-  yesterday.setDate(yesterday.getDate() - 1);
-  while (yesterday.getDay() === 0 || yesterday.getDay() === 6) {
-    yesterday.setDate(yesterday.getDate() - 1);
-  }
-
-  const icon  = document.getElementById("modalIcon");
-  const title = document.getElementById("modalTitle");
-  const date  = document.getElementById("modalDate");
-  const sub   = document.getElementById("modalSub");
+  const icon    = document.getElementById("modalIcon");
+  const title   = document.getElementById("modalTitle");
+  const dateEl  = document.getElementById("modalDate");
+  const sub     = document.getElementById("modalSub");
+  const btnYes  = document.getElementById("modalBtnYes");
+  const btnNo   = document.getElementById("modalBtnNo");
 
   if (isAfterClose) {
-    icon.textContent  = "✅";
-    title.textContent = "Cập nhật dữ liệu cho ngày hôm nay";
-    date.textContent  = fmtDate(vnTime);
-    sub.innerHTML     = "Phiên giao dịch đã đóng cửa.<br>Pipeline đang/sẽ cập nhật tín hiệu cho ngày này.";
+    // Sau 15:15 — tự động cập nhật ngày hôm nay
+    _pipelineDate = _isoDate(vnTime);
+    icon.textContent  = "🚀";
+    title.textContent = "Cập nhật dữ liệu ngày hôm nay";
+    dateEl.textContent = _fmtDate(vnTime);
+    sub.innerHTML     = "Phiên đã đóng cửa. Pipeline sẽ chạy và<br>cập nhật tín hiệu trong vài phút.";
+    btnYes.textContent = "Chạy ngay";
+    btnYes.style.display = "";
+    btnNo.textContent  = "Đóng";
   } else {
+    // Trước 15:15 — hỏi có muốn cập nhật T-1 không
+    const t1 = _prevTradingDay(vnTime);
+    _pipelineDate = _isoDate(t1);
     icon.textContent  = "⏳";
     title.textContent = "Phiên chưa đóng cửa";
-    date.textContent  = fmtDate(yesterday);
-    sub.innerHTML     = `Thị trường đóng lúc 15:15 ICT.<br>Dữ liệu hiện tại là của ngày <strong>${fmtDate(yesterday)}</strong>.`;
+    dateEl.textContent = _fmtDate(t1);
+    sub.innerHTML     = `Thị trường đóng lúc 15:15 ICT.<br>Bạn có muốn cập nhật dữ liệu ngày <strong>${_fmtDate(t1)}</strong> không?`;
+    btnYes.textContent = "Có, cập nhật T-1";
+    btnYes.style.display = "";
+    btnNo.textContent  = "Không";
   }
 
   document.getElementById("updateModal").classList.add("open");
+}
+
+async function triggerPipeline() {
+  const btnYes = document.getElementById("modalBtnYes");
+  const sub    = document.getElementById("modalSub");
+
+  if (!GH_TOKEN) {
+    sub.innerHTML = "⚠️ Chưa cấu hình GH_TOKEN.<br>Liên hệ admin hoặc chạy pipeline thủ công.";
+    btnYes.style.display = "none";
+    return;
+  }
+
+  btnYes.disabled = true;
+  btnYes.textContent = "Đang kích hoạt…";
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${GH_WORKFLOW}/dispatches`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${GH_TOKEN}`,
+          "Accept": "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ref: "main", inputs: { run_date: _pipelineDate } }),
+      }
+    );
+
+    if (res.status === 204) {
+      document.getElementById("modalIcon").textContent  = "✅";
+      document.getElementById("modalTitle").textContent = "Pipeline đã được kích hoạt!";
+      sub.innerHTML = `Đang cập nhật dữ liệu cho <strong>${_pipelineDate}</strong>.<br>Trang sẽ tự refresh sau ~5 phút.`;
+      btnYes.style.display = "none";
+      document.getElementById("modalBtnNo").textContent = "Đóng";
+      // Auto-refresh sau 5 phút
+      setTimeout(() => location.reload(), 5 * 60 * 1000);
+    } else {
+      const err = await res.text();
+      sub.innerHTML = `❌ Lỗi kích hoạt (${res.status}).<br><small>${err.slice(0, 100)}</small>`;
+      btnYes.disabled = false;
+      btnYes.textContent = "Thử lại";
+    }
+  } catch(e) {
+    sub.innerHTML = `❌ Không kết nối được GitHub API.<br><small>${e.message}</small>`;
+    btnYes.disabled = false;
+    btnYes.textContent = "Thử lại";
+  }
 }
 
 function closeUpdateModal() {

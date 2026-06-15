@@ -1,0 +1,61 @@
+name: Run Daily Pipeline
+
+on:
+  # Tự động chạy 15:30 ICT (08:30 UTC) mỗi ngày T2-T6
+  schedule:
+    - cron: "30 8 * * 1-5"
+
+  # Manual trigger từ GitHub Pages button hoặc GitHub UI
+  workflow_dispatch:
+    inputs:
+      run_date:
+        description: "Ngày chạy (YYYY-MM-DD). Để trống = hôm nay"
+        required: false
+        default: ""
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: "ai/requirements.txt"
+
+      - name: Install dependencies
+        run: pip install -r ai/requirements.txt
+
+      - name: Resolve run date
+        id: date
+        run: |
+          if [ -n "${{ github.event.inputs.run_date }}" ]; then
+            echo "date=${{ github.event.inputs.run_date }}" >> $GITHUB_OUTPUT
+          else
+            # Vietnam time = UTC+7
+            echo "date=$(TZ=Asia/Ho_Chi_Minh date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+          fi
+          echo "Running for: $(cat $GITHUB_OUTPUT)"
+
+      - name: Run pipeline
+        env:
+          VNSTOCK_API_KEY:  ${{ secrets.VNSTOCK_API_KEY }}
+          GITHUB_TOKEN:     ${{ secrets.GITHUB_TOKEN }}
+          DISCORD_WEBHOOK:  ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          cd agentq-daily
+          python scheduler/run_daily.py --date ${{ steps.date.outputs.date }}
+
+      - name: Configure git & push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "auto: pipeline ${{ steps.date.outputs.date }}"
+          git push
