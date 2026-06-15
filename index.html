@@ -1584,7 +1584,8 @@ async function renderWeeklyTab() {
 const GH_OWNER    = "kienquyen";
 const GH_REPO     = "agentq-daily";
 const GH_WORKFLOW = "run_pipeline.yml";
-const GH_TOKEN    = "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";
+// Token stored in localStorage (never in source code to avoid GitHub revocation)
+const _getGHToken = () => localStorage.getItem("gh_aq_token") || "";
 
 let _pipelineDate = "";  // date string YYYY-MM-DD để pass vào trigger
 
@@ -1641,9 +1642,40 @@ function showUpdateModal() {
   document.getElementById("updateModal").classList.add("open");
 }
 
+function _showTokenInput(onSave) {
+  const sub = document.getElementById("modalSub");
+  const btnYes = document.getElementById("modalBtnYes");
+  document.getElementById("modalIcon").textContent  = "🔑";
+  document.getElementById("modalTitle").textContent = "Nhập GitHub Token";
+  sub.innerHTML = `
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">
+      Fine-grained PAT, quyền <strong>Actions: write</strong> trên repo <code>agentq-daily</code>.<br>
+      Token được lưu trong trình duyệt, không lưu trong code.
+    </div>
+    <input id="ghTokenInput" type="password" placeholder="github_pat_..." style="
+      width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;
+      border:1px solid var(--border2);background:var(--bg2);color:var(--text1);
+      font-size:13px;margin-bottom:4px;" />`;
+  btnYes.disabled = false;
+  btnYes.textContent = "Lưu & kích hoạt";
+  btnYes.onclick = () => {
+    const val = document.getElementById("ghTokenInput").value.trim();
+    if (!val) return;
+    localStorage.setItem("gh_aq_token", val);
+    btnYes.onclick = () => triggerPipeline();
+    onSave();
+  };
+}
+
 async function triggerPipeline() {
+  const token  = _getGHToken();
   const btnYes = document.getElementById("modalBtnYes");
   const sub    = document.getElementById("modalSub");
+
+  if (!token) {
+    _showTokenInput(() => triggerPipeline());
+    return;
+  }
 
   btnYes.disabled = true;
   btnYes.textContent = "Đang kích hoạt…";
@@ -1654,7 +1686,7 @@ async function triggerPipeline() {
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${GH_TOKEN}`,
+          "Authorization": `Bearer ${token}`,
           "Accept": "application/vnd.github+json",
           "X-GitHub-Api-Version": "2022-11-28",
           "Content-Type": "application/json",
@@ -1670,9 +1702,13 @@ async function triggerPipeline() {
       btnYes.style.display = "none";
       document.getElementById("modalBtnNo").textContent = "Đóng";
       setTimeout(() => location.reload(), 5 * 60 * 1000);
+    } else if (res.status === 401) {
+      // Token invalid/revoked — clear and ask again
+      localStorage.removeItem("gh_aq_token");
+      _showTokenInput(() => triggerPipeline());
     } else {
       const err = await res.text();
-      sub.innerHTML = `❌ Lỗi kích hoạt (${res.status}).<br><small>${err.slice(0, 100)}</small>`;
+      sub.innerHTML = `❌ Lỗi kích hoạt (${res.status}).<br><small>${err.slice(0, 120)}</small>`;
       btnYes.disabled = false;
       btnYes.textContent = "Thử lại";
     }
