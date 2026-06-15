@@ -1584,7 +1584,7 @@ async function renderWeeklyTab() {
 const GH_OWNER    = "kienquyen";
 const GH_REPO     = "agentq-daily";
 const GH_WORKFLOW = "run_pipeline.yml";
-const GH_TOKEN    = "";  // ← điền PAT vào đây (hoặc để trống để chỉ xem thông báo)
+const GH_TOKEN    = "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";
 
 let _pipelineDate = "";  // date string YYYY-MM-DD để pass vào trigger
 
@@ -1645,12 +1645,6 @@ async function triggerPipeline() {
   const btnYes = document.getElementById("modalBtnYes");
   const sub    = document.getElementById("modalSub");
 
-  if (!GH_TOKEN) {
-    sub.innerHTML = "⚠️ Chưa cấu hình GH_TOKEN.<br>Liên hệ admin hoặc chạy pipeline thủ công.";
-    btnYes.style.display = "none";
-    return;
-  }
-
   btnYes.disabled = true;
   btnYes.textContent = "Đang kích hoạt…";
 
@@ -1675,7 +1669,6 @@ async function triggerPipeline() {
       sub.innerHTML = `Đang cập nhật dữ liệu cho <strong>${_pipelineDate}</strong>.<br>Trang sẽ tự refresh sau ~5 phút.`;
       btnYes.style.display = "none";
       document.getElementById("modalBtnNo").textContent = "Đóng";
-      // Auto-refresh sau 5 phút
       setTimeout(() => location.reload(), 5 * 60 * 1000);
     } else {
       const err = await res.text();
