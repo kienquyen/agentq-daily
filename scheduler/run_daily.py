@@ -72,8 +72,9 @@ def step_update_ohlcv(run_date: str) -> bool:
     if not script.exists():
         log.warning("phase1a_ohlcv_store.py not found, skipping OHLCV update")
         return True
+    # phase1a dùng --update, không nhận --date
     return _run(
-        [sys.executable, str(script), "--date", run_date],
+        [sys.executable, str(script), "--update"],
         cwd=AI_DIR, desc=f"OHLCV update ({run_date})",
     )
 

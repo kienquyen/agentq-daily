@@ -21,12 +21,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # === VNSTOCK_DATA IMPORTS ===
+# vnstock_data is a local module bundled in ai/vnstock_data/
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+for _p in [str(_REPO_ROOT / "ai"), str(_REPO_ROOT), os.getcwd()]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
 try:
     from vnstock_data import Quote
-except ImportError:
-    # If not in path, try adding current directory
-    sys.path.append(os.getcwd())
-    from vnstock_data import Quote
+except ImportError as _e:
+    raise ImportError(
+        f"vnstock_data not found. Ensure ai/vnstock_data/ exists in repo. ({_e})"
+    )
 
 # =========================
 # CONFIG
