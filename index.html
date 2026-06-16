@@ -1224,6 +1224,11 @@ function renderHistory() {
 
 // ── Render full page ──────────────────────────────────────────────────────────
 async function renderPage(date, data) {
+  // Nếu generated_at cách date hơn 3 ngày → dữ liệu pre-generated, coi như chưa có
+  if (data?.generated_at) {
+    const diffDays = (new Date(date) - new Date(data.generated_at.slice(0,10))) / 86400000;
+    if (diffDays > 3) data = null;
+  }
   const idx   = allDates.indexOf(date);
   const html = `
     <div class="date-nav">
