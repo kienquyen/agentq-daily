@@ -1584,23 +1584,11 @@ async function renderWeeklyTab() {
 }
 
 // ── Update Modal ──────────────────────────────────────────────────────────────
-// GitHub fine-grained PAT: chỉ cần quyền Actions: write trên repo này
-// Tạo tại: github.com/settings/personal-access-tokens → Fine-grained → Actions: write
-const GH_OWNER    = "kienquyen";
-const GH_REPO     = "agentq-daily";
-const GH_WORKFLOW = "run_pipeline.yml";
-// Token stored in localStorage (never in source code to avoid GitHub revocation)
-const _getGHToken = () => localStorage.getItem("gh_aq_token") || "";
-
-let _pipelineDate = "";  // date string YYYY-MM-DD để pass vào trigger
-
 const _fmtDate = (d) => {
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   return `${dd}/${mm}/${d.getFullYear()}`;
 };
-
-const _isoDate = (d) => d.toISOString().slice(0, 10);
 
 const _prevTradingDay = (ref) => {
   const d = new Date(ref);
@@ -1614,111 +1602,54 @@ function showUpdateModal() {
   const vnTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
   const isAfterClose = vnTime.getHours() > 15 || (vnTime.getHours() === 15 && vnTime.getMinutes() >= 15);
 
-  const icon    = document.getElementById("modalIcon");
-  const title   = document.getElementById("modalTitle");
-  const dateEl  = document.getElementById("modalDate");
-  const sub     = document.getElementById("modalSub");
-  const btnYes  = document.getElementById("modalBtnYes");
-  const btnNo   = document.getElementById("modalBtnNo");
+  const icon   = document.getElementById("modalIcon");
+  const title  = document.getElementById("modalTitle");
+  const dateEl = document.getElementById("modalDate");
+  const sub    = document.getElementById("modalSub");
+  const btnYes = document.getElementById("modalBtnYes");
+  const btnNo  = document.getElementById("modalBtnNo");
 
   if (isAfterClose) {
-    // Sau 15:15 — tự động cập nhật ngày hôm nay
-    _pipelineDate = _isoDate(vnTime);
-    icon.textContent  = "🚀";
-    title.textContent = "Cập nhật dữ liệu ngày hôm nay";
+    icon.textContent   = "🔄";
+    title.textContent  = "Tải dữ liệu mới nhất";
     dateEl.textContent = _fmtDate(vnTime);
-    sub.innerHTML     = "Phiên đã đóng cửa. Pipeline sẽ chạy và<br>cập nhật tín hiệu trong vài phút.";
-    btnYes.textContent = "Chạy ngay";
-    btnYes.style.display = "";
-    btnNo.textContent  = "Đóng";
+    sub.innerHTML      = `Phiên <strong>${_fmtDate(vnTime)}</strong> đã đóng cửa.<br>Bấm để tải lại dữ liệu mới nhất.`;
+    btnYes.textContent = "Tải ngay";
   } else {
-    // Trước 15:15 — hỏi có muốn cập nhật T-1 không
     const t1 = _prevTradingDay(vnTime);
-    _pipelineDate = _isoDate(t1);
-    icon.textContent  = "⏳";
-    title.textContent = "Phiên chưa đóng cửa";
+    icon.textContent   = "⏳";
+    title.textContent  = "Phiên chưa đóng cửa";
     dateEl.textContent = _fmtDate(t1);
-    sub.innerHTML     = `Thị trường đóng lúc 15:15 ICT.<br>Bạn có muốn cập nhật dữ liệu ngày <strong>${_fmtDate(t1)}</strong> không?`;
-    btnYes.textContent = "Có, cập nhật T-1";
-    btnYes.style.display = "";
-    btnNo.textContent  = "Không";
+    sub.innerHTML      = `Thị trường đóng lúc 15:15 ICT.<br>Bấm để tải dữ liệu ngày <strong>${_fmtDate(t1)}</strong>.`;
+    btnYes.textContent = "Tải dữ liệu T-1";
   }
 
+  btnYes.style.display = "";
+  btnYes.disabled = false;
+  btnNo.textContent = "Đóng";
   document.getElementById("updateModal").classList.add("open");
 }
 
-function _showTokenInput(onSave) {
-  const sub = document.getElementById("modalSub");
-  const btnYes = document.getElementById("modalBtnYes");
-  document.getElementById("modalIcon").textContent  = "🔑";
-  document.getElementById("modalTitle").textContent = "Nhập GitHub Token";
-  sub.innerHTML = `
-    <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">
-      Fine-grained PAT, quyền <strong>Actions: write</strong> trên repo <code>agentq-daily</code>.<br>
-      Token được lưu trong trình duyệt, không lưu trong code.
-    </div>
-    <input id="ghTokenInput" type="password" placeholder="github_pat_..." style="
-      width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;
-      border:1px solid var(--border2);background:var(--bg2);color:var(--text1);
-      font-size:13px;margin-bottom:4px;" />`;
-  btnYes.disabled = false;
-  btnYes.textContent = "Lưu & kích hoạt";
-  btnYes.onclick = () => {
-    const val = document.getElementById("ghTokenInput").value.trim();
-    if (!val) return;
-    localStorage.setItem("gh_aq_token", val);
-    btnYes.onclick = () => triggerPipeline();
-    onSave();
-  };
-}
-
 async function triggerPipeline() {
-  const token  = _getGHToken();
   const btnYes = document.getElementById("modalBtnYes");
   const sub    = document.getElementById("modalSub");
-
-  if (!token) {
-    _showTokenInput(() => triggerPipeline());
-    return;
-  }
+  const icon   = document.getElementById("modalIcon");
 
   btnYes.disabled = true;
-  btnYes.textContent = "Đang kích hoạt…";
+  btnYes.textContent = "Đang tải…";
 
   try {
-    const res = await fetch(
-      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${GH_WORKFLOW}/dispatches`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ref: "main", inputs: { run_date: _pipelineDate } }),
-      }
-    );
-
-    if (res.status === 204) {
-      document.getElementById("modalIcon").textContent  = "✅";
-      document.getElementById("modalTitle").textContent = "Pipeline đã được kích hoạt!";
-      sub.innerHTML = `Đang cập nhật dữ liệu cho <strong>${_pipelineDate}</strong>.<br>Trang sẽ tự refresh sau ~5 phút.`;
-      btnYes.style.display = "none";
-      document.getElementById("modalBtnNo").textContent = "Đóng";
-      setTimeout(() => location.reload(), 5 * 60 * 1000);
-    } else if (res.status === 401) {
-      // Token invalid/revoked — clear and ask again
-      localStorage.removeItem("gh_aq_token");
-      _showTokenInput(() => triggerPipeline());
-    } else {
-      const err = await res.text();
-      sub.innerHTML = `❌ Lỗi kích hoạt (${res.status}).<br><small>${err.slice(0, 120)}</small>`;
-      btnYes.disabled = false;
-      btnYes.textContent = "Thử lại";
-    }
+    const newData = await loadAllData();
+    allDates = newData.filter(d => d <= new Date().toISOString().slice(0,10));
+    icon.textContent  = "✅";
+    document.getElementById("modalTitle").textContent = "Đã cập nhật!";
+    sub.innerHTML = "Dữ liệu mới nhất đã được tải.";
+    btnYes.style.display = "none";
+    document.getElementById("modalBtnNo").textContent = "Đóng";
+    // Navigate to latest date
+    if (allDates.length) await selectDate(allDates[0]);
   } catch(e) {
-    sub.innerHTML = `❌ Không kết nối được GitHub API.<br><small>${e.message}</small>`;
+    sub.innerHTML = `❌ Không tải được dữ liệu.<br><small>${e.message}</small>`;
     btnYes.disabled = false;
     btnYes.textContent = "Thử lại";
   }
