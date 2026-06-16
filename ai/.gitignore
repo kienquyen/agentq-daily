@@ -1,0 +1,64 @@
+# Environments
+.env
+.venv/
+venv/
+env/
+
+# Python Compilation
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Export / Uploaded Data
+exports/
+temp/
+*.csv
+
+# Large data folders — rebuilt at runtime, do NOT commit (320MB+)
+data/features/2022-*.parquet
+data/features/2023-*.parquet
+data/features/2024-*.parquet
+data/features/2025-*.parquet
+data/labels/
+data/ohlcv/
+!data/ohlcv/VNINDEX.parquet
+!data/ohlcv/_manifest.json
+data/fundamentals/
+data/feedback/
+# data/models/ is intentionally tracked (412KB pkl — needed for inference on Railway)
+
+# Logs
+*.log
+bot_output.log
+
+# IDE & Tools
+.vscode/
+.cursor/
+.idea/
+.DS_Store
+.claude/
+
+# Temp / debug scripts
+backtest_*.py
+debug_*.py
+test_*.py
+diagnose_*.py
+inspect_*.py
+demo_*.py
+quick_*.py
+check_*.py
+list_*.py
+discover_*.py
+*.bak
+
+# Static output files
+daily_recap.png
+daily_recap_verified.png
+
+# vnstock_data — all submodules bundled locally (needed for Railway)
+# Exclude pycache from bundled packages
+vnstock_news/**/__pycache__/
+vnstock_ta/**/__pycache__/
+vnstock_pipeline/**/__pycache__/
+vnstock_data/**/__pycache__/

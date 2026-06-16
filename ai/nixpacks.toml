@@ -1,0 +1,38 @@
+# nixpacks.toml — Railway build config for AgentQ V5.5
+# Docs: https://nixpacks.com/docs/configuration/file
+
+[phases.setup]
+# System deps needed by Playwright Chromium headless shell
+nixPkgs = [
+  # OpenMP runtime — required by LightGBM (libgomp.so.1)
+  "libgcc",
+  "openmp",
+  # Playwright Chromium headless shell
+  "chromium",
+  "nss",
+  "nspr",
+  "atk",
+  "cups",
+  "libdrm",
+  "libxkbcommon",
+  "xorg.libX11",
+  "xorg.libXcomposite",
+  "xorg.libXdamage",
+  "xorg.libXext",
+  "xorg.libXfixes",
+  "xorg.libXrandr",
+  "xorg.libxcb",
+  "mesa",
+  "pango",
+  "cairo",
+  "alsa-lib",
+]
+
+[phases.install]
+cmds = [
+  "pip install -r requirements.txt",
+  "playwright install chromium",
+]
+
+[start]
+cmd = "python main.py"

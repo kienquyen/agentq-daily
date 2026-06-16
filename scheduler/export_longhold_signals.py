@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Export v3b Long-hold signals → longhold_data.json
-Đọc từ ai/data/shadow_signals/v3b/, tính return thực tế từ OHLCV.
+Export weekly long-hold signals → longhold_data.json
 
-Hold period: 60 trading days (≈ 3 tháng). SL: -10%.
+Strategy (discord_ui.py + backtest_dynamic_exit.py):
+  - Entry: Thứ Sáu, prob >= 0.60, top-8, không vào recovery
+  - Exit:  re-score mỗi tuần, thoát khi prob < 0.40 OR T+120 ngày
+  - Không có stop loss % cố định
 """
 import json, os, subprocess, sys
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 import pandas as pd
 
@@ -15,11 +17,26 @@ REPO      = Path(__file__).resolve().parent.parent
 OUT       = REPO / "longhold_data.json"
 SHADOW    = REPO / "ai" / "data" / "shadow_signals" / "v3b"
 OHLCV_DIR = REPO / "ai" / "data" / "ohlcv"
-HOLD_DAYS = 60   # trading days
-SL_PCT    = -10  # stop loss %
+
+ENTRY_CUTOFF  = 0.60
+EXIT_CUTOFF   = 0.40   # thoát khi re-score < 0.40
+TOP_K         = 8
+MAX_HOLD      = 120    # trading days hard cap
+START_DATE    = "2026-01-01"
+
+
+# ── Helpers ────────────────────────────────────────────────────────────────────
+
+def _is_friday(date_str: str) -> bool:
+    return datetime.strptime(date_str, "%Y-%m-%d").weekday() == 4
+
+
+def _trading_days_between(start: str, end: str, all_dates: list[str]) -> int:
+    return sum(1 for d in all_dates if start < d <= end)
 
 
 # ── Price cache ────────────────────────────────────────────────────────────────
+
 def _build_price_cache() -> dict:
     cache = {}
     if not OHLCV_DIR.exists():
@@ -35,134 +52,225 @@ def _build_price_cache() -> dict:
     return cache
 
 
-def _ret(sym: str, entry_date: str, entry_price: float, cache: dict, n: int = HOLD_DAYS):
-    """Tính return sau n phiên, stop loss nếu drawdown < SL_PCT."""
+def _current_price(sym: str, cache: dict) -> float | None:
     if sym not in cache:
-        return None, None, None, None
-    prices = cache[sym]
-    entry_ts = pd.Timestamp(entry_date)
-    fut = prices[prices.index > entry_ts].head(n)
-    if fut.empty:
-        return None, None, None, None
+        return None
+    s = cache[sym]
+    if s.empty:
+        return None
+    return float(s.iloc[-1])
 
-    # Cả OHLCV parquet và signal close_price đều đơn vị VND tuyệt đối
-    ep = float(entry_price)
 
-    # Check stop loss
-    for dt, p in fut.items():
-        drawdown = (p - ep) / ep * 100
-        if drawdown <= SL_PCT:
-            return round(drawdown, 2), False, str(dt)[:10], float(p)
+def _price_on(sym: str, after_date: str, cache: dict, n_trading_days: int, all_trading_dates: list[str]) -> tuple[float | None, str | None]:
+    """Return (price, date_str) after n_trading_days from after_date."""
+    if sym not in cache:
+        return None, None
+    s = cache[sym]
+    entry_ts = pd.Timestamp(after_date)
+    fut = s[s.index > entry_ts]
+    if len(fut) < n_trading_days:
+        return None, None
+    p = float(fut.iloc[n_trading_days - 1])
+    d = str(fut.index[n_trading_days - 1])[:10]
+    return p, d
 
-    # T+n return
-    final_p = float(fut.iloc[-1])
-    ret_pct  = (final_p - ep) / ep * 100
-    exit_dt  = str(fut.index[-1])[:10]
-    is_win   = ret_pct > 0
-    status   = "completed" if len(fut) >= n else "pending"
-    if status == "pending":
-        return None, None, None, None
-    return round(ret_pct, 2), is_win, exit_dt, round(final_p, 0)
+
+# ── Re-score map from v3b shadow ───────────────────────────────────────────────
+
+def _build_rescore_map() -> dict[str, dict[str, float]]:
+    """rescore_map[symbol][date] = prob — from all v3b Friday files."""
+    rescore: dict[str, dict[str, float]] = {}
+    if not SHADOW.exists():
+        return rescore
+    for f in sorted(SHADOW.glob("*.json")):
+        if not _is_friday(f.stem):
+            continue
+        d = json.loads(f.read_text())
+        for s in d.get("signals", []):
+            sym = s.get("symbol", "")
+            prob = s.get("prob")
+            if sym and prob is not None:
+                rescore.setdefault(sym, {})[f.stem] = float(prob)
+    return rescore
+
+
+def _find_rescore_exit(sym: str, entry_date: str, rescore_map: dict, all_friday_dates: list[str]) -> tuple[str | None, float | None]:
+    """Return (exit_friday, prob) if re-score < EXIT_CUTOFF on any subsequent Friday."""
+    sym_rescores = rescore_map.get(sym, {})
+    for fri in all_friday_dates:
+        if fri <= entry_date:
+            continue
+        if fri in sym_rescores:
+            p = sym_rescores[fri]
+            if p < EXIT_CUTOFF:
+                return fri, p
+        # If symbol not present on a Friday, we can't confirm < 0.40 (may just be below sector cutoff ~0.55)
+        # So we don't trigger exit unless we have explicit prob data
+    return None, None
 
 
 # ── Main export ────────────────────────────────────────────────────────────────
+
 def export_longhold():
     print("Building price cache...")
     cache = _build_price_cache()
     print(f"  → {len(cache)} symbols loaded")
 
-    today = datetime.utcnow().strftime("%Y-%m-%d")
+    today = date.today().strftime("%Y-%m-%d")
 
-    all_signals = []   # flat list
-    daily_map   = {}   # date → day summary
+    # All trading dates from OHLCV (approximate from cache)
+    if cache:
+        sample_sym = next(iter(cache))
+        all_trading_dates = sorted(str(d)[:10] for d in cache[sample_sym].index if str(d)[:10] >= START_DATE)
+    else:
+        all_trading_dates = []
 
-    files = sorted(SHADOW.glob("*.json"))
-    for f in files:
+    all_friday_dates = [d for d in all_trading_dates if _is_friday(d)]
+
+    rescore_map = _build_rescore_map()
+    print(f"  → Re-score map: {sum(len(v) for v in rescore_map.values())} entries across {len(rescore_map)} symbols")
+
+    all_signals = []
+    weekly_log = {}  # Friday date → week summary
+
+    if not SHADOW.exists():
+        print("No shadow signals directory found")
+        return
+
+    # Process each Friday
+    for f in sorted(SHADOW.glob("*.json")):
+        date_str = f.stem
+        if date_str < START_DATE:
+            continue
+        if not _is_friday(date_str):
+            continue
+
         d = json.loads(f.read_text())
-        date_str   = d.get("date", f.stem)
-        regime     = d.get("regime", "")
-        cutoff     = d.get("prob_cutoff", 0.60)
-        raw_sigs   = d.get("signals", [])
-        near_miss  = d.get("near_misses", [])
+        regime = d.get("regime", "")
+        raw_sigs = d.get("signals", [])
+
+        # Skip recovery regime
+        if regime == "recovery":
+            weekly_log[date_str] = {
+                "date": date_str, "regime": regime,
+                "prob_cutoff": ENTRY_CUTOFF, "n_signals": 0, "signals": [],
+                "note": "Bỏ qua — regime RECOVERY không hợp long-hold"
+            }
+            continue
+
+        # Filter: prob >= 0.60, sort by prob desc, top-8
+        eligible = sorted(
+            [s for s in raw_sigs if float(s.get("prob", 0)) >= ENTRY_CUTOFF],
+            key=lambda s: float(s["prob"]),
+            reverse=True
+        )[:TOP_K]
 
         day_sigs = []
-        for s in raw_sigs:
+        for s in eligible:
             sym   = s.get("symbol", "")
-            prob  = s.get("prob")
+            prob  = float(s.get("prob", 0))
             price = s.get("close_price") or s.get("close_vnd")
+            ep    = float(price) if price else None
 
-            ret, is_win, exit_dt, exit_px = _ret(sym, date_str, float(price) if price else 0, cache)
+            # Check T+120 exit
+            exit_date_t120, exit_price_t120 = None, None
+            t120_count = _trading_days_between(date_str, today, all_trading_dates)
+            if t120_count >= MAX_HOLD:
+                exit_price_t120, exit_date_t120 = _price_on(sym, date_str, cache, MAX_HOLD, all_trading_dates)
 
-            # Decide status
-            if ret is not None:
+            # Check re-score exit (first Friday where prob < 0.40)
+            rescore_exit_date, rescore_prob = _find_rescore_exit(sym, date_str, rescore_map, all_friday_dates)
+
+            # Determine actual exit
+            exit_date = exit_price = exit_reason = None
+            actual_return = None
+            status = "pending"
+
+            if rescore_exit_date and (not exit_date_t120 or rescore_exit_date <= exit_date_t120):
+                # Re-score triggered first
+                exit_date = rescore_exit_date
+                # Get price on that exit Friday
+                sym_prices = cache.get(sym, pd.Series(dtype=float))
+                exit_ts = pd.Timestamp(rescore_exit_date)
+                fut_on_exit = sym_prices[sym_prices.index <= exit_ts]
+                if not fut_on_exit.empty and ep:
+                    exit_price = float(fut_on_exit.iloc[-1])
+                    actual_return = round((exit_price - ep) / ep * 100, 2)
+                exit_reason = f"re-score={rescore_prob:.2f}<{EXIT_CUTOFF}"
+                status = "completed"
+            elif exit_date_t120 and exit_price_t120 and ep:
+                exit_date = exit_date_t120
+                exit_price = exit_price_t120
+                actual_return = round((exit_price_t120 - ep) / ep * 100, 2)
+                exit_reason = f"T+{MAX_HOLD}"
                 status = "completed"
             else:
-                # Check if past hold period
-                entry_ts = pd.Timestamp(date_str)
-                prices_sym = cache.get(sym, pd.Series(dtype=float))
-                fut_count  = len(prices_sym[prices_sym.index > entry_ts])
-                status = "pending" if fut_count < HOLD_DAYS else "waiting"  # waiting = data gap
+                # Still holding — compute unrealized P&L
+                cur_p = _current_price(sym, cache)
+                if cur_p and ep:
+                    actual_return = round((cur_p - ep) / ep * 100, 2)
+                    exit_price = cur_p
+                status = "pending"
+
+            is_win = (actual_return > 0) if actual_return is not None else None
 
             rec = {
-                "signal_date": date_str,
-                "symbol":      sym,
-                "entry_price": float(price) if price else None,
-                "prob":        round(float(prob), 4) if prob else None,
-                "cutoff":      round(float(cutoff), 3),
-                "regime":      regime,
-                "status":      status,
-                "actual_return": ret,
-                "is_win":      is_win,
-                "exit_date":   exit_dt,
-                "exit_price":  exit_px,
-                "sl_pct":      SL_PCT,
-                "hold_days":   HOLD_DAYS,
+                "signal_date":   date_str,
+                "symbol":        sym,
+                "entry_price":   ep,
+                "prob":          round(prob, 4),
+                "regime":        regime,
+                "status":        status,
+                "actual_return": actual_return,
+                "is_win":        is_win,
+                "exit_date":     exit_date,
+                "exit_price":    round(exit_price, 0) if exit_price else None,
+                "exit_reason":   exit_reason,
             }
             day_sigs.append(rec)
             all_signals.append(rec)
 
-        daily_map[date_str] = {
-            "date":       date_str,
-            "regime":     regime,
-            "prob_cutoff": cutoff,
-            "n_signals":  len(raw_sigs),
-            "signals":    day_sigs,
-            "near_misses": near_miss,
+        weekly_log[date_str] = {
+            "date":        date_str,
+            "regime":      regime,
+            "prob_cutoff": ENTRY_CUTOFF,
+            "n_signals":   len(day_sigs),
+            "signals":     day_sigs,
         }
 
     # ── Stats ──────────────────────────────────────────────────────────────────
-    completed = [s for s in all_signals if s["status"] == "completed" and s["actual_return"] is not None]
+    completed = [s for s in all_signals if s["status"] == "completed"]
     active    = [s for s in all_signals if s["status"] == "pending"]
 
     if completed:
-        wins     = sum(1 for s in completed if s["is_win"])
-        wr       = round(wins / len(completed) * 100, 1)
-        avg_ret  = round(sum(s["actual_return"] for s in completed) / len(completed), 2)
-        best     = round(max(s["actual_return"] for s in completed), 2)
-        worst    = round(min(s["actual_return"] for s in completed), 2)
+        wins    = sum(1 for s in completed if s["is_win"])
+        wr      = round(wins / len(completed) * 100, 1)
+        avg_ret = round(sum(s["actual_return"] for s in completed) / len(completed), 2)
+        best    = round(max(s["actual_return"] for s in completed), 2)
+        worst   = round(min(s["actual_return"] for s in completed), 2)
     else:
         wr = avg_ret = best = worst = 0
 
     stats = {
-        "total":       len(all_signals),
-        "completed":   len(completed),
-        "active":      len(active),
-        "win_rate":    wr,
-        "avg_return":  avg_ret,
-        "best":        best,
-        "worst":       worst,
-        "note":        f"Hold {HOLD_DAYS} phiên | SL {SL_PCT}% | WIN = return > 0%"
+        "total":      len(all_signals),
+        "completed":  len(completed),
+        "active":     len(active),
+        "win_rate":   wr,
+        "avg_return": avg_ret,
+        "best":       best,
+        "worst":      worst,
+        "note":       f"Cutoff {ENTRY_CUTOFF} | Exit re-score<{EXIT_CUTOFF} hoặc T+{MAX_HOLD} ngày | Top-{TOP_K}/tuần"
     }
 
     payload = {
-        "model":          "v3b",
-        "name":           "Long-hold — V3b",
-        "description":    f"LightGBM weekly momentum, giữ tối đa {HOLD_DAYS} phiên (~3 tháng). SL {SL_PCT}%.",
+        "model":          "weekly",
+        "name":           "Long-hold — Weekly Model",
+        "description":    f"LightGBM 20d, cutoff {ENTRY_CUTOFF}, thoát khi re-score < {EXIT_CUTOFF} hoặc T+{MAX_HOLD} ngày giao dịch. Top-{TOP_K}/tuần. Không vào regime recovery.",
         "generated_at":   datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         "stats":          stats,
-        "active_signals": active,
-        "recent_history": [s for s in reversed(all_signals) if s["status"] == "completed"][:30],
-        "daily_signals":  daily_map,
+        "active_signals": sorted(active, key=lambda s: s["signal_date"], reverse=True),
+        "recent_history": sorted(completed, key=lambda s: s["signal_date"] or "", reverse=True)[:30],
+        "weekly_signals": dict(sorted(weekly_log.items(), reverse=True)),
     }
 
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2))

@@ -1,6 +1,6 @@
 {
   "date": "2026-06-05",
-  "generated_at": "2026-06-09T13:38:46Z",
+  "generated_at": "2026-06-09T15:01:11Z",
   "regime": {
     "ok": true,
     "adx": 27.16942514723993,
@@ -18,7 +18,8 @@
         "+RSI2 OS (11.4)",
         "+RSI14 Pocket (5.9)",
         "-Knife (12.0)"
-      ]
+      ],
+      "hold_days": 18
     },
     {
       "symbol": "ANV",
@@ -29,7 +30,8 @@
         "+RSI14 Pocket (9.9)",
         "+RSI2 OS (5.4)",
         "-Knife (12.0)"
-      ]
+      ],
+      "hold_days": 18
     }
   ]
 }

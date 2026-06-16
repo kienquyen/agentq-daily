@@ -1,6 +1,6 @@
 {
   "date": "2026-06-04",
-  "generated_at": "2026-06-09T13:25:00Z",
+  "generated_at": "2026-06-09T14:59:32Z",
   "regime": {
     "ok": true,
     "adx": 26.75489978710441,
@@ -18,7 +18,8 @@
         "+RSI14 Pocket (8.9)",
         "+RSI Div (6.0)",
         "-Knife (12.0)"
-      ]
+      ],
+      "hold_days": 18
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "date": "2026-06-09",
-  "generated_at": "2026-06-09T15:03:55Z",
+  "date": "2026-06-19",
+  "generated_at": "2026-06-09T13:47:31Z",
   "regime": {
     "ok": true,
-    "adx": 29.959756486580027,
+    "adx": 29.959756486580016,
     "roc5": -1.8297590434006583,
     "dd20": -7.245319717967417,
     "detail": "🟢 TREND  ADX=30.0  ROC5d=-1.8%  DD20d=-7.2%  →  BUY1=ON\n🔴 **GIẢM** (Score 24/100)\nTrend 0.28 · Breadth 0.23 · Flow 0.50 · Vol 0.52\nOverrides: dist_days=10 (CRITICAL) ×0.70"
@@ -18,8 +18,7 @@
         "+RSI14 Pocket (9.8)",
         "+RSI2 OS (7.4)",
         "-Knife (12.0)"
-      ],
-      "hold_days": 20
+      ]
     },
     {
       "symbol": "HDG",
@@ -30,8 +29,7 @@
         "+RSI Div (15.8)",
         "+RSI14 Pocket (5.2)",
         "-Knife (6.3)"
-      ],
-      "hold_days": 20
+      ]
     },
     {
       "symbol": "DCL",
@@ -42,8 +40,7 @@
         "+RSI2 OS (12.0)",
         "+RSI Div (9.4)",
         "-Knife (12.0)"
-      ],
-      "hold_days": 20
+      ]
     },
     {
       "symbol": "NVL",
@@ -54,8 +51,7 @@
         "+RSI14 Pocket (4.8)",
         "+MFI Pocket (3.1)",
         "-Knife (12.0)"
-      ],
-      "hold_days": 20
+      ]
     }
   ]
 }

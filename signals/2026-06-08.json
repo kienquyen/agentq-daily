@@ -1,6 +1,6 @@
 {
   "date": "2026-06-08",
-  "generated_at": "2026-06-09T12:26:09Z",
+  "generated_at": "2026-06-09T15:02:29Z",
   "regime": {
     "ok": true,
     "adx": 28.52928459105707,
@@ -18,7 +18,8 @@
         "+RSI14 Pocket (9.8)",
         "+RSI2 OS (7.4)",
         "-Knife (12.0)"
-      ]
+      ],
+      "hold_days": 20
     },
     {
       "symbol": "FRT",
@@ -29,7 +30,8 @@
         "+RSI2 OS (12.0)",
         "+RSI14 Pocket (5.6)",
         "-Knife (12.0)"
-      ]
+      ],
+      "hold_days": 20
     },
     {
       "symbol": "ANV",
@@ -40,7 +42,8 @@
         "+RSI2 Ex (7.3)",
         "+RSI14 Dep (5.1)",
         "-Downtrend (18.0)"
-      ]
+      ],
+      "hold_days": 20
     }
   ]
 }

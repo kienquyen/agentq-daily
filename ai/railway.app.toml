@@ -1,0 +1,23 @@
+[railway]
+language = "python"
+
+[python]
+version = "3.11"
+
+[pip]
+requirements = "requirements.txt"
+
+# Required Environment Variables (set in Railway Dashboard → Variables):
+#
+# Required:
+#   VNSTOCK_API_KEY      — API key from vnstock.com (paid subscription)
+#   DISCORD_TOKEN        — Discord bot token
+#   DATABASE_URL         — PostgreSQL connection string
+#
+# Recommended:
+#   HTTP_PROXY           — HTTP proxy with Vietnamese IP (for Railway network access to VCI/KBS APIs)
+#   HTTPS_PROXY          — HTTPS proxy (same as HTTP_PROXY if using http://)
+#
+# Optional:
+#   TASK1_AI_ENABLED    — Set to "0" to disable AI features
+#   VNSTOCK_DEVICE_SEED   — Stable device ID seed (default: uses Railway instance ID)
