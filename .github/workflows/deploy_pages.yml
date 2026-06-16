@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -24,13 +24,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare web files
+        run: |
+          mkdir -p /tmp/site
+          cp index.html /tmp/site/
+          cp data.json /tmp/site/
+          cp .nojekyll /tmp/site/
+          [ -f v3a_data.json ]    && cp v3a_data.json /tmp/site/
+          [ -f v5_data.json ]     && cp v5_data.json /tmp/site/
+          [ -f weekly_data.json ] && cp weekly_data.json /tmp/site/
+          [ -f longhold_data.json ] && cp longhold_data.json /tmp/site/
+          [ -d signals ] && cp -r signals /tmp/site/
+          echo "Files to deploy:"
+          ls -lh /tmp/site/
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "."
+          path: "/tmp/site"
 
       - name: Deploy to GitHub Pages
         id: deployment
