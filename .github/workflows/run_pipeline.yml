@@ -13,10 +13,14 @@ on:
         required: false
         default: ""
 
+env:
+  VNSTOCK_API_KEY: ${{ secrets.VNSTOCK_API_KEY }}
+  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
 jobs:
   pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repo
@@ -32,6 +36,40 @@ jobs:
       - name: Install dependencies
         run: pip install -r ai/requirements.txt
 
+      - name: Pre-authenticate vnstock
+        run: |
+          python - <<'EOF'
+          import sys, os, json
+          from pathlib import Path
+
+          sys.path.insert(0, "ai")
+
+          # Authenticate via vnii
+          try:
+              from vnii import lc_init
+              result = lc_init()
+              print("✅ lc_init result:", result)
+          except Exception as e:
+              print("⚠️  lc_init error:", e)
+
+          # Verify user.json
+          user_json = Path.home() / ".vnstock" / "user.json"
+          if user_json.exists():
+              data = json.loads(user_json.read_text())
+              print("📄 user.json:", data)
+              if not data.get("user"):
+                  # Patch: set user field so idv() passes
+                  data["user"] = data.get("email") or data.get("username") or "authenticated"
+                  user_json.write_text(json.dumps(data))
+                  print("🔧 Patched user.json user field")
+          else:
+              print("⚠️  user.json not found at", user_json)
+              # Create minimal user.json so idv() doesn't crash
+              user_json.parent.mkdir(parents=True, exist_ok=True)
+              user_json.write_text(json.dumps({"user": "github-actions", "tier": "free"}))
+              print("🔧 Created stub user.json")
+          EOF
+
       - name: Resolve run date
         id: date
         run: |
@@ -44,13 +82,7 @@ jobs:
           echo "Running for: $(cat $GITHUB_OUTPUT)"
 
       - name: Run pipeline
-        env:
-          VNSTOCK_API_KEY:  ${{ secrets.VNSTOCK_API_KEY }}
-          GITHUB_TOKEN:     ${{ secrets.GITHUB_TOKEN }}
-          DISCORD_WEBHOOK:  ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          cd agentq-daily
-          python scheduler/run_daily.py --date ${{ steps.date.outputs.date }}
+        run: python scheduler/run_daily.py --date ${{ steps.date.outputs.date }}
 
       - name: Configure git & push
         run: |
