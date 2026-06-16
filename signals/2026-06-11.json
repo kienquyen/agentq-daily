@@ -1,0 +1,25 @@
+{
+  "date": "2026-06-11",
+  "generated_at": "2026-06-11T17:30:00Z",
+  "regime": {
+    "ok": true,
+    "adx": 32.07775636779867,
+    "roc5": -1.79847670006279,
+    "dd20": -6.95770028606753,
+    "detail": "🟢 TREND  ADX=32.1  ROC5d=-1.8%  DD20d=-7.0%  →  BUY1=ON\n🔴 **GIẢM** (Score 25/100)\nTrend 0.28 · Breadth 0.30 · Flow 0.50 · Vol 0.48\nOverrides: dist_days=10 (CRITICAL) ×0.70"
+  },
+  "signals": [
+    {
+      "symbol": "VCI",
+      "signal_type": "BUY2",
+      "entry_price": 23.4,
+      "strength": 44,
+      "reasons": [
+        "+RSI14 Pocket (6.3)",
+        "+RSI Div (1.8)",
+        "-Knife (10.0)"
+      ],
+      "hold_days": 20
+    }
+  ]
+}

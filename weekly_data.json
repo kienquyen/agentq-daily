@@ -1,0 +1,303 @@
+{
+  "model": "weekly",
+  "name": "Weekly Shortlist — 120D Hold",
+  "description": "LightGBM weekly filter, cutoff 0.60, hold tối đa 120 phiên, thoát sớm khi re-score < 0.40",
+  "generated_at": "2026-06-13T14:33:47Z",
+  "stats": {
+    "total_signals": 0,
+    "weeks_with_signal": 0,
+    "hold_days": 120,
+    "cutoff": 0.6,
+    "note": "Weekly model — hold up to 120d, exit khi prob < 0.40"
+  },
+  "weekly_signals": {
+    "2026-06-12": {
+      "date": "2026-06-12",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_universe": 194,
+      "n_hardcheck": 40,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "IDC",
+          "prob": 0.4974402517642132,
+          "reason": "T1:prob_low(0.497<0.6)"
+        },
+        {
+          "symbol": "HCM",
+          "prob": 0.47130080273938624,
+          "reason": "T1:prob_low(0.471<0.6)"
+        },
+        {
+          "symbol": "DXG",
+          "prob": 0.4613576291959132,
+          "reason": "T1:prob_low(0.461<0.6)"
+        },
+        {
+          "symbol": "ANV",
+          "prob": 0.46079423034435396,
+          "reason": "T1:prob_low(0.461<0.6)"
+        },
+        {
+          "symbol": "EIB",
+          "prob": 0.4359587285701001,
+          "reason": "T1:prob_low(0.436<0.6)"
+        }
+      ],
+      "error": null
+    },
+    "2026-06-05": {
+      "date": "2026-06-05",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_universe": 194,
+      "n_hardcheck": 29,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "E1VFVN30",
+          "prob": 0.5106712947852834,
+          "reason": "T1:prob_low(0.511<0.6)"
+        },
+        {
+          "symbol": "VIC",
+          "prob": 0.4296493893349495,
+          "reason": "T1:prob_low(0.430<0.6)"
+        },
+        {
+          "symbol": "HDG",
+          "prob": 0.4285626650174184,
+          "reason": "T1:prob_low(0.429<0.6)"
+        },
+        {
+          "symbol": "VSC",
+          "prob": 0.42739891360045906,
+          "reason": "T1:prob_low(0.427<0.6)"
+        },
+        {
+          "symbol": "CMG",
+          "prob": 0.4237630657926944,
+          "reason": "T1:prob_low(0.424<0.6)"
+        }
+      ],
+      "error": null
+    },
+    "2026-05-29": {
+      "date": "2026-05-29",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_universe": 199,
+      "n_hardcheck": 33,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "VJC",
+          "prob": 0.5150884892357722,
+          "reason": "T1:prob_low(0.515<0.6)"
+        },
+        {
+          "symbol": "HDG",
+          "prob": 0.43005010919802744,
+          "reason": "T1:prob_low(0.430<0.6)"
+        },
+        {
+          "symbol": "KBC",
+          "prob": 0.41875251773118843,
+          "reason": "T1:prob_low(0.419<0.6)"
+        },
+        {
+          "symbol": "CMG",
+          "prob": 0.4167989471707996,
+          "reason": "T1:prob_low(0.417<0.6)"
+        },
+        {
+          "symbol": "HPG",
+          "prob": 0.41294688221466436,
+          "reason": "T1:prob_low(0.413<0.6)"
+        }
+      ],
+      "error": null
+    },
+    "2026-05-22": {
+      "date": "2026-05-22",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_universe": 199,
+      "n_hardcheck": 47,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "ANV",
+          "prob": 0.4962908275008645,
+          "reason": "T1:prob_low(0.496<0.6)"
+        },
+        {
+          "symbol": "PVD",
+          "prob": 0.4696122839007834,
+          "reason": "T1:prob_low(0.470<0.6)"
+        },
+        {
+          "symbol": "PC1",
+          "prob": 0.460300029273931,
+          "reason": "T1:prob_low(0.460<0.6)"
+        },
+        {
+          "symbol": "PET",
+          "prob": 0.4551893998207258,
+          "reason": "T1:prob_low(0.455<0.6)"
+        },
+        {
+          "symbol": "PHR",
+          "prob": 0.4533159472536882,
+          "reason": "T1:prob_low(0.453<0.6)"
+        }
+      ],
+      "error": null
+    },
+    "2026-05-15": {
+      "date": "2026-05-15",
+      "regime": "bull",
+      "prob_cutoff": 0.6,
+      "n_universe": 199,
+      "n_hardcheck": 58,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "CTG",
+          "prob": 0.5025373318942373,
+          "reason": "T1:prob_low(0.503<0.6)"
+        },
+        {
+          "symbol": "BVH",
+          "prob": 0.4951990324221077,
+          "reason": "T1:prob_low(0.495<0.6)"
+        },
+        {
+          "symbol": "SSI",
+          "prob": 0.49233198283939655,
+          "reason": "T1:prob_low(0.492<0.6)"
+        },
+        {
+          "symbol": "IDC",
+          "prob": 0.4655045911357744,
+          "reason": "T1:prob_low(0.466<0.6)"
+        },
+        {
+          "symbol": "GMD",
+          "prob": 0.4635056399765773,
+          "reason": "T1:prob_low(0.464<0.6)"
+        }
+      ],
+      "error": null
+    },
+    "2026-05-08": {
+      "date": "2026-05-08",
+      "regime": "bull",
+      "prob_cutoff": 0.6,
+      "n_universe": 199,
+      "n_hardcheck": 65,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "GMD",
+          "prob": 0.46686323745387154,
+          "reason": "T1:prob_low(0.467<0.6)"
+        },
+        {
+          "symbol": "MBB",
+          "prob": 0.46186861423163417,
+          "reason": "T1:prob_low(0.462<0.6)"
+        },
+        {
+          "symbol": "PVD",
+          "prob": 0.451286442897015,
+          "reason": "T1:prob_low(0.451<0.6)"
+        },
+        {
+          "symbol": "DCL",
+          "prob": 0.45111026868521953,
+          "reason": "T1:prob_low(0.451<0.6)"
+        },
+        {
+          "symbol": "DGC",
+          "prob": 0.4482072674351409,
+          "reason": "T1:prob_low(0.448<0.6)"
+        }
+      ],
+      "error": null
+    },
+    "2026-05-01": {
+      "date": "2026-05-01",
+      "regime": "bull",
+      "prob_cutoff": 0.6,
+      "n_universe": 199,
+      "n_hardcheck": 37,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "BVH",
+          "prob": 0.43554780305868235,
+          "reason": "T1:prob_low(0.436<0.6)"
+        },
+        {
+          "symbol": "PVS",
+          "prob": 0.43184774628074235,
+          "reason": "T1:prob_low(0.432<0.6)"
+        },
+        {
+          "symbol": "PLX",
+          "prob": 0.4248324010337732,
+          "reason": "T1:prob_low(0.425<0.6)"
+        },
+        {
+          "symbol": "PVT",
+          "prob": 0.4186222632602411,
+          "reason": "T1:prob_low(0.419<0.6)"
+        },
+        {
+          "symbol": "GVR",
+          "prob": 0.40769561557146206,
+          "reason": "T1:prob_low(0.408<0.6)"
+        }
+      ],
+      "error": null
+    },
+    "2026-04-24": {
+      "date": "2026-04-24",
+      "regime": "bull",
+      "prob_cutoff": 0.6,
+      "n_universe": 199,
+      "n_hardcheck": 41,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "PVS",
+          "prob": 0.42485653896645964,
+          "reason": "T1:prob_low(0.425<0.6)"
+        },
+        {
+          "symbol": "CMG",
+          "prob": 0.4237630657926944,
+          "reason": "T1:prob_low(0.424<0.6)"
+        },
+        {
+          "symbol": "PLX",
+          "prob": 0.4212097934973131,
+          "reason": "T1:prob_low(0.421<0.6)"
+        },
+        {
+          "symbol": "PPC",
+          "prob": 0.41968652164915443,
+          "reason": "T1:prob_low(0.420<0.6)"
+        },
+        {
+          "symbol": "VHC",
+          "prob": 0.4183787108654628,
+          "reason": "T1:prob_low(0.418<0.6)"
+        }
+      ],
+      "error": null
+    }
+  }
+}

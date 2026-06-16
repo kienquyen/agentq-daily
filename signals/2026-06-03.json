@@ -1,0 +1,12 @@
+{
+  "date": "2026-06-03",
+  "generated_at": "2026-06-09T14:58:03Z",
+  "regime": {
+    "ok": true,
+    "adx": 25.336927561375,
+    "roc5": -2.956632149506788,
+    "dd20": -5.902405967585906,
+    "detail": "🟢 TREND  ADX=25.3  ROC5d=-3.0%  DD20d=-5.9%  →  BUY1=ON\n🔴 **GIẢM** (Score 28/100)\nTrend 0.33 · Breadth 0.30 · Flow 0.50 · Vol 0.78\nOverrides: dist_days=11 (CRITICAL) ×0.70"
+  },
+  "signals": []
+}

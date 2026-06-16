@@ -1,0 +1,501 @@
+{
+  "model": "weekly",
+  "name": "Long-hold — Weekly Model",
+  "description": "LightGBM 20d, cutoff 0.6, thoát khi re-score < 0.4 hoặc T+120 ngày giao dịch. Top-8/tuần. Không vào regime recovery.",
+  "generated_at": "2026-06-16T15:18:14Z",
+  "stats": {
+    "total": 15,
+    "completed": 0,
+    "active": 15,
+    "win_rate": 0,
+    "avg_return": 0,
+    "best": 0,
+    "worst": 0,
+    "note": "Cutoff 0.6 | Exit re-score<0.4 hoặc T+120 ngày | Top-8/tuần"
+  },
+  "active_signals": [
+    {
+      "signal_date": "2026-04-17",
+      "symbol": "DCL",
+      "entry_price": 36900.0,
+      "prob": 0.6505,
+      "regime": "bull",
+      "status": "pending",
+      "actual_return": 2.17,
+      "is_win": true,
+      "exit_date": null,
+      "exit_price": 37700.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-04-03",
+      "symbol": "DGC",
+      "entry_price": 56500.0,
+      "prob": 0.6343,
+      "regime": "sideways",
+      "status": "pending",
+      "actual_return": -14.51,
+      "is_win": false,
+      "exit_date": null,
+      "exit_price": 48300.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-27",
+      "symbol": "DGC",
+      "entry_price": 51800.0,
+      "prob": 0.6925,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": -6.76,
+      "is_win": false,
+      "exit_date": null,
+      "exit_price": 48300.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-27",
+      "symbol": "SHS",
+      "entry_price": 17100.0,
+      "prob": 0.6569,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": 12.28,
+      "is_win": true,
+      "exit_date": null,
+      "exit_price": 19200.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-20",
+      "symbol": "AGG",
+      "entry_price": 12700.0,
+      "prob": 0.7881,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": -4.72,
+      "is_win": false,
+      "exit_date": null,
+      "exit_price": 12100.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-20",
+      "symbol": "SHS",
+      "entry_price": 16000.0,
+      "prob": 0.7543,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": 20.0,
+      "is_win": true,
+      "exit_date": null,
+      "exit_price": 19200.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-20",
+      "symbol": "DXG",
+      "entry_price": 14000.0,
+      "prob": 0.7505,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": -5.0,
+      "is_win": false,
+      "exit_date": null,
+      "exit_price": 13300.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-20",
+      "symbol": "PDR",
+      "entry_price": 15150.0,
+      "prob": 0.7371,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": 1.32,
+      "is_win": true,
+      "exit_date": null,
+      "exit_price": 15350.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-20",
+      "symbol": "VRE",
+      "entry_price": 26150.0,
+      "prob": 0.7164,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": 9.56,
+      "is_win": true,
+      "exit_date": null,
+      "exit_price": 28650.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-20",
+      "symbol": "TV2",
+      "entry_price": 36450.0,
+      "prob": 0.7145,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": -20.99,
+      "is_win": false,
+      "exit_date": null,
+      "exit_price": 28800.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-20",
+      "symbol": "BID",
+      "entry_price": 39750.0,
+      "prob": 0.7064,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": 5.41,
+      "is_win": true,
+      "exit_date": null,
+      "exit_price": 41900.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-20",
+      "symbol": "GAS",
+      "entry_price": 82000.0,
+      "prob": 0.6948,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": -0.24,
+      "is_win": false,
+      "exit_date": null,
+      "exit_price": 81800.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-13",
+      "symbol": "DIG",
+      "entry_price": 13550.0,
+      "prob": 0.7469,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": -2.58,
+      "is_win": false,
+      "exit_date": null,
+      "exit_price": 13200.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-13",
+      "symbol": "HDC",
+      "entry_price": 18000.0,
+      "prob": 0.743,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": 3.61,
+      "is_win": true,
+      "exit_date": null,
+      "exit_price": 18650.0,
+      "exit_reason": null
+    },
+    {
+      "signal_date": "2026-03-13",
+      "symbol": "PDR",
+      "entry_price": 15450.0,
+      "prob": 0.6609,
+      "regime": "deep_bear",
+      "status": "pending",
+      "actual_return": -0.65,
+      "is_win": false,
+      "exit_date": null,
+      "exit_price": 15350.0,
+      "exit_reason": null
+    }
+  ],
+  "recent_history": [],
+  "weekly_signals": {
+    "2026-05-29": {
+      "date": "2026-05-29",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_signals": 0,
+      "signals": []
+    },
+    "2026-05-22": {
+      "date": "2026-05-22",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_signals": 0,
+      "signals": []
+    },
+    "2026-05-15": {
+      "date": "2026-05-15",
+      "regime": "bull",
+      "prob_cutoff": 0.6,
+      "n_signals": 0,
+      "signals": []
+    },
+    "2026-05-08": {
+      "date": "2026-05-08",
+      "regime": "bull",
+      "prob_cutoff": 0.6,
+      "n_signals": 0,
+      "signals": []
+    },
+    "2026-04-24": {
+      "date": "2026-04-24",
+      "regime": "bull",
+      "prob_cutoff": 0.6,
+      "n_signals": 0,
+      "signals": []
+    },
+    "2026-04-17": {
+      "date": "2026-04-17",
+      "regime": "bull",
+      "prob_cutoff": 0.6,
+      "n_signals": 1,
+      "signals": [
+        {
+          "signal_date": "2026-04-17",
+          "symbol": "DCL",
+          "entry_price": 36900.0,
+          "prob": 0.6505,
+          "regime": "bull",
+          "status": "pending",
+          "actual_return": 2.17,
+          "is_win": true,
+          "exit_date": null,
+          "exit_price": 37700.0,
+          "exit_reason": null
+        }
+      ]
+    },
+    "2026-04-10": {
+      "date": "2026-04-10",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_signals": 0,
+      "signals": []
+    },
+    "2026-04-03": {
+      "date": "2026-04-03",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_signals": 1,
+      "signals": [
+        {
+          "signal_date": "2026-04-03",
+          "symbol": "DGC",
+          "entry_price": 56500.0,
+          "prob": 0.6343,
+          "regime": "sideways",
+          "status": "pending",
+          "actual_return": -14.51,
+          "is_win": false,
+          "exit_date": null,
+          "exit_price": 48300.0,
+          "exit_reason": null
+        }
+      ]
+    },
+    "2026-03-27": {
+      "date": "2026-03-27",
+      "regime": "deep_bear",
+      "prob_cutoff": 0.6,
+      "n_signals": 2,
+      "signals": [
+        {
+          "signal_date": "2026-03-27",
+          "symbol": "DGC",
+          "entry_price": 51800.0,
+          "prob": 0.6925,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": -6.76,
+          "is_win": false,
+          "exit_date": null,
+          "exit_price": 48300.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-27",
+          "symbol": "SHS",
+          "entry_price": 17100.0,
+          "prob": 0.6569,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": 12.28,
+          "is_win": true,
+          "exit_date": null,
+          "exit_price": 19200.0,
+          "exit_reason": null
+        }
+      ]
+    },
+    "2026-03-20": {
+      "date": "2026-03-20",
+      "regime": "deep_bear",
+      "prob_cutoff": 0.6,
+      "n_signals": 8,
+      "signals": [
+        {
+          "signal_date": "2026-03-20",
+          "symbol": "AGG",
+          "entry_price": 12700.0,
+          "prob": 0.7881,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": -4.72,
+          "is_win": false,
+          "exit_date": null,
+          "exit_price": 12100.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-20",
+          "symbol": "SHS",
+          "entry_price": 16000.0,
+          "prob": 0.7543,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": 20.0,
+          "is_win": true,
+          "exit_date": null,
+          "exit_price": 19200.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-20",
+          "symbol": "DXG",
+          "entry_price": 14000.0,
+          "prob": 0.7505,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": -5.0,
+          "is_win": false,
+          "exit_date": null,
+          "exit_price": 13300.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-20",
+          "symbol": "PDR",
+          "entry_price": 15150.0,
+          "prob": 0.7371,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": 1.32,
+          "is_win": true,
+          "exit_date": null,
+          "exit_price": 15350.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-20",
+          "symbol": "VRE",
+          "entry_price": 26150.0,
+          "prob": 0.7164,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": 9.56,
+          "is_win": true,
+          "exit_date": null,
+          "exit_price": 28650.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-20",
+          "symbol": "TV2",
+          "entry_price": 36450.0,
+          "prob": 0.7145,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": -20.99,
+          "is_win": false,
+          "exit_date": null,
+          "exit_price": 28800.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-20",
+          "symbol": "BID",
+          "entry_price": 39750.0,
+          "prob": 0.7064,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": 5.41,
+          "is_win": true,
+          "exit_date": null,
+          "exit_price": 41900.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-20",
+          "symbol": "GAS",
+          "entry_price": 82000.0,
+          "prob": 0.6948,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": -0.24,
+          "is_win": false,
+          "exit_date": null,
+          "exit_price": 81800.0,
+          "exit_reason": null
+        }
+      ]
+    },
+    "2026-03-13": {
+      "date": "2026-03-13",
+      "regime": "deep_bear",
+      "prob_cutoff": 0.6,
+      "n_signals": 3,
+      "signals": [
+        {
+          "signal_date": "2026-03-13",
+          "symbol": "DIG",
+          "entry_price": 13550.0,
+          "prob": 0.7469,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": -2.58,
+          "is_win": false,
+          "exit_date": null,
+          "exit_price": 13200.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-13",
+          "symbol": "HDC",
+          "entry_price": 18000.0,
+          "prob": 0.743,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": 3.61,
+          "is_win": true,
+          "exit_date": null,
+          "exit_price": 18650.0,
+          "exit_reason": null
+        },
+        {
+          "signal_date": "2026-03-13",
+          "symbol": "PDR",
+          "entry_price": 15450.0,
+          "prob": 0.6609,
+          "regime": "deep_bear",
+          "status": "pending",
+          "actual_return": -0.65,
+          "is_win": false,
+          "exit_date": null,
+          "exit_price": 15350.0,
+          "exit_reason": null
+        }
+      ]
+    },
+    "2026-03-06": {
+      "date": "2026-03-06",
+      "regime": "recovery",
+      "prob_cutoff": 0.6,
+      "n_signals": 0,
+      "signals": [],
+      "note": "Bỏ qua — regime RECOVERY không hợp long-hold"
+    }
+  }
+}

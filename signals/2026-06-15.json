@@ -1,0 +1,37 @@
+{
+  "date": "2026-06-15",
+  "generated_at": "2026-06-16T01:37:26Z",
+  "regime": {
+    "ok": true,
+    "adx": 32.92408150468181,
+    "roc5": 0.49035760361457736,
+    "dd20": -6.921489206511784,
+    "detail": "🟢 TREND  ADX=32.9  ROC5d=+0.5%  DD20d=-6.9%  A/D=91↑/27↓  →  BUY1=ON\n🟡 **ĐI NGANG** (Score 38/100)\nTrend 0.32 · Breadth 0.86 · Flow 0.50 · Vol 0.55\nOverrides: dist_days=10 (CRITICAL) ×0.70"
+  },
+  "signals": [
+    {
+      "symbol": "DRC",
+      "signal_type": "BUY2",
+      "entry_price": 11.8,
+      "strength": 60,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI Div (7.6)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    },
+    {
+      "symbol": "DPM",
+      "signal_type": "BUY2",
+      "entry_price": 23.6,
+      "strength": 49,
+      "reasons": [
+        "+RSI2 OS (7.1)",
+        "+RSI14 Pocket (6.7)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    }
+  ]
+}
