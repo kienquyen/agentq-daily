@@ -172,6 +172,61 @@ def step_git_push_rules(run_date: str) -> bool:
     return False
 
 
+def step_push_gh_pages(run_date: str) -> bool:
+    """Copy web files to gh-pages branch and push — GitHub Pages serves from there."""
+    import os, shutil, tempfile
+
+    token = os.environ.get("GITHUB_TOKEN", "")
+    remote = f"https://{token}@github.com/kienquyen/agentq-daily.git" if token \
+             else "https://github.com/kienquyen/agentq-daily.git"
+
+    WEB_FILES = [
+        "index.html", "data.json", ".nojekyll",
+        "v3a_data.json", "v5_data.json", "longhold_data.json", "weekly_data.json",
+    ]
+
+    with tempfile.TemporaryDirectory() as tmp:
+        # Clone only gh-pages branch (shallow)
+        clone = subprocess.run(
+            ["git", "clone", "--branch", "gh-pages", "--depth", "1", remote, tmp],
+            capture_output=True, text=True,
+        )
+        if clone.returncode != 0:
+            log.error("gh-pages clone failed: %s", clone.stderr[:200])
+            return False
+
+        # Copy web files
+        for f in WEB_FILES:
+            src = REPO / f
+            if src.exists():
+                shutil.copy2(src, tmp)
+
+        signals_src = REPO / "signals"
+        if signals_src.exists():
+            shutil.copytree(signals_src, Path(tmp) / "signals", dirs_exist_ok=True)
+
+        # Commit & push
+        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=tmp)
+        subprocess.run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"], cwd=tmp)
+        subprocess.run(["git", "add", "-A"], cwd=tmp, capture_output=True)
+        commit = subprocess.run(
+            ["git", "commit", "-m", f"deploy: {run_date}"],
+            cwd=tmp, capture_output=True, text=True,
+        )
+        if "nothing to commit" in (commit.stdout + commit.stderr):
+            log.info("gh-pages already up to date")
+            return True
+        push = subprocess.run(
+            ["git", "push", "origin", "gh-pages"],
+            cwd=tmp, capture_output=True, text=True,
+        )
+        if push.returncode == 0:
+            log.info("🌐 gh-pages pushed → GitHub Pages")
+            return True
+        log.error("gh-pages push failed: %s", push.stderr[:200])
+        return False
+
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
@@ -214,6 +269,10 @@ def main():
         else:
             if not step_git_push_rules(run_date):
                 failures.append("git_push_rules")
+
+    # Always push web files to gh-pages (GitHub Pages serves from this branch)
+    if not step_push_gh_pages(run_date):
+        failures.append("gh_pages_push")
 
     log.info("=" * 60)
     if failures:
