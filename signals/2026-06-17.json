@@ -1,35 +1,35 @@
 {
   "date": "2026-06-17",
-  "generated_at": "2026-06-17T15:04:32Z",
+  "generated_at": "2026-06-09T13:30:07Z",
   "regime": {
     "ok": true,
-    "adx": 34.75744466677873,
-    "roc5": 0.13804879941896608,
-    "dd20": -6.084098980350559,
-    "detail": "🟢 TREND  ADX=34.8  ROC5d=+0.1%  DD20d=-6.1%  A/D=45↑/22↓  →  BUY1=ON\n🟡 **ĐI NGANG** (Score 36/100)\nTrend 0.32 · Breadth 0.68 · Flow 0.50 · Vol 0.70\nOverrides: dist_days=9 (CRITICAL) ×0.70"
+    "adx": 29.959756486580027,
+    "roc5": -1.8297590434006583,
+    "dd20": -7.245319717967417,
+    "detail": "🟢 TREND  ADX=30.0  ROC5d=-1.8%  DD20d=-7.2%  →  BUY1=ON\n🔴 **GIẢM** (Score 24/100)\nTrend 0.28 · Breadth 0.23 · Flow 0.50 · Vol 0.52\nOverrides: dist_days=10 (CRITICAL) ×0.70"
   },
   "signals": [
     {
-      "symbol": "FTS",
-      "signal_type": "BUY1",
-      "entry_price": 25.4,
-      "strength": 93,
+      "symbol": "HDG",
+      "signal_type": "BUY2",
+      "entry_price": 20.8,
+      "strength": 61,
       "reasons": [
-        "+Trend (20.0)",
-        "+ADX (10.0)"
-      ],
-      "hold_days": 10
+        "+RSI Div (15.8)",
+        "+RSI14 Pocket (5.2)",
+        "-Knife (6.3)"
+      ]
     },
     {
-      "symbol": "MBS",
-      "signal_type": "BUY1",
-      "entry_price": 20.9,
-      "strength": 86,
+      "symbol": "NVL",
+      "signal_type": "BUY2",
+      "entry_price": 13.2,
+      "strength": 42,
       "reasons": [
-        "+Trend (13.6)",
-        "+ADX (12.0)"
-      ],
-      "hold_days": 10
+        "+RSI14 Pocket (4.8)",
+        "+MFI Pocket (3.1)",
+        "-Knife (12.0)"
+      ]
     }
   ]
 }
