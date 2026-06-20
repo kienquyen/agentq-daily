@@ -2,7 +2,7 @@
   "model": "weekly",
   "name": "Long-hold — Weekly Model",
   "description": "LightGBM 20d, cutoff 0.6, thoát khi re-score < 0.4 hoặc T+120 ngày giao dịch. Top-8/tuần. Không vào regime recovery.",
-  "generated_at": "2026-06-18T15:38:32Z",
+  "generated_at": "2026-06-19T16:04:30Z",
   "stats": {
     "total": 15,
     "completed": 0,
@@ -21,10 +21,10 @@
       "prob": 0.6505,
       "regime": "bull",
       "status": "pending",
-      "actual_return": 1.63,
+      "actual_return": 1.36,
       "is_win": true,
       "exit_date": null,
-      "exit_price": 37500.0,
+      "exit_price": 37400.0,
       "exit_reason": null
     },
     {
@@ -34,10 +34,10 @@
       "prob": 0.6343,
       "regime": "sideways",
       "status": "pending",
-      "actual_return": -15.4,
+      "actual_return": -14.34,
       "is_win": false,
       "exit_date": null,
-      "exit_price": 47800.0,
+      "exit_price": 48400.0,
       "exit_reason": null
     },
     {
@@ -47,10 +47,10 @@
       "prob": 0.6925,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": -7.72,
+      "actual_return": -6.56,
       "is_win": false,
       "exit_date": null,
-      "exit_price": 47800.0,
+      "exit_price": 48400.0,
       "exit_reason": null
     },
     {
@@ -60,10 +60,10 @@
       "prob": 0.6569,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": 11.7,
+      "actual_return": 9.94,
       "is_win": true,
       "exit_date": null,
-      "exit_price": 19100.0,
+      "exit_price": 18800.0,
       "exit_reason": null
     },
     {
@@ -86,10 +86,10 @@
       "prob": 0.7543,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": 19.38,
+      "actual_return": 17.5,
       "is_win": true,
       "exit_date": null,
-      "exit_price": 19100.0,
+      "exit_price": 18800.0,
       "exit_reason": null
     },
     {
@@ -99,10 +99,10 @@
       "prob": 0.7505,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": -5.36,
+      "actual_return": -5.0,
       "is_win": false,
       "exit_date": null,
-      "exit_price": 13250.0,
+      "exit_price": 13300.0,
       "exit_reason": null
     },
     {
@@ -112,10 +112,10 @@
       "prob": 0.7371,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": -0.33,
+      "actual_return": -0.99,
       "is_win": false,
       "exit_date": null,
-      "exit_price": 15100.0,
+      "exit_price": 15000.0,
       "exit_reason": null
     },
     {
@@ -125,10 +125,10 @@
       "prob": 0.7164,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": 15.11,
+      "actual_return": 12.24,
       "is_win": true,
       "exit_date": null,
-      "exit_price": 30100.0,
+      "exit_price": 29350.0,
       "exit_reason": null
     },
     {
@@ -138,10 +138,10 @@
       "prob": 0.7145,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": -18.52,
+      "actual_return": -19.07,
       "is_win": false,
       "exit_date": null,
-      "exit_price": 29700.0,
+      "exit_price": 29500.0,
       "exit_reason": null
     },
     {
@@ -151,10 +151,10 @@
       "prob": 0.7064,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": 7.55,
+      "actual_return": 5.16,
       "is_win": true,
       "exit_date": null,
-      "exit_price": 42750.0,
+      "exit_price": 41800.0,
       "exit_reason": null
     },
     {
@@ -164,10 +164,10 @@
       "prob": 0.6948,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": -0.24,
+      "actual_return": -0.98,
       "is_win": false,
       "exit_date": null,
-      "exit_price": 81800.0,
+      "exit_price": 81200.0,
       "exit_reason": null
     },
     {
@@ -177,10 +177,10 @@
       "prob": 0.7469,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": -4.06,
+      "actual_return": -4.43,
       "is_win": false,
       "exit_date": null,
-      "exit_price": 13000.0,
+      "exit_price": 12950.0,
       "exit_reason": null
     },
     {
@@ -190,10 +190,10 @@
       "prob": 0.743,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": 2.5,
-      "is_win": true,
+      "actual_return": -11.39,
+      "is_win": false,
       "exit_date": null,
-      "exit_price": 18450.0,
+      "exit_price": 15950.0,
       "exit_reason": null
     },
     {
@@ -203,10 +203,10 @@
       "prob": 0.6609,
       "regime": "deep_bear",
       "status": "pending",
-      "actual_return": -2.27,
+      "actual_return": -2.91,
       "is_win": false,
       "exit_date": null,
-      "exit_price": 15100.0,
+      "exit_price": 15000.0,
       "exit_reason": null
     }
   ],
@@ -260,10 +260,10 @@
           "prob": 0.6505,
           "regime": "bull",
           "status": "pending",
-          "actual_return": 1.63,
+          "actual_return": 1.36,
           "is_win": true,
           "exit_date": null,
-          "exit_price": 37500.0,
+          "exit_price": 37400.0,
           "exit_reason": null
         }
       ]
@@ -288,10 +288,10 @@
           "prob": 0.6343,
           "regime": "sideways",
           "status": "pending",
-          "actual_return": -15.4,
+          "actual_return": -14.34,
           "is_win": false,
           "exit_date": null,
-          "exit_price": 47800.0,
+          "exit_price": 48400.0,
           "exit_reason": null
         }
       ]
@@ -309,10 +309,10 @@
           "prob": 0.6925,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": -7.72,
+          "actual_return": -6.56,
           "is_win": false,
           "exit_date": null,
-          "exit_price": 47800.0,
+          "exit_price": 48400.0,
           "exit_reason": null
         },
         {
@@ -322,10 +322,10 @@
           "prob": 0.6569,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": 11.7,
+          "actual_return": 9.94,
           "is_win": true,
           "exit_date": null,
-          "exit_price": 19100.0,
+          "exit_price": 18800.0,
           "exit_reason": null
         }
       ]
@@ -356,10 +356,10 @@
           "prob": 0.7543,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": 19.38,
+          "actual_return": 17.5,
           "is_win": true,
           "exit_date": null,
-          "exit_price": 19100.0,
+          "exit_price": 18800.0,
           "exit_reason": null
         },
         {
@@ -369,10 +369,10 @@
           "prob": 0.7505,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": -5.36,
+          "actual_return": -5.0,
           "is_win": false,
           "exit_date": null,
-          "exit_price": 13250.0,
+          "exit_price": 13300.0,
           "exit_reason": null
         },
         {
@@ -382,10 +382,10 @@
           "prob": 0.7371,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": -0.33,
+          "actual_return": -0.99,
           "is_win": false,
           "exit_date": null,
-          "exit_price": 15100.0,
+          "exit_price": 15000.0,
           "exit_reason": null
         },
         {
@@ -395,10 +395,10 @@
           "prob": 0.7164,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": 15.11,
+          "actual_return": 12.24,
           "is_win": true,
           "exit_date": null,
-          "exit_price": 30100.0,
+          "exit_price": 29350.0,
           "exit_reason": null
         },
         {
@@ -408,10 +408,10 @@
           "prob": 0.7145,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": -18.52,
+          "actual_return": -19.07,
           "is_win": false,
           "exit_date": null,
-          "exit_price": 29700.0,
+          "exit_price": 29500.0,
           "exit_reason": null
         },
         {
@@ -421,10 +421,10 @@
           "prob": 0.7064,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": 7.55,
+          "actual_return": 5.16,
           "is_win": true,
           "exit_date": null,
-          "exit_price": 42750.0,
+          "exit_price": 41800.0,
           "exit_reason": null
         },
         {
@@ -434,10 +434,10 @@
           "prob": 0.6948,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": -0.24,
+          "actual_return": -0.98,
           "is_win": false,
           "exit_date": null,
-          "exit_price": 81800.0,
+          "exit_price": 81200.0,
           "exit_reason": null
         }
       ]
@@ -455,10 +455,10 @@
           "prob": 0.7469,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": -4.06,
+          "actual_return": -4.43,
           "is_win": false,
           "exit_date": null,
-          "exit_price": 13000.0,
+          "exit_price": 12950.0,
           "exit_reason": null
         },
         {
@@ -468,10 +468,10 @@
           "prob": 0.743,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": 2.5,
-          "is_win": true,
+          "actual_return": -11.39,
+          "is_win": false,
           "exit_date": null,
-          "exit_price": 18450.0,
+          "exit_price": 15950.0,
           "exit_reason": null
         },
         {
@@ -481,10 +481,10 @@
           "prob": 0.6609,
           "regime": "deep_bear",
           "status": "pending",
-          "actual_return": -2.27,
+          "actual_return": -2.91,
           "is_win": false,
           "exit_date": null,
-          "exit_price": 15100.0,
+          "exit_price": 15000.0,
           "exit_reason": null
         }
       ]
