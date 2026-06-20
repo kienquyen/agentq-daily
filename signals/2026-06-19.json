@@ -18,7 +18,8 @@
         "+RSI14 Pocket (9.8)",
         "+RSI2 OS (7.4)",
         "-Knife (12.0)"
-      ]
+      ],
+      "hold_days": 20
     },
     {
       "symbol": "HDG",
@@ -29,7 +30,8 @@
         "+RSI Div (15.8)",
         "+RSI14 Pocket (5.2)",
         "-Knife (6.3)"
-      ]
+      ],
+      "hold_days": 20
     },
     {
       "symbol": "DCL",
@@ -40,7 +42,8 @@
         "+RSI2 OS (12.0)",
         "+RSI Div (9.4)",
         "-Knife (12.0)"
-      ]
+      ],
+      "hold_days": 20
     },
     {
       "symbol": "NVL",
@@ -51,7 +54,8 @@
         "+RSI14 Pocket (4.8)",
         "+MFI Pocket (3.1)",
         "-Knife (12.0)"
-      ]
+      ],
+      "hold_days": 20
     }
   ]
 }
