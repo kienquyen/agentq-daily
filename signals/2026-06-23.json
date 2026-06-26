@@ -1,0 +1,48 @@
+{
+  "date": "2026-06-23",
+  "generated_at": "2026-06-26T01:32:33Z",
+  "regime": {
+    "ok": true,
+    "adx": 29.47630238623363,
+    "roc5": 3.379536931535343,
+    "dd20": -1.1021922142792853,
+    "detail": "🟢 TREND  ADX=29.5  ROC5d=+3.4%  DD20d=-1.1%  A/D=20↑/100↓  →  BUY1=ON\n🟡 **ĐI NGANG** (Score 39/100)\nTrend 0.65 · Breadth 0.15 · Flow 0.50 · Vol 0.84\nOverrides: dist_days=6 (High Risk) ×0.80"
+  },
+  "signals": [
+    {
+      "symbol": "CSM",
+      "signal_type": "BUY1",
+      "entry_price": 12.8,
+      "strength": 91,
+      "reasons": [
+        "+Trend (18.2)",
+        "+ADX (12.0)"
+      ],
+      "hold_days": 10
+    },
+    {
+      "symbol": "NHA",
+      "signal_type": "BUY2",
+      "entry_price": 11.1,
+      "strength": 68,
+      "reasons": [
+        "+RSI Div (18.0)",
+        "+RSI2 OS (12.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    },
+    {
+      "symbol": "CTF",
+      "signal_type": "BUY2",
+      "entry_price": 17.4,
+      "strength": 59,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI Div (6.9)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    }
+  ]
+}
