@@ -1,0 +1,73 @@
+{
+  "date": "2026-06-25",
+  "generated_at": "2026-06-27T17:06:47Z",
+  "regime": {
+    "ok": true,
+    "adx": 25.845747581257097,
+    "roc5": 1.7809633591372664,
+    "dd20": -1.6719883889695242,
+    "detail": "🟢 TREND  ADX=25.8  ROC5d=+1.8%  DD20d=-1.7%  A/D=33↑/75↓  →  BUY1=ON\n🔵 **HỒI PHỤC** (Score 46/100)\nTrend 0.81 · Breadth 0.28 · Flow 0.50 · Vol 0.85\nOverrides: dist_days=6 (High Risk) ×0.80"
+  },
+  "signals": [
+    {
+      "symbol": "KDH",
+      "signal_type": "BUY2",
+      "entry_price": 21.8,
+      "strength": 65,
+      "reasons": [
+        "+RSI Div (16.7)",
+        "+RSI2 OS (12.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "PVB",
+      "signal_type": "BUY2",
+      "entry_price": 24.3,
+      "strength": 61,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI Div (7.3)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "NTC",
+      "signal_type": "BUY2",
+      "entry_price": 136.0,
+      "strength": 54,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI14 Pocket (9.5)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "THG",
+      "signal_type": "BUY2",
+      "entry_price": 35.5,
+      "strength": 54,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI Div (9.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "DXG",
+      "signal_type": "BUY2",
+      "entry_price": 12.4,
+      "strength": 52,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI14 Pocket (4.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    }
+  ]
+}

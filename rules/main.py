@@ -223,12 +223,52 @@ def _fetch_history_any_source(symbol: str, start: str, end: str, interval: str =
             continue
     return pd.DataFrame(), None
 
-def fetch_top_vn100_data(start="2024-01-01"):
-    end = datetime.utcnow().strftime("%Y-%m-%d")
+def fetch_top_vn100_data(start="2024-01-01", use_local: bool = False, as_of_date: str | None = None):
+    """Fetch OHLCV universe data.
+
+    When use_local=True, reads from ai/data/ohlcv/*.parquet (fast, no API calls).
+    Falls back to API fetch when local files are missing.
+    """
+    end = as_of_date or datetime.utcnow().strftime("%Y-%m-%d")
     out = {}
-    
+
+    ohlcv_dir = _REPO_ROOT / "ai" / "data" / "ohlcv"
+
+    if use_local and ohlcv_dir.exists():
+        print(f"📂 Loading universe from local OHLCV store ({ohlcv_dir.name})...")
+        all_data = []
+        for sym in VN100_SYMBOLS:
+            parquet = ohlcv_dir / f"{sym}.parquet"
+            if not parquet.exists():
+                continue
+            try:
+                df = pd.read_parquet(parquet)
+                df = _normalize_ohlcv(df)
+                if df.empty:
+                    continue
+                # Filter to as_of_date
+                df["time"] = pd.to_datetime(df["time"])
+                df = df[df["time"] <= pd.Timestamp(end)].copy()
+                if len(df) < 60:
+                    continue
+                last_vol = float(df["volume"].iloc[-1]) if not pd.isna(df["volume"].iloc[-1]) else 0.0
+                all_data.append({"symbol": sym, "volume": last_vol, "df": df})
+            except Exception:
+                continue
+
+        if not all_data:
+            print("⚠️  No local OHLCV data found — falling back to API fetch")
+        else:
+            df_vol = pd.DataFrame(all_data).sort_values("volume", ascending=False)
+            top_syms = df_vol.head(MAX_UNIVERSE)["symbol"].tolist()
+            for item in all_data:
+                if item["symbol"] in top_syms:
+                    out[item["symbol"]] = {"df": item["df"], "exchange": "HOSE"}
+            print(f"✅ Loaded {len(out)} symbols from local store")
+            return out
+
     print(f"🔍 Fetching universe data (up to {MAX_UNIVERSE} symbols)...")
-    
+
     # First pass: Fetch recent volume to rank
     all_data = []
     for sym in VN100_SYMBOLS:
@@ -247,15 +287,13 @@ def fetch_top_vn100_data(start="2024-01-01"):
     # Sort by volume and take top MAX_UNIVERSE
     df_vol = pd.DataFrame(all_data).sort_values("volume", ascending=False)
     top_syms = df_vol.head(MAX_UNIVERSE)["symbol"].tolist()
-    
+
     # Second pass: Fetch full history for top symbols (if not already fetched)
     for sym in top_syms:
-        # Check if we already have enough history from the first pass
         existing = next((x for x in all_data if x["symbol"] == sym), None)
-        if existing and len(existing["df"]) > 50: # Arbitrary threshold for 'enough'
-             out[sym] = {"df": existing["df"], "exchange": "HOSE"}
-             continue
-             
+        if existing and len(existing["df"]) > 50:
+            out[sym] = {"df": existing["df"], "exchange": "HOSE"}
+            continue
         try:
             df, src = _fetch_history_any_source(sym, start, end)
             if not df.empty:
@@ -263,7 +301,7 @@ def fetch_top_vn100_data(start="2024-01-01"):
             time.sleep(0.02)
         except Exception:
             continue
-            
+
     return out
 
 def get_vnindex_latest():
@@ -1080,7 +1118,7 @@ def push_web_to_github(date_str: str) -> bool:
         return False
 
 
-def run_screener_latest(run_date: pd.Timestamp | None = None):
+def run_screener_latest(run_date: pd.Timestamp | None = None, use_local: bool = False):
     if run_date is None: run_date = pd.Timestamp.today().normalize()
     date_str = run_date.strftime("%Y-%m-%d")
     print(f"📊 Running screener for {date_str}")
@@ -1089,10 +1127,7 @@ def run_screener_latest(run_date: pd.Timestamp | None = None):
     print(f"VNIndex: {idx_val if idx_val else 'N/A'}")
 
     # ── Regime check ──────────────────────────────────────────────────────────
-    # Regime dùng để CẢNH BÁO và lọc strength, không tắt hoàn toàn BUY1.
-    # Backtest cho thấy filter cứng làm giảm performance vì BUY1 hoạt động
-    # tốt ngay cả khi VNIndex đang correction (cổ phiếu mạnh là outlier thật).
-    data_map = fetch_top_vn100_data()
+    data_map = fetch_top_vn100_data(use_local=use_local, as_of_date=date_str)
     regime = get_vnindex_regime(as_of_date=run_date, universe_data=data_map)
     print(regime["detail"])
     # Khi regime xấu: nâng ngưỡng strength tối thiểu lên 75 (chỉ lấy signal mạnh)
@@ -1184,12 +1219,13 @@ if __name__ == "__main__":
     import argparse as _argparse
     _parser = _argparse.ArgumentParser()
     _parser.add_argument("--date", default=None, help="Run date YYYY-MM-DD")
+    _parser.add_argument("--use-local", action="store_true", help="Load OHLCV from local parquet store (fast, no API)")
     _args, _ = _parser.parse_known_args()
 
     if _args.date:
-        run_screener_latest(pd.Timestamp(_args.date))
+        run_screener_latest(pd.Timestamp(_args.date), use_local=_args.use_local)
     elif os.getenv("RUN_ONCE", "0") == "1":
-        run_screener_latest(pd.Timestamp(datetime.now(pytz.timezone(LOCAL_TZ)).date()))
+        run_screener_latest(pd.Timestamp(datetime.now(pytz.timezone(LOCAL_TZ)).date()), use_local=_args.use_local)
     else:
         while True:
             time.sleep(wait_until_next())

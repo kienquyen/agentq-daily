@@ -104,16 +104,16 @@ def step_score_ai(run_date: str) -> bool:
     )
 
 
-def step_score_rules(run_date: str) -> bool:
+def step_score_rules(run_date: str, use_local: bool = False) -> bool:
     """Rule-based screener (rules/main.py)."""
     script = RULES_DIR / "main.py"
     if not script.exists():
         log.error("rules/main.py not found!")
         return False
-    return _run(
-        [sys.executable, str(script), "--date", run_date],
-        cwd=RULES_DIR, desc=f"Rule-based screener ({run_date})",
-    )
+    cmd = [sys.executable, str(script), "--date", run_date]
+    if use_local:
+        cmd.append("--use-local")
+    return _run(cmd, cwd=RULES_DIR, desc=f"Rule-based screener ({run_date})")
 
 
 def step_export_ai() -> bool:
@@ -264,7 +264,7 @@ def main():
                 failures.append("export_longhold")
 
     if not args.skip_rules:
-        if not step_score_rules(run_date):
+        if not step_score_rules(run_date, use_local=args.skip_ohlcv):
             failures.append("rules_scoring")
         else:
             if not step_git_push_rules(run_date):
