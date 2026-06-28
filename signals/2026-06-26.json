@@ -1,0 +1,107 @@
+{
+  "date": "2026-06-26",
+  "generated_at": "2026-06-28T04:56:41Z",
+  "regime": {
+    "ok": true,
+    "adx": 24.084999816159776,
+    "roc5": 2.59683315703223,
+    "dd20": -1.2054360733605973,
+    "detail": "🟢 TREND  ADX=24.1  ROC5d=+2.6%  DD20d=-1.2%  A/D=45↑/71↓  →  BUY1=ON\n🔵 **HỒI PHỤC** (Score 50/100)\nTrend 0.84 · Breadth 0.39 · Flow 0.50 · Vol 0.84\nOverrides: dist_days=6 (High Risk) ×0.80"
+  },
+  "signals": [
+    {
+      "symbol": "POW",
+      "signal_type": "BUY1",
+      "entry_price": 14.8,
+      "strength": 86,
+      "reasons": [
+        "+Trend (13.2)",
+        "+EMA9 break (8.9)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "VHC",
+      "signal_type": "BUY1",
+      "entry_price": 60.1,
+      "strength": 75,
+      "reasons": [
+        "+ADX (12.0)",
+        "+RSI (6.8)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "DBC",
+      "signal_type": "BUY2",
+      "entry_price": 18.5,
+      "strength": 71,
+      "reasons": [
+        "+RSI Div (12.8)",
+        "+RSI2 OS (12.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "HDG",
+      "signal_type": "BUY2",
+      "entry_price": 20.6,
+      "strength": 69,
+      "reasons": [
+        "+RSI Div (18.0)",
+        "+RSI2 OS (6.1)",
+        "-Knife (3.7)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "KDH",
+      "signal_type": "BUY2",
+      "entry_price": 21.6,
+      "strength": 67,
+      "reasons": [
+        "+RSI Div (14.4)",
+        "+RSI2 OS (12.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "PVB",
+      "signal_type": "BUY2",
+      "entry_price": 24.0,
+      "strength": 57,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI14 Pocket (6.8)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "NTC",
+      "signal_type": "BUY2",
+      "entry_price": 136.0,
+      "strength": 54,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI14 Pocket (9.5)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "THG",
+      "signal_type": "BUY2",
+      "entry_price": 35.2,
+      "strength": 51,
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI Div (7.1)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    }
+  ]
+}
