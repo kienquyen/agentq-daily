@@ -60,7 +60,7 @@ DAILY_RUN_MINUTE = int(os.getenv("DAILY_RUN_MINUTE", "0"))
 LOCAL_TZ = os.getenv("LOCAL_TZ", "Asia/Ho_Chi_Minh")
 
 # Max symbols to scan (ranked by volume)
-MAX_UNIVERSE = int(os.getenv("MAX_UNIVERSE", "150"))
+MAX_UNIVERSE = int(os.getenv("MAX_UNIVERSE", "100"))
 
 # Web export config
 WEB_EXPORT_ENABLED = os.getenv("WEB_EXPORT", "1").strip() == "1"

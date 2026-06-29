@@ -264,7 +264,7 @@ def main():
                 failures.append("export_longhold")
 
     if not args.skip_rules:
-        if not step_score_rules(run_date, use_local=args.skip_ohlcv):
+        if not step_score_rules(run_date, use_local=True):
             failures.append("rules_scoring")
         else:
             if not step_git_push_rules(run_date):
