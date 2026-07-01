@@ -1,0 +1,12 @@
+{
+  "date": "2026-06-30",
+  "generated_at": "2026-07-01T13:49:14Z",
+  "regime": {
+    "ok": true,
+    "adx": 21.465439554817113,
+    "roc5": -0.4831357274322601,
+    "dd20": -1.833487267449532,
+    "detail": "🟢 TREND  ADX=21.5  ROC5d=-0.5%  DD20d=-1.8%  A/D=42↑/36↓  →  BUY1=ON\n🔵 **HỒI PHỤC** (Score 50/100)\nTrend 0.76 · Breadth 0.51 · Flow 0.50 · Vol 0.82\nOverrides: dist_days=6 (High Risk) ×0.80"
+  },
+  "signals": []
+}
