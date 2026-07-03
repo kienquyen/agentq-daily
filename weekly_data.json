@@ -2,7 +2,7 @@
   "model": "weekly",
   "name": "Weekly Shortlist — 120D Hold",
   "description": "LightGBM weekly filter, cutoff 0.60, hold tối đa 120 phiên, thoát sớm khi re-score < 0.40",
-  "generated_at": "2026-06-19T16:04:27Z",
+  "generated_at": "2026-07-03T15:09:51Z",
   "stats": {
     "total_signals": 0,
     "weeks_with_signal": 0,
@@ -11,6 +11,42 @@
     "note": "Weekly model — hold up to 120d, exit khi prob < 0.40"
   },
   "weekly_signals": {
+    "2026-07-03": {
+      "date": "2026-07-03",
+      "regime": "sideways",
+      "prob_cutoff": 0.6,
+      "n_universe": 187,
+      "n_hardcheck": 74,
+      "signals": [],
+      "near_misses": [
+        {
+          "symbol": "BSR",
+          "prob": 0.5045107613854127,
+          "reason": "T1:prob_low(0.505<0.6)"
+        },
+        {
+          "symbol": "VPB",
+          "prob": 0.49003403309304366,
+          "reason": "T1:prob_low(0.490<0.6)"
+        },
+        {
+          "symbol": "HDC",
+          "prob": 0.4686399414896762,
+          "reason": "T1:prob_low(0.469<0.6)"
+        },
+        {
+          "symbol": "DGC",
+          "prob": 0.46161970808511305,
+          "reason": "T1:prob_low(0.462<0.6)"
+        },
+        {
+          "symbol": "HDB",
+          "prob": 0.4492307709935355,
+          "reason": "T1:prob_low(0.449<0.6)"
+        }
+      ],
+      "error": null
+    },
     "2026-06-19": {
       "date": "2026-06-19",
       "regime": "sideways",
