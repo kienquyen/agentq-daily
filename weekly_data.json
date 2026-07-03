@@ -2,7 +2,7 @@
   "model": "weekly",
   "name": "Weekly Shortlist — 120D Hold",
   "description": "LightGBM weekly filter, cutoff 0.60, hold tối đa 120 phiên, thoát sớm khi re-score < 0.40",
-  "generated_at": "2026-07-03T15:09:51Z",
+  "generated_at": "2026-07-03T15:10:05Z",
   "stats": {
     "total_signals": 0,
     "weeks_with_signal": 0,
