@@ -432,6 +432,31 @@
       white-space: nowrap;
     }
 
+    /* Confidence tier badge (backtest-derived) */
+    .tier-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 8px; border-radius: 20px;
+      margin-top: 5px; white-space: nowrap;
+    }
+    .tier-badge.high {
+      background: rgba(34,197,94,.12); color: var(--accent-dark);
+      border: 1px solid rgba(34,197,94,.30);
+    }
+    [data-theme="dark"] .tier-badge.high { color: var(--green); }
+    .tier-badge.standard {
+      background: var(--surface2); color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+    .tier-badge.caution {
+      background: rgba(245,158,11,.10); color: var(--yellow);
+      border: 1px solid rgba(245,158,11,.28);
+    }
+    .tier-badge.weak {
+      background: rgba(239,68,68,.08); color: var(--red);
+      border: 1px solid rgba(239,68,68,.22);
+    }
+
     /* Strength */
     .strength-row {
       display: flex; align-items: center; gap: 8px;
@@ -1106,7 +1131,38 @@ function renderCard(s) {
   const type  = s.signal_type.toLowerCase();
   const sc    = s.strength;
   const scC   = strClass(sc);
-  const holdDays = s.hold_days || 15;  // Default 15d if not specified
+  const holdDays = s.hold_days || 15;
+
+  // Confidence tier — backtest-derived (fallback: compute from signal_type + strength)
+  const tier = s.confidence_tier || (() => {
+    if (s.signal_type === "BUY1") return (sc >= 65 && sc < 80) ? "high" : sc >= 80 ? "caution" : "standard";
+    if (s.signal_type === "BUY2") return sc >= 65 ? "high" : sc >= 45 ? "standard" : "weak";
+    if (s.signal_type === "BUY3") return sc >= 55 ? "high" : "standard";
+    return "standard";
+  })();
+  const tierMeta = {
+    high:     { icon: "★", label: "High confidence" },
+    standard: { icon: "◆", label: "Standard" },
+    caution:  { icon: "⚠", label: "Caution" },
+    weak:     { icon: "▽", label: "Weak setup" },
+  }[tier] || { icon: "◆", label: "Standard" };
+  const tierTooltip = (() => {
+    if (s.signal_type === "BUY1") {
+      if (tier === "high")    return "Score 65-75: WR 59.5%, avg +1.6% T+10";
+      if (tier === "caution") return "Score ≥80: WR 46%, avg -0.35% — entry có thể đã muộn";
+    }
+    if (s.signal_type === "BUY2") {
+      if (tier === "high")    return "Score ≥65: WR 81.8%, avg +4.8% T+10";
+      if (tier === "standard") return "Score 45-64: WR 60%, avg +2.2% T+10";
+    }
+    if (s.signal_type === "BUY3") {
+      if (tier === "high")    return "Score ≥55: WR 85%, avg +7.5% T+10, +13% T+20";
+      return "Score 45-54: WR 72%, avg +5.2% T+10";
+    }
+    return "";
+  })();
+  const tierBadge = `<span class="tier-badge ${tier}" title="${tierTooltip}">${tierMeta.icon} ${tierMeta.label}</span>`;
+
   const reasons = (s.reasons || []).map(r => {
     const isPos = r.startsWith("+");
     const cls   = isPos ? "reason-pos" : "reason-neg";
@@ -1125,6 +1181,7 @@ function renderCard(s) {
         <div class="card-right">
           <div class="sig-badge ${type}">${s.signal_type}</div>
           <div class="hold-badge" title="Recommended hold period">${holdDays}d</div>
+          <div>${tierBadge}</div>
         </div>
       </div>
       <div class="strength-row">
