@@ -1003,6 +1003,36 @@ def get_strength_icon(score: int) -> str:
     if score >= 45: return "🟡"
     return "⚪"
 
+def get_confidence_tier(signal_type: str, strength: int) -> str:
+    """
+    Backtest-derived confidence tiers (2025-01-01 → 2026-06-27, n=621).
+    BUY1: sweet spot 65-75 (WR 59.5%, avg +1.64%); score ≥80 → WR 46% (avoid)
+    BUY2: score ≥65 excellent (WR 81.8%); ≥45 good (WR 60%)
+    BUY3: score ≥55 high confidence (WR 85%, avg +7.5%); all scores strong
+    """
+    if signal_type == "BUY1":
+        if 65 <= strength < 80:
+            return "high"    # Sweet spot: WR 59%, avg +1.6%
+        elif strength >= 80:
+            return "caution" # Counter-intuitive: WR drops to 46%
+        else:
+            return "standard"
+    elif signal_type == "BUY2":
+        if strength >= 65:
+            return "high"    # WR 81.8%, avg +4.8%
+        elif strength >= 45:
+            return "standard" # WR 60%, avg +2.2%
+        else:
+            return "weak"
+    elif signal_type == "BUY3":
+        if strength >= 55:
+            return "high"    # WR 85%, avg +7.5%
+        elif strength >= 45:
+            return "standard" # WR 72%, avg +5.2%
+        else:
+            return "standard" # Still decent: WR 71%
+    return "standard"
+
 # =========================
 # DISCORD & OUTPUT
 # =========================
@@ -1036,12 +1066,13 @@ def export_signal_json(date_str: str, results: list, regime: dict) -> Path | Non
         },
         "signals": [
             {
-                "symbol":      r["symbol"],
-                "signal_type": r["signal_type"],
-                "entry_price": r["entry_price"],
-                "strength":    r["strength"],
-                "reasons":     r["reasons"],
-                "hold_days":   r.get("hold_days", 15),  # Regime-aware hold period
+                "symbol":           r["symbol"],
+                "signal_type":      r["signal_type"],
+                "entry_price":      r["entry_price"],
+                "strength":         r["strength"],
+                "confidence_tier":  get_confidence_tier(r["signal_type"], r["strength"]),
+                "reasons":          r["reasons"],
+                "hold_days":        r.get("hold_days", 15),  # Regime-aware hold period
             }
             for r in sorted(results, key=lambda x: (x["signal_type"], -x["strength"]))
         ],
