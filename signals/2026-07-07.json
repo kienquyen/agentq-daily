@@ -1,0 +1,78 @@
+{
+  "date": "2026-07-07",
+  "generated_at": "2026-07-13T18:17:54Z",
+  "regime": {
+    "ok": true,
+    "adx": 18.147384041316876,
+    "roc5": -0.6322546652974936,
+    "dd20": -2.454149623960945,
+    "detail": "🟢 TREND  ADX=18.1  ROC5d=-0.6%  DD20d=-2.5%  A/D=51↑/37↓  →  BUY1=ON\n🔵 **HỒI PHỤC** (Score 51/100)\nTrend 0.59 · Breadth 0.73 · Flow 0.50 · Vol 0.86\nOverrides: dist_days=7 (High Risk) ×0.80"
+  },
+  "signals": [
+    {
+      "symbol": "PAN",
+      "signal_type": "BUY2",
+      "entry_price": 22.1,
+      "strength": 72,
+      "confidence_tier": "high",
+      "reasons": [
+        "+RSI Div (14.5)",
+        "+RSI2 OS (12.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "VSC",
+      "signal_type": "BUY2",
+      "entry_price": 17.6,
+      "strength": 68,
+      "confidence_tier": "high",
+      "reasons": [
+        "+RSI Div (14.3)",
+        "+RSI2 OS (12.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "DBC",
+      "signal_type": "BUY2",
+      "entry_price": 18.0,
+      "strength": 61,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI Div (9.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "HDC",
+      "signal_type": "BUY2",
+      "entry_price": 14.7,
+      "strength": 54,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI14 Pocket (9.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "DIG",
+      "signal_type": "BUY2",
+      "entry_price": 11.9,
+      "strength": 50,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI14 Pocket (5.7)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    }
+  ]
+}
