@@ -1,0 +1,39 @@
+{
+  "date": "2026-07-08",
+  "generated_at": "2026-07-13T18:18:51Z",
+  "regime": {
+    "ok": true,
+    "adx": 18.019393816976844,
+    "roc5": -0.7235393983536897,
+    "dd20": -2.166512732550466,
+    "detail": "🟢 TREND  ADX=18.0  ROC5d=-0.7%  DD20d=-2.2%  A/D=60↑/27↓  →  BUY1=ON\n🔵 **HỒI PHỤC** (Score 53/100)\nTrend 0.59 · Breadth 0.82 · Flow 0.50 · Vol 0.88\nOverrides: dist_days=6 (High Risk) ×0.80"
+  },
+  "signals": [
+    {
+      "symbol": "DBC",
+      "signal_type": "BUY2",
+      "entry_price": 17.9,
+      "strength": 59,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI Div (8.2)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    },
+    {
+      "symbol": "VSC",
+      "signal_type": "BUY2",
+      "entry_price": 17.4,
+      "strength": 56,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI14 Pocket (7.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 15
+    }
+  ]
+}
