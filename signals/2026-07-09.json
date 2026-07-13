@@ -1,0 +1,39 @@
+{
+  "date": "2026-07-09",
+  "generated_at": "2026-07-13T18:19:47Z",
+  "regime": {
+    "ok": true,
+    "adx": 18.060306697335502,
+    "roc5": -1.3743402898705903,
+    "dd20": -2.852619079034171,
+    "detail": "🟢 TREND  ADX=18.1  ROC5d=-1.4%  DD20d=-2.9%  A/D=18↑/67↓  →  BUY1=ON\n🟡 **ĐI NGANG** (Score 38/100)\nTrend 0.56 · Breadth 0.22 · Flow 0.50 · Vol 0.89\nOverrides: dist_days=7 (High Risk) ×0.80"
+  },
+  "signals": [
+    {
+      "symbol": "DBC",
+      "signal_type": "BUY2",
+      "entry_price": 17.8,
+      "strength": 57,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI2 OS (12.0)",
+        "+RSI14 Pocket (5.9)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    },
+    {
+      "symbol": "PDR",
+      "signal_type": "BUY2",
+      "entry_price": 14.2,
+      "strength": 44,
+      "confidence_tier": "weak",
+      "reasons": [
+        "+RSI14 Pocket (6.0)",
+        "+RSI2 OS (2.2)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    }
+  ]
+}

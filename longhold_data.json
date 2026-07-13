@@ -2,7 +2,7 @@
   "model": "weekly",
   "name": "Long-hold — Weekly Model",
   "description": "LightGBM 20d, cutoff 0.6, thoát khi re-score < 0.4 hoặc T+120 ngày giao dịch. Top-8/tuần. Không vào regime recovery.",
-  "generated_at": "2026-07-13T18:18:20Z",
+  "generated_at": "2026-07-13T18:19:15Z",
   "stats": {
     "total": 15,
     "completed": 0,
