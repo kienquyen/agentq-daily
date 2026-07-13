@@ -1,0 +1,12 @@
+{
+  "date": "2026-06-18",
+  "generated_at": "2026-06-18T16:20:01Z",
+  "regime": {
+    "ok": true,
+    "adx": 33.248343847725934,
+    "roc5": 1.7713678896481344,
+    "dd20": -3.4938895156953502,
+    "detail": "🟢 TREND  ADX=33.2  ROC5d=+1.8%  DD20d=-3.5%  A/D=23↑/49↓  →  BUY1=ON\n🟡 **ĐI NGANG** (Score 34/100)\nTrend 0.55 · Breadth 0.31 · Flow 0.50 · Vol 0.76\nOverrides: dist_days=8 (CRITICAL) ×0.70"
+  },
+  "signals": []
+}
