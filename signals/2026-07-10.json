@@ -1,0 +1,91 @@
+{
+  "date": "2026-07-10",
+  "generated_at": "2026-07-13T18:20:48Z",
+  "regime": {
+    "ok": true,
+    "adx": 18.523254693096067,
+    "roc5": -1.811952225468294,
+    "dd20": -3.5049478823063773,
+    "detail": "🟢 TREND  ADX=18.5  ROC5d=-1.8%  DD20d=-3.5%  A/D=15↑/69↓  →  BUY1=ON\n🟡 **ĐI NGANG** (Score 36/100)\nTrend 0.52 · Breadth 0.18 · Flow 0.50 · Vol 0.93\nOverrides: dist_days=7 (High Risk) ×0.80"
+  },
+  "signals": [
+    {
+      "symbol": "SMC",
+      "signal_type": "BUY2",
+      "entry_price": 10.3,
+      "strength": 66,
+      "confidence_tier": "high",
+      "reasons": [
+        "+RSI Div (16.3)",
+        "+RSI2 OS (12.0)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    },
+    {
+      "symbol": "KDH",
+      "signal_type": "BUY2",
+      "entry_price": 20.3,
+      "strength": 61,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI14 Pocket (8.5)",
+        "+RSI2 OS (7.5)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    },
+    {
+      "symbol": "TCH",
+      "signal_type": "BUY2",
+      "entry_price": 13.7,
+      "strength": 53,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI Div (8.6)",
+        "+MFI Pocket (5.5)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    },
+    {
+      "symbol": "BVH",
+      "signal_type": "BUY2",
+      "entry_price": 59.0,
+      "strength": 52,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI14 Pocket (7.2)",
+        "+RSI2 OS (5.5)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    },
+    {
+      "symbol": "DCM",
+      "signal_type": "BUY2",
+      "entry_price": 32.8,
+      "strength": 50,
+      "confidence_tier": "standard",
+      "reasons": [
+        "+RSI Div (7.3)",
+        "+RSI14 Pocket (4.6)",
+        "-Knife (12.0)"
+      ],
+      "hold_days": 18
+    },
+    {
+      "symbol": "DBC",
+      "signal_type": "BUY3",
+      "entry_price": 17.4,
+      "strength": 62,
+      "confidence_tier": "high",
+      "reasons": [
+        "+RSI2 Ex (22.4)",
+        "+MFI Wash (12.1)",
+        "-Downtrend (18.0)"
+      ],
+      "hold_days": 15
+    }
+  ]
+}

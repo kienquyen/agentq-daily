@@ -2,7 +2,7 @@
   "model": "v3a",
   "name": "AI Shortlist — 20D Hold",
   "description": "LightGBM model, xác suất outperform +5% trong 20 phiên",
-  "generated_at": "2026-07-13T18:19:09Z",
+  "generated_at": "2026-07-13T18:20:03Z",
   "stats": {
     "total": 67,
     "win_rate": 73.1,
